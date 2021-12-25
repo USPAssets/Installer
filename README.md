@@ -9,7 +9,7 @@ Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTA
 L'installer e' compatibile con le seguenti versioni dei giochi:
 -  **DELTARUNE (Chaper 1 & 2 DEMO)**, versione **1.07**
 -  **UNDERTALE**, versione **1.08**
-E con qualsiasi versione di Windows, macOS o distribuzione Linux in grado di far girare **.NET Runtime 6.0** (piu' info nei prerequisit).
+E con qualsiasi versione di Windows, macOS o distribuzione Linux in grado di far girare **.NET Runtime 5.0** (piu' info nei prerequisit).
 
 ## Prerequisiti
 
@@ -73,3 +73,11 @@ Se avete problemi, scriveteci su Facebook o mandateci un'email a *undertalespagh
 A presto!
 
 *Renard*
+
+PS: Building your own
+
+for Windows and Linux there's a VS publishing profile called `ReleaseProfile`, use that.
+
+for macOS, open `View` -> `Terminal`, type `./macOSBuild.ps1`, hit Enter, wait for the `.app` "folder" in `SpaghettiCh2/bin/Release/net5.0/publish/USPMac`. Archive as .tar under Windows.
+
+In this open source release the token is [[REDACTED]], 🙃, that's normal.
