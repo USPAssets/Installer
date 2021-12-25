@@ -80,4 +80,3 @@ for Windows and Linux there's a VS publishing profile called `ReleaseProfile`, u
 
 for macOS, open `View` -> `Terminal`, type `./macOSBuild.ps1`, hit Enter, wait for the `.app` "folder" in `SpaghettiCh2/bin/Release/net5.0/publish/USPMac`. Archive as .tar under Windows.
 
-In this open source release the token is [[REDACTED]], 🙃, that's normal.

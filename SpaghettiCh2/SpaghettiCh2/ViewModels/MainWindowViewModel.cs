@@ -322,12 +322,11 @@ namespace SpaghettiCh2.ViewModels
         {
             try
             {
-                // TODO: implement asset autoupdating...
                 AssetError = true;
                 AssetErrorMessage = StringsModel.UICheckingForUpdates;
 
                 MyClient.Timeout = TimeSpan.FromSeconds(4.0);
-                MyClient.DefaultRequestHeaders.Add("Authorization", "token [[REDACTED]]");
+                // MyClient.DefaultRequestHeaders.Add("Authorization", "token [[REDACTED]]");
                 MyClient.DefaultRequestHeaders.CacheControl = new CacheControlHeaderValue() { NoCache = true };
                 var baseurl = "https://raw.githubusercontent.com/USPAssets/Online/main/";
                 var reply = await MyClient.GetStringAsync(baseurl + "Version.txt");
