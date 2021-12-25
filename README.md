@@ -1,5 +1,5 @@
 
-# Installer universale per DELTARUNe e UNDERTALE by USP
+# Installer universale per DELTARUNE e UNDERTALE by USP
 
 Ciao! 
 Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTALE* e *DELTARUNE* (Capitolo 1 e 2), sia su **Windows**, **macOS** e **Linux**! L'installer vi permettera' anche di aggiornare la patch nel caso rilasceremo aggiornamenti. Insomma, conveniente!
