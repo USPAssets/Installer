@@ -13,7 +13,7 @@ E con qualsiasi versione di Windows, macOS o distribuzione Linux in grado di far
 
 ## Prerequisiti
 
-- Come prima cosa, trovate la cartella dove avete installato *UNDERTALE* o *DELTARUNE*; generalmente, se avete installato il gioco tramite Steam, questa sarà:
+- Come prima cosa, trovate la cartella dove avete installato *UNDERTALE* o *DELTARUNE*; generalmente, per esempio su Windows, se avete installato il gioco tramite Steam, questa sarà:
 ```
 C:\Programmi(x86)\Steam\steamapps\common\Undertale 
 // oppure
