@@ -1,7 +1,6 @@
-﻿using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Processing;
+﻿using System;
 using System.ComponentModel;
+using System.Drawing;
 using UndertaleModLib.Util;
 
 namespace UndertaleModLib.Models
@@ -74,25 +73,20 @@ namespace UndertaleModLib.Models
             return Name.Content + " (" + GetType().Name + ")";
         }
 
-        public void ReplaceTexture(Image<Rgba32> replaceImage, bool disposeImage = true)
+        public void ReplaceTexture(Image replaceImage, bool disposeImage = true)
         {
-            Image finalImage = replaceImage;
-
-            if (replaceImage.Width != SourceWidth || replaceImage.Height != SourceHeight)
-                finalImage = TextureWorker.ResizeImage(replaceImage, SourceWidth, SourceHeight);
-
+            Image finalImage = TextureWorker.ResizeImage(replaceImage, SourceWidth, SourceHeight);
+            
             // Apply the image to the TexturePage.
             lock (TexturePage.TextureData)
             {
                 TextureWorker worker = new TextureWorker();
-                Image<Rgba32> embImage = worker.GetEmbeddedTexture(TexturePage); // Use SetPixel if needed.
+                Bitmap embImage = worker.GetEmbeddedTexture(TexturePage); // Use SetPixel if needed.
 
-                var zeromtx = new ColorMatrix(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-
-                embImage.Mutate(x => x
-                    .Filter(zeromtx, new Rectangle(SourceX, SourceY, finalImage.Width, finalImage.Height))
-                    .DrawImage(finalImage, new Point(SourceX, SourceY), 1.0f)
-                );
+                Graphics g = Graphics.FromImage(embImage);
+                g.CompositingMode = System.Drawing.Drawing2D.CompositingMode.SourceCopy;
+                g.DrawImage(finalImage, SourceX, SourceY);
+                g.Dispose();
 
                 TexturePage.TextureData.TextureBlob = TextureWorker.GetImageBytes(embImage);
                 worker.Cleanup();
@@ -104,11 +98,7 @@ namespace UndertaleModLib.Models
             // Cleanup.
             finalImage.Dispose();
             if (disposeImage)
-                try
-                {
-                    replaceImage.Dispose();
-                }
-                catch { }
+                replaceImage.Dispose();
         }
     }
 }

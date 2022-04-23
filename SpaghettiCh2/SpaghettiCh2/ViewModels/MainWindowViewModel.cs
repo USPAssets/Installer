@@ -24,6 +24,7 @@ using System.Windows.Input;
 using UndertaleModLib;
 using UndertaleModLib.Models;
 using UndertaleModLib.Scripting;
+using UndertaleModLib.Decompiler;
 
 namespace SpaghettiCh2.ViewModels
 {
@@ -592,6 +593,9 @@ namespace SpaghettiCh2.ViewModels
         bool ScriptExecutionSuccess_ = false;
         bool IScriptInterface.ScriptExecutionSuccess => ScriptExecutionSuccess_;
 
+        bool IsAppClosed_ = false;
+        bool IScriptInterface.IsAppClosed => IsAppClosed_;
+
         string ScriptErrorMessage_ = "";
         string IScriptInterface.ScriptErrorMessage => ScriptErrorMessage_;
 
@@ -694,12 +698,20 @@ namespace SpaghettiCh2.ViewModels
             throw new NotImplementedException();
         }
 
-        string IScriptInterface.GetDecompiledText(string codeName)
+        string IScriptInterface.GetDecompiledText(string codeName, GlobalDecompileContext context)
+        {
+            throw new NotImplementedException();
+        }
+        string IScriptInterface.GetDecompiledText(UndertaleCode code, GlobalDecompileContext context)
         {
             throw new NotImplementedException();
         }
 
         string IScriptInterface.GetDisassemblyText(string codeName)
+        {
+            throw new NotImplementedException();
+        }
+        string IScriptInterface.GetDisassemblyText(UndertaleCode code)
         {
             throw new NotImplementedException();
         }
@@ -765,6 +777,11 @@ namespace SpaghettiCh2.ViewModels
         void IScriptInterface.SetProgressBar(string message, string status, double progressValue, double maxValue)
         {
             SetStatus = $"{message}: {status} ({(int)(progressValue / maxValue) * 100}%)";
+        }
+
+        void IScriptInterface.SetProgressBar()
+        {
+            throw new NotImplementedException();
         }
 
         void IScriptInterface.UpdateProgressValue(double progressValue)
@@ -872,7 +889,12 @@ namespace SpaghettiCh2.ViewModels
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.ReplaceTextInGML(string codeName, string keyword, string replacement, bool case_sensitive, bool isRegex)
+        void IScriptInterface.ReplaceTextInGML(string codeName, string keyword, string replacement, bool case_sensitive, bool isRegex, GlobalDecompileContext context)
+        {
+            throw new NotImplementedException();
+        }
+
+        void IScriptInterface.ReplaceTextInGML(UndertaleCode code, string keyword, string replacement, bool case_sensitive, bool isRegex, GlobalDecompileContext context)
         {
             throw new NotImplementedException();
         }
