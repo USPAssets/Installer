@@ -1,29 +1,44 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace UndertaleModLib.Models
+namespace UndertaleModLib.Models;
+
+/// <summary>
+/// A global initialization entry in a data file.
+/// </summary>
+/// <remarks></remarks>
+// TODO: Never seen in GMS1.4 so uncertain if the structure was the same.
+public class UndertaleGlobalInit : UndertaleObject, INotifyPropertyChanged, IDisposable
 {
-    // NOTE: Never seen in GMS1.4 so I'm not sure if the structure was the same
-    public class UndertaleGlobalInit : UndertaleObject, INotifyPropertyChanged
+    private UndertaleResourceById<UndertaleCode, UndertaleChunkCODE> _code = new();
+
+    /// <summary>
+    /// The <see cref="UndertaleCode"/> object which contains the code.
+    /// </summary>
+    /// <remarks>This code is executed at a global scope, before the first room of the game executes.</remarks>
+    public UndertaleCode Code { get => _code.Resource; set { _code.Resource = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Code))); } }
+
+    /// <inheritdoc />
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    /// <inheritdoc />
+    public void Serialize(UndertaleWriter writer)
     {
-        private UndertaleResourceById<UndertaleCode, UndertaleChunkCODE> _Code = new UndertaleResourceById<UndertaleCode, UndertaleChunkCODE>();
-        public UndertaleCode Code { get => _Code.Resource; set { _Code.Resource = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Code))); } }
+        _code.Serialize(writer);
+    }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+    /// <inheritdoc />
+    public void Unserialize(UndertaleReader reader)
+    {
+        _code = new UndertaleResourceById<UndertaleCode, UndertaleChunkCODE>();
+        _code.Unserialize(reader);   // Cannot use ReadUndertaleObject, as that messes things up.
+    }
 
-        public void Serialize(UndertaleWriter writer)
-        {
-            _Code.Serialize(writer);
-        }
+    /// <inheritdoc/>
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
 
-        public void Unserialize(UndertaleReader reader)
-        {
-            _Code = new UndertaleResourceById<UndertaleCode, UndertaleChunkCODE>();
-            _Code.Unserialize(reader); // TODO: reader.ReadUndertaleObject if one object starts with another one
-        }
+        _code.Dispose();
     }
 }

@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Ports;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UndertaleModLib.Compiler;
@@ -24,8 +26,11 @@ namespace UndertaleModLib
         int SerializeById(UndertaleWriter writer);
     }
 
-    public class UndertaleResourceById<T, ChunkT> : UndertaleResourceRef where T : UndertaleResource, new() where ChunkT : UndertaleListChunk<T>
+    public class UndertaleResourceById<T, ChunkT> : UndertaleResourceRef, IStaticChildObjectsSize, IDisposable where T : UndertaleResource, new() where ChunkT : UndertaleListChunk<T>
     {
+        /// <inheritdoc cref="IStaticChildObjectsSize.ChildObjectsSize" />
+        public static readonly uint ChildObjectsSize = 4;
+
         public int CachedId { get; set; } = -1;
         public T Resource { get; set; }
 
@@ -52,32 +57,47 @@ namespace UndertaleModLib
             this.CachedId = id;
         }
 
-        private ChunkT FindListChunk(UndertaleData data)
+        private static ChunkT FindListChunk(UndertaleData data)
         {
-            var chunk = data.FORM.Chunks.Where((x) => x.Value is ChunkT);
-            if (chunk.Any())
-                return (ChunkT)chunk.FirstOrDefault().Value;
-            else
-                return null;
+            if (data.FORM.ChunksTypeDict.TryGetValue(typeof(ChunkT), out UndertaleChunk chunk))
+            {
+                return (ChunkT)chunk;
+            }
+            return null;
         }
 
         public int SerializeById(UndertaleWriter writer)
         {
-            var chunk = FindListChunk(writer.undertaleData);
+            ChunkT chunk = FindListChunk(writer.undertaleData);
             if (chunk != null)
             {
                 if (Resource != null)
                 {
-                    CachedId = chunk.List.IndexOf(Resource);
+                    CachedId = chunk.IndexDict[Resource];
                     if (CachedId < 0)
                         throw new IOException("Unregistered object");
                 }
                 else
                 {
+                    int newCachedId;
                     if (typeof(ChunkT) == typeof(UndertaleChunkAGRP))
-                        CachedId = 0;
+                        newCachedId = 0;
                     else
-                        CachedId = -1;
+                        newCachedId = -1;
+                    if (CachedId > 0 || (typeof(ChunkT) != typeof(UndertaleChunkAGRP) && CachedId == 0))
+                    {
+                        if (chunk.List.Count > CachedId && chunk.List[CachedId] is not null)
+                        {
+                            int firstNullOccurrence = chunk.List.IndexOf(default);
+                            if (firstNullOccurrence != -1)
+                                newCachedId = firstNullOccurrence;
+                        }
+                        else
+                        {
+                            newCachedId = CachedId;
+                        }
+                    }
+                    CachedId = newCachedId;
                 }
             }
             return CachedId;
@@ -98,7 +118,7 @@ namespace UndertaleModLib
             {
                 if (typeof(ChunkT) == typeof(UndertaleChunkAGRP) && CachedId == reader.undertaleData.GetBuiltinSoundGroupID() && list.Count == 0) // I won't even ask why this works like that
                 {
-                    Resource = default(T);
+                    Resource = default;
                     return;
                 }
                 if (CachedId >= list.Count)
@@ -106,13 +126,36 @@ namespace UndertaleModLib
                     reader.SubmitWarning("Invalid value for resource ID of type " + typeof(ChunkT).Name + ": " + CachedId + " (there are only " + list.Count + ")");
                     return;
                 }
-                Resource = CachedId >= 0 ? list[CachedId] : default(T);
+                Resource = CachedId >= 0 ? list[CachedId] : default;
+                if (Resource == null && CachedId >= 0)
+                {
+                    // Naturally this can only happen with 2024.11 data files.
+                    // FIXME: Is this a good idea?
+                    if (reader.undertaleData.IsGameMaker2())
+                    {
+                        if (!reader.undertaleData.IsVersionAtLeast(2024, 11))
+                            reader.undertaleData.SetGMS2Version(2024, 11);
+                    }
+                    else
+                    {
+                        reader.SubmitWarning("ID reference to null object found on file built with GMS pre-2!");
+                    }
+                }
             }
         }
 
+        /// <inheritdoc/>
         public override string ToString()
         {
             return (Resource?.ToString() ?? "(null)") + GetMarkerSuffix();
+        }
+
+        /// <inheritdoc/>
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+
+            Resource = default;
         }
 
         public string GetMarkerSuffix()
@@ -122,8 +165,7 @@ namespace UndertaleModLib
 
         public void Serialize(UndertaleWriter writer)
         {
-            writer.resourceIDRefsToWrite.Add(new Pair<uint, UndertaleResourceRef>(writer.Position, this));
-            writer.Write((int)0);
+            writer.Write(SerializeById(writer));
         }
 
         public void Unserialize(UndertaleReader reader)
@@ -132,106 +174,398 @@ namespace UndertaleModLib
         }
     }
 
-    public class UndertaleReader : Util.BufferBinaryReader
+    public class UndertaleReader : AdaptiveBinaryReader
     {
         /// <summary>
-        /// function to delegate warning messages to
+        /// Function to delegate warning messages to.
         /// </summary>
-        /// <param name="warning"></param>
-        public delegate void WarningHandlerDelegate(string warning);
-        /// <summary>
-        /// function to delegate informational messages to
-        /// </summary>
-        /// <param name="message"></param>
-        public delegate void MessageHandlerDelegate(string message);
-        private WarningHandlerDelegate WarningHandler;
-        private MessageHandlerDelegate MessageHandler;
+        /// <param name="warning">Warning message.</param>
+        /// <param name="isImportant">Whether the warning is deemed important (that is, may risk data loss when re-saving).</param>
+        public delegate void WarningHandlerDelegate(string warning, bool isImportant);
 
-        public UndertaleReader(Stream input, 
-                               WarningHandlerDelegate warningHandler = null, MessageHandlerDelegate messageHandler = null) : base(input)
+        /// <summary>
+        /// Function to delegate informational messages to.
+        /// </summary>
+        /// <param name="message">Informational message.</param>
+        public delegate void MessageHandlerDelegate(string message);
+
+        private readonly WarningHandlerDelegate _warningHandler;
+        private readonly MessageHandlerDelegate _messageHandler;
+
+        public bool ReadOnlyGEN8 { get; set; }
+
+        /// <summary>
+        /// The detected absolute path of the data file, if a FileStream is passed in, or null otherwise (by default).
+        /// Can also be manually changed.
+        /// </summary>
+        public string FilePath { get; set; } = null;
+
+        /// <summary>
+        /// The detected absolute path of the directory containing the data file, if a FileStream is passed in, or null otherwise (by default).
+        /// Can also be manually changed.
+        /// </summary>
+        public string Directory { get; set; } = null;
+
+        internal readonly record struct BytecodeInformation(uint InstructionCount, UndertaleCode RootEntry);
+
+        internal Dictionary<uint, BytecodeInformation> BytecodeAddresses;
+        internal ArrayPool<uint> ListPtrsPool = ArrayPool<uint>.Create(100000, 17);
+        internal string LastChunkName;
+        internal List<string> AllChunkNames;
+        internal bool Bytecode14OrLower = false;
+
+        public UndertaleReader(Stream input,
+                               WarningHandlerDelegate warningHandler = null, MessageHandlerDelegate messageHandler = null,
+                               bool onlyGeneralInfo = false) : base(input)
         {
-            WarningHandler = warningHandler;
-            MessageHandler = messageHandler;
+            _warningHandler = warningHandler;
+            _messageHandler = messageHandler;
+            ReadOnlyGEN8 = onlyGeneralInfo;
+            if (input is FileStream fs)
+            {
+                FilePath = fs.Name;
+                Directory = Path.GetDirectoryName(FilePath);
+            }
+
+            FillUnserializeCountDictionaries();
         }
 
         // TODO: This would be more useful if it reported location like the exceptions did
-        public void SubmitWarning(string warning)
+        public void SubmitWarning(string warning, bool isImportant = true)
         {
-            if (WarningHandler != null)
-                WarningHandler.Invoke(warning);
+            if (_warningHandler != null)
+                _warningHandler.Invoke(warning, isImportant);
             else
                 throw new IOException(warning);
         }
 
         public void SubmitMessage(string message)
         {
-            if (MessageHandler != null)
-                MessageHandler.Invoke(message);
+            if (_messageHandler != null)
+                _messageHandler.Invoke(message);
             else
                 Debug.WriteLine(message);
         }
-
-        public string LastChunkName;
-        public List<string> AllChunkNames;
-        public bool GMS2_3 = false;
-        public bool Bytecode14OrLower = false;
 
         public UndertaleChunk ReadUndertaleChunk()
         {
             return UndertaleChunk.Unserialize(this);
         }
+        public (uint, UndertaleChunk) CountChunkChildObjects()
+        {
+            return UndertaleChunk.CountChunkChildObjects(this);
+        }
 
-        private List<UndertaleResourceRef> resUpdate = new List<UndertaleResourceRef>();
+        private readonly List<UndertaleResourceRef> _resourceRefsToResolve = new(256);
         internal UndertaleData undertaleData;
 
         public UndertaleData ReadUndertaleData()
         {
-            UndertaleData data = new UndertaleData();
+            // Create new data context
+            UndertaleData data = new();
             undertaleData = data;
 
-            resUpdate.Clear();
-
+            // Ensure root chunk is called "FORM"
             string name = ReadChars(4);
             if (name != "FORM")
-                throw new IOException("Root chunk is " + name + " not FORM");
+                throw new IOException($"Root chunk is \"{name}\", not FORM");
             uint length = ReadUInt32();
-            data.FORM = new UndertaleChunkFORM();
+            data.FORM = new UndertaleChunkFORM
+            {
+                Length = length
+            };
             DebugUtil.Assert(data.FORM.Name == name);
-            data.FORM.Length = length;
 
-            var lenReader = EnsureLengthFromHere(data.FORM.Length);
+            // Perform object counting pass on file
+            long startPos = Position;
+            uint poolSize = 0;
+            if (!ProcessObjectCountingErrors()) // process an exception from "FillUnserializeCountDictionaries()"
+            {
+                try
+                {
+                    if (!ReadOnlyGEN8)
+                    {
+                        poolSize = data.FORM.UnserializeObjectCount(this);
+                    }
+                }
+                catch (Exception e)
+                {
+                    countUnserializeExc = e;
+                    Debug.WriteLine(e);
+
+                    SwitchReaderType(false);
+                }
+            }
+            ListPtrsPool = null;
+
+            // Initialize object pools
+            InitializePools(poolSize);
+
+            // Read all of the main data
+            Position = startPos;
+            EnsureLengthOperation lenReader = EnsureLengthFromHere(data.FORM.Length);
             data.FORM.UnserializeChunk(this);
             lenReader.ToHere();
 
+            // Resolve resource IDs
             SubmitMessage("Resolving resource IDs...");
-            foreach (UndertaleResourceRef res in resUpdate)
+            foreach (UndertaleResourceRef res in _resourceRefsToResolve)
+            {
                 res.PostUnserialize(this);
-            resUpdate.Clear();
+            }
+            _resourceRefsToResolve.Clear();
 
-            data.BuiltinList = new BuiltinList(data);
-            Decompiler.AssetTypeResolver.InitializeTypes(data);
+            // Skip extra processing if it's not a regular data file (e.g., audio group files)
+            if (data.FORM.GEN8 is not null)
+            {
+                // Initialize GML builtins
+                data.BuiltinList = new BuiltinList(data);
+
+                // Initialize game-specific data resolver
+                try
+                {
+                    Decompiler.GameSpecificResolver.Initialize(data);
+                }
+                catch (Exception e)
+                {
+                    SubmitWarning($"Error initializing game-specific data resolver:\n{e.GetType().FullName}: {e.Message}", false);
+                    data.GameSpecificRegistry = new(); // Use a blank registry...
+                }
+
+                // Link texture group information, if relevant
+                UndertaleEmbeddedTexture.FindAllTextureInfo(data);
+
+                // Iterate over function names to see if 2023.11+ naming process was used (if necessary)
+                if (data.Functions is not null && data.IsVersionAtLeast(2023, 8) && !data.IsVersionAtLeast(2023, 11))
+                {
+                    foreach (UndertaleFunction function in data.Functions)
+                    {
+                        // If name starts with "gml_Script" and contains a @ character, it should be from 2023.11
+                        if (function.Name.Content is string functionName &&
+                            functionName.StartsWith("gml_Script_", StringComparison.Ordinal) &&
+                            functionName.Contains('@'))
+                        {
+                            data.SetGMS2Version(2023, 11);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            // Process any errors that may have occurred during object counting
+            ProcessObjectCountingErrors(poolSize);
 
             return data;
         }
 
         internal void RequestResourceUpdate(UndertaleResourceRef res)
         {
-            resUpdate.Add(res);
+            _resourceRefsToResolve.Add(res);
         }
 
+        /// <summary>
+        /// Reads a boolean as 32 bits (0 or 1), maintaining alignment.
+        /// </summary>
         public override bool ReadBoolean()
         {
-            uint a = ReadUInt32();
-            if (a == 0)
-                return false;
-            if (a == 1)
-                return true;
-            throw new IOException("Invalid boolean value: " + a);
+            uint val = ReadUInt32();
+            return val switch
+            {
+                0 => false,
+                1 => true,
+                _ => throw new IOException($"Invalid boolean value: {val}")
+            };
         }
 
-        private Dictionary<uint, UndertaleObject> objectPool = new Dictionary<uint, UndertaleObject>();
-        private Dictionary<UndertaleObject, uint> objectPoolRev = new Dictionary<UndertaleObject, uint>();
+        private Dictionary<uint, UndertaleObject> objectPool;
+        private Dictionary<UndertaleObject, uint> objectPoolRev;
         private HashSet<uint> unreadObjects = new HashSet<uint>();
+
+        private Exception countUnserializeExc = null;
+        private readonly Dictionary<Type, Func<UndertaleReader, uint>> unserializeFuncDict = new();
+        private readonly Dictionary<Type, uint> staticObjCountDict = new();
+        private readonly Dictionary<Type, uint> staticObjSizeDict = new();
+
+        private readonly BindingFlags publicStaticFlags
+            = BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy;
+        private readonly Type[] readerArgType = { typeof(UndertaleReader) };
+        private readonly Type delegateType = typeof(Func<UndertaleReader, uint>);
+        private readonly Func<UndertaleReader, uint> blankCountFunc = new(_ => { return 0; });
+
+        private bool ProcessObjectCountingErrors(uint poolSize = 0)
+        {
+            if (countUnserializeExc is not null)
+            {
+                try
+                {
+                    string fileDir = Path.GetDirectoryName(Environment.ProcessPath);
+                    File.WriteAllText(Path.Combine(fileDir, "unserializeCountError.txt"),
+                                      countUnserializeExc.ToString() + "\n"
+                                      + countUnserializeExc.Message + "\n"
+                                      + countUnserializeExc.StackTrace);
+
+                    SubmitWarning("Warning - there was an error while trying to unserialize total object count.\n" +
+                                  "The error log is saved to \"unserializeCountError.txt\"." +
+                                  "Please report that error to UndertaleModTool GitHub.");
+                }
+                catch { }
+
+                countUnserializeExc = null;
+
+                return true;
+            }
+
+            if (poolSize != 0 && poolSize != objectPool.Count)
+            {
+                SubmitWarning("Warning - the estimated object pool size differs from the actual size.\n" +
+                             $"Estimated: {poolSize}, Actual: {objectPool.Count}\n" +
+                              "Please report this on UndertaleModTool GitHub.", false);
+            }
+
+            return false;
+        }
+        private void FillUnserializeCountDictionaries()
+        {
+            try
+            {
+                Assembly currAssem = Assembly.GetExecutingAssembly();
+                Type[] allTypes = currAssem.GetTypes();
+
+                Type utObjectType = typeof(UndertaleObject);
+                Type staticObjCountType = typeof(IStaticChildObjCount);
+                Type staticObjSizeType = typeof(IStaticChildObjectsSize);
+
+                allTypes = allTypes.Where(t => t.IsAssignableTo(utObjectType)).ToArray();
+                foreach (Type t in allTypes)
+                {
+                    // It's not possible to call a static method of generic classes without present type argument.
+                    if (t.ContainsGenericParameters)
+                        continue;
+
+                    MethodInfo mi = t.GetMethod("UnserializeChildObjectCount", publicStaticFlags, readerArgType);
+                    if (mi is null)
+                        continue;
+
+                    var func = Delegate.CreateDelegate(delegateType, mi) as Func<UndertaleReader, uint>;
+                    if (func is null)
+                    {
+                        Debug.WriteLine($"Can't create a delegate from MethodInfo of type \"{t.FullName}\"");
+                        continue;
+                    }
+
+                    unserializeFuncDict[t] = func;
+                }
+
+                for (int i = 0; i < allTypes.Length; i++)
+                {
+                    Type t = allTypes[i];
+                    FieldInfo fi;
+                    object res;
+
+                    // It's not supported to get a static field from generic classes without present type argument.
+                    if (t.ContainsGenericParameters)
+                        continue;
+
+                    if (t.IsAssignableTo(staticObjCountType))
+                    {
+                        fi = t.GetField("ChildObjectCount", publicStaticFlags);
+                        if (fi is null)
+                        {
+                            Debug.WriteLine($"Can't get \"ChildObjectCount\" field of \"{t.FullName}\"");
+                            continue;
+                        }
+
+                        res = fi.GetValue(null);
+                        if (res is null)
+                        {
+                            Debug.WriteLine($"Can't get value of \"ChildObjectCount\" of \"{t.FullName}\"");
+                            continue;
+                        }
+
+                        staticObjCountDict[t] = (uint)res;
+                    }
+
+                    if (t.IsAssignableTo(staticObjSizeType))
+                    {
+                        fi = t.GetField("ChildObjectsSize", publicStaticFlags);
+                        if (fi is null)
+                        {
+                            Debug.WriteLine($"Can't get \"ChildObjectsSize\" field of \"{t.FullName}\"");
+                            continue;
+                        }
+
+                        res = fi.GetValue(null);
+                        if (res is null)
+                        {
+                            Debug.WriteLine($"Can't get value of \"ChildObjectsSize\" of \"{t.FullName}\"");
+                            continue;
+                        }
+
+                        staticObjSizeDict[t] = (uint)res;
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                countUnserializeExc = e;
+            }
+        }
+        public Func<UndertaleReader, uint> GetUnserializeCountFunc(Type objType)
+        {
+            if (!unserializeFuncDict.TryGetValue(objType, out var res))
+            {
+                MethodInfo mi = objType.GetMethod("UnserializeChildObjectCount", publicStaticFlags, readerArgType);
+                if (mi is null)
+                {
+                    Debug.WriteLine($"\"UndertaleReader.unserializeFuncDict\" doesn't contain a method for \"{objType.FullName}\".");
+                    return blankCountFunc;
+                }
+
+                //Debug.WriteLine($"Adding a generic class method for \"{objType.FullName}\" to \"UndertaleReader.unserializeFuncDict\".");
+
+                var func = Delegate.CreateDelegate(delegateType, mi) as Func<UndertaleReader, uint>;
+                if (func is null)
+                {
+                    Debug.WriteLine($"Can't create a delegate from MethodInfo of type \"{objType.FullName}\"");
+                    return blankCountFunc;
+                }
+
+                unserializeFuncDict[objType] = func;
+
+                res = func;
+            }
+
+            return res;
+        }
+        public uint GetStaticChildCount(Type objType)
+        {
+            if (!staticObjCountDict.TryGetValue(objType, out uint res))
+            {
+                Debug.WriteLine($"\"UndertaleReader.staticObjCountDict\" doesn't contain type \"{objType.FullName}\".");
+                return 0;
+            }
+
+            return res;
+        }
+        public uint GetStaticChildObjectsSize(Type objType)
+        {
+            if (!staticObjSizeDict.TryGetValue(objType, out uint res))
+            {
+                Debug.WriteLine($"\"UndertaleReader.staticObjSizeDict\" doesn't contain type \"{objType.FullName}\".");
+                return 0;
+            }
+
+            return res;
+        }
+        public void SetStaticChildCount(Type objType, uint count)
+        {
+            staticObjCountDict[objType] = count;
+        }
+        public void SetStaticChildObjectsSize(Type objType, uint size)
+        {
+            staticObjSizeDict[objType] = size;
+        }
 
         public Dictionary<uint, UndertaleObject> GetOffsetMap()
         {
@@ -243,10 +577,52 @@ namespace UndertaleModLib
             return objectPoolRev;
         }
 
+        public void InitializePools(uint objCount = 0)
+        {
+            if (objCount == 0)
+            {
+                objectPool = new();
+                objectPoolRev = new();
+            }
+            else
+            {
+                int objCountInt = (int)objCount;
+                objectPool = new(objCountInt);
+                objectPoolRev = new(objCountInt);
+            }
+        }
+
+        public uint GetChildObjectCount(Type t)
+        {
+            if (!unserializeFuncDict.TryGetValue(t, out var func))
+            {
+                if (staticObjSizeDict.TryGetValue(t, out uint size))
+                {
+                    Position += size;
+
+                    staticObjCountDict.TryGetValue(t, out uint subCount);
+
+                    return subCount;
+                }
+
+                throw new UndertaleSerializationException(
+                    $"\"UndertaleReader.unserializeFuncDict\" doesn't contain a method for \"{t.FullName}\".");
+            }
+
+            return func(this);
+        }
+        public uint GetChildObjectCount<T>() where T : UndertaleObject
+        {
+            Type t = typeof(T);
+
+            return GetChildObjectCount(t);
+        }
+        
+
         public T GetUndertaleObjectAtAddress<T>(uint address) where T : UndertaleObject, new()
         {
             if (address == 0)
-                return default(T);
+                return default;
             UndertaleObject obj;
             if (!objectPool.TryGetValue(address, out obj))
             {
@@ -269,64 +645,49 @@ namespace UndertaleModLib
         {
             try
             {
-                var expectedAddress = GetAddressForUndertaleObject(obj);
-                if (expectedAddress != Position)
+                uint expectedAddress = GetAddressForUndertaleObject(obj);
+                if (expectedAddress == 0)
+                    return;
+                if (expectedAddress != AbsPosition)
                 {
-                    SubmitWarning("Reading misaligned at " + Position.ToString("X8") + ", realigning back to " + expectedAddress.ToString("X8") + "\nHIGH RISK OF DATA LOSS! The file is probably corrupted, or uses unsupported features\nProceed at your own risk");
-                    Position = expectedAddress;
+                    SubmitWarning($"Reading misaligned at {AbsPosition:X8}, realigning back to {expectedAddress:X8}\nHIGH RISK OF DATA LOSS! The file is probably corrupted, or uses unsupported features\nProceed at your own risk");
+                    AbsPosition = expectedAddress;
                 }
-                unreadObjects.Remove(Position);
+                unreadObjects.Remove((uint)AbsPosition);
                 obj.Unserialize(this);
             }
             catch (Exception e)
             {
-                throw new UndertaleSerializationException(e.Message + "\nat " + Position.ToString("X8") + " while reading object " + typeof(T).FullName, e);
-            }
-        }
-
-        public void ReadUndertaleObject<T>(T obj, uint endPosition) where T : UndertaleObjectEndPos, new()
-        {
-            try
-            {
-                var expectedAddress = GetAddressForUndertaleObject(obj);
-                if (expectedAddress != Position)
-                {
-                    SubmitWarning("Reading misaligned at " + Position.ToString("X8") + ", realigning back to " + expectedAddress.ToString("X8") + "\nHIGH RISK OF DATA LOSS! The file is probably corrupted, or uses unsupported features\nProceed at your own risk");
-                    Position = expectedAddress;
-                }
-                unreadObjects.Remove(Position);
-                obj.Unserialize(this, endPosition);
-            }
-            catch (Exception e)
-            {
-                throw new UndertaleSerializationException(e.Message + "\nat " + Position.ToString("X8") + " while reading object " + typeof(T).FullName, e);
-            }
-        }
-
-        public void ReadUndertaleObject<T>(T obj, int length) where T : UndertaleObjectLenCheck, new()
-        {
-            try
-            {
-                var expectedAddress = GetAddressForUndertaleObject(obj);
-                if (expectedAddress != Position)
-                {
-                    SubmitWarning("Reading misaligned at " + Position.ToString("X8") + ", realigning back to " + expectedAddress.ToString("X8") + "\nHIGH RISK OF DATA LOSS! The file is probably corrupted, or uses unsupported features\nProceed at your own risk");
-                    Position = expectedAddress;
-                }
-                unreadObjects.Remove(Position);
-                obj.Unserialize(this, length);
-            }
-            catch (Exception e)
-            {
-                throw new UndertaleSerializationException(e.Message + "\nat " + Position.ToString("X8") + " while reading object " + typeof(T).FullName, e);
+                throw new UndertaleSerializationException(e.Message + "\nat " + AbsPosition.ToString("X8") + " while reading object " + typeof(T).FullName, e);
             }
         }
 
         public T ReadUndertaleObject<T>() where T : UndertaleObject, new()
         {
-            T obj = GetUndertaleObjectAtAddress<T>(Position);
-            ReadUndertaleObject(obj);
-            return obj;
+            uint address = (uint)AbsPosition;
+
+            T result;
+            if (objectPool.TryGetValue(address, out UndertaleObject obj))
+            {
+                result = (T)obj;
+                unreadObjects.Remove(address);
+            }
+            else
+            {
+                result = new T();
+                objectPool.Add(address, result);
+                objectPoolRev.Add(result, address);
+            }
+
+            result.Unserialize(this);
+            return result;
+        }
+
+        public T ReadUndertaleObjectNoPool<T>() where T : UndertaleObject, new()
+        {
+            T o = new();
+            o.Unserialize(this);
+            return o;
         }
 
         public T ReadUndertaleObjectPointer<T>() where T : UndertaleObject, new()
@@ -348,6 +709,9 @@ namespace UndertaleModLib
 
         public void ThrowIfUnreadObjects()
         {
+            if (ReadOnlyGEN8)
+                return;
+
             if (unreadObjects.Count > 0)
             {
                 throw new IOException("Found pointer targets that were never read:\n" + String.Join("\n", unreadObjects.Take(10).Select((x) => "0x" + x.ToString("X8") + " (" + objectPool[x].GetType().Name + ")")) + (unreadObjects.Count > 10 ? "\n(and more, " + unreadObjects.Count + " total)" : ""));
@@ -372,9 +736,9 @@ namespace UndertaleModLib
                 if (length != expectedLength)
                 {
                     int diff = (int)expectedLength - (int)length;
-                    Console.WriteLine("WARNING: File specified length " + expectedLength + ", but read only " + length + " (" + diff + " padding?)");
+                    reader.SubmitWarning("WARNING: File specified length " + expectedLength + ", but read only " + length + " (" + diff + " padding?)");
                     if (diff > 0)
-                        reader.Position = reader.Position + (uint)diff;
+                        reader.Position += (uint)diff;
                     else
                         throw new IOException("Read underflow");
                 }
@@ -383,7 +747,7 @@ namespace UndertaleModLib
 
         public void Align(int alignment, byte paddingbyte = 0x00)
         {
-            while ((Position & (alignment - 1)) != paddingbyte)
+            while ((AbsPosition & (alignment - 1)) != paddingbyte)
             {
                 DebugUtil.Assert(ReadByte() == paddingbyte, "Invalid alignment padding");
             }
@@ -395,7 +759,7 @@ namespace UndertaleModLib
         }
     }
 
-    public class UndertaleWriter : Util.BufferBinaryWriter
+    public class UndertaleWriter : FileBinaryWriter
     {
         internal UndertaleData undertaleData;
 
@@ -424,6 +788,9 @@ namespace UndertaleModLib
             obj.Serialize(this);
         }
 
+        /// <summary>
+        /// Writes a boolean using 32 bits (0 or 1), maintaining alignment.
+        /// </summary>
         public override void Write(bool b)
         {
             Write(b ? (uint)1 : (uint)0);
@@ -434,42 +801,37 @@ namespace UndertaleModLib
             undertaleData = data;
             Bytecode14OrLower = data?.GeneralInfo?.BytecodeVersion <= 14;
 
-            // Figure out the last chunk by iterating identically as it does when serializing
+            // Figure out the last chunk by iterating identically as it does when serializing,
+            // and generate the object index dictionaries for acceleration of "UndertaleResourceById.SerializeById()"
             foreach (var chunk in data.FORM.Chunks)
             {
                 LastChunkName = chunk.Key;
+
+                if (chunk.Value is IUndertaleListChunk listChunk)
+                {
+                    listChunk.GenerateIndexDict();
+                }
             }
 
             Write(data.FORM);
         }
 
-        private Dictionary<UndertaleObject, uint> objectPool = new Dictionary<UndertaleObject, uint>();
-        private Dictionary<UndertaleObject, List<uint>> pendingWrites = new Dictionary<UndertaleObject, List<uint>>();
-        private Dictionary<UndertaleObject, List<uint>> pendingStringWrites = new Dictionary<UndertaleObject, List<uint>>();
-        private List<Pair<uint, uint>> intsToWriteParallel = new List<Pair<uint, uint>>();
-        public List<Pair<uint, UndertaleResourceRef>> resourceIDRefsToWrite = new List<Pair<uint, UndertaleResourceRef>>();
+        private Dictionary<UndertaleObject, uint> objectPool = new();
+        private Dictionary<UndertaleObject, List<uint>> pendingWrites = new();
+        private Dictionary<UndertaleObject, List<uint>> pendingStringWrites = new();
 
-        public override void Flush()
+        public void Flush(UndertaleData data)
         {
-            SubmitMessage("Writing references in parallel...");
-
-            Parallel.ForEach(intsToWriteParallel, (pair) =>
+            // Clear out index dictionaries (no longer needed)
+            foreach (var chunk in data.FORM.Chunks.Values)
             {
-                RawBuffer[pair.Item1] = (byte)(pair.Item2 & 0xFF);
-                RawBuffer[pair.Item1 + 1] = (byte)((pair.Item2 >> 8) & 0xFF);
-                RawBuffer[pair.Item1 + 2] = (byte)((pair.Item2 >> 16) & 0xFF);
-                RawBuffer[pair.Item1 + 3] = (byte)((pair.Item2 >> 24) & 0xFF);
-            });
+                if (chunk is IUndertaleListChunk listChunk)
+                {
+                    listChunk.ClearIndexDict();
+                }
+            }
 
-            Parallel.ForEach(resourceIDRefsToWrite, (pair) =>
-            {
-                int id = pair.Item2.SerializeById(this);
-                RawBuffer[pair.Item1] = (byte)(id & 0xFF);
-                RawBuffer[pair.Item1 + 1] = (byte)((id >> 8) & 0xFF);
-                RawBuffer[pair.Item1 + 2] = (byte)((id >> 16) & 0xFF);
-                RawBuffer[pair.Item1 + 3] = (byte)((id >> 24) & 0xFF);
-            });
-
+            SubmitMessage("Flushing remaining buffer data...");
             base.Flush();
         }
 
@@ -482,49 +844,82 @@ namespace UndertaleModLib
         {
             if (obj == null)
                 return 0;
-            uint res;
-            if (!objectPool.TryGetValue(obj, out res))
+            if (!objectPool.TryGetValue(obj, out uint res))
                 throw new KeyNotFoundException();
             return res;
         }
 
-        public void WriteUndertaleObject<T>(T obj) where T : UndertaleObject, new()
+        public void WriteUndertaleObject<T>(T obj) where T : UndertaleObject
         {
+            if (obj is null)
+            {
+                // We simply shouldn't write anything.
+                // Pointers to this "object" are simply written as 0, and we don't need to
+                // put it in the pool
+                return;
+            }
+
             try
             {
-                // This isn't a major issue, and this is a performance waster
-                //if (objectPool.ContainsKey(obj))
-                //    throw new IOException("Writing object twice");
+                // Store object address before writing it
                 uint objectAddr = Position;
-                if (obj.GetType() == typeof(UndertaleString))
+
+                if (typeof(T) == typeof(UndertaleString))
                 {
-                    if (pendingStringWrites.ContainsKey(obj))
+                    // Can skip adding strings to object pool (nothing later in the file references them).
+                    obj.Serialize(this);
+
+                    // Patch all pointers to this string, if applicable
+                    if (pendingStringWrites.TryGetValue(obj, out List<uint> patches))
                     {
-                        foreach (uint pointerAddr in pendingStringWrites[obj])
-                            intsToWriteParallel.Add(new Pair<uint, uint>(pointerAddr, objectAddr + 4));
+                        uint returnTo = Position;
+                        objectAddr += 4; // Destination is where the string starts, not its length
+                        foreach (uint pointerAddr in patches)
+                        {
+                            Position = pointerAddr;
+                            Write(objectAddr);
+                        }
+                        Position = returnTo;
+
+                        // Remove pending write
                         pendingStringWrites.Remove(obj);
                     }
-                } else
-                    objectPool.Add(obj, objectAddr); // strings come later in the file, so no need to add them to the pool
-                obj.Serialize(this);
-                if (pendingWrites.ContainsKey(obj))
+                }
+                else
                 {
-                    foreach (uint pointerAddr in pendingWrites[obj])
-                        intsToWriteParallel.Add(new Pair<uint, uint>(pointerAddr, objectAddr));
-                    pendingWrites.Remove(obj);
+                    // Add object to pool
+                    objectPool.Add(obj, objectAddr);
+
+                    // Serialize object
+                    obj.Serialize(this);
+
+                    // Patch all pointers to this object, if applicable
+                    if (pendingWrites.TryGetValue(obj, out List<uint> patches))
+                    {
+                        uint returnTo = Position;
+                        foreach (uint pointerAddr in patches)
+                        {
+                            Position = pointerAddr;
+                            Write(objectAddr);
+                        }
+                        Position = returnTo;
+
+                        // Remove pending write
+                        pendingWrites.Remove(obj);
+                    }
                 }
             }
             catch (Exception e)
             {
-                throw new UndertaleSerializationException(e.Message + "\nat " + Position.ToString("X8") + " while writing object " + typeof(T).FullName, e);
+                throw new UndertaleSerializationException($"{e.Message}\nat {Position:X8} while writing object {typeof(T).FullName}", e);
             }
         }
 
-        public void WriteUndertaleObjectPointer<T>(T obj) where T : UndertaleObject, new()
+        public void WriteUndertaleObjectPointer<T>(T obj) where T : UndertaleObject
         {
             if (obj == null)
             {
-                Write((uint)0x00000000u);
+                Write(0x00000000u);
                 return;
             }
 
@@ -534,9 +929,11 @@ namespace UndertaleModLib
             }
             else
             {
-                if (!pendingWrites.ContainsKey(obj))
-                    pendingWrites.Add(obj, new List<uint>());
-                pendingWrites[obj].Add(Position);
+                if (!pendingWrites.TryGetValue(obj, out List<uint> list))
+                {
+                    pendingWrites.Add(obj, list = new List<uint>());
+                }
+                list.Add(Position);
                 Write(0xDEADC0DEu);
             }
         }
@@ -545,21 +942,16 @@ namespace UndertaleModLib
         {
             if (obj == null)
             {
-                Write((uint)0x0000000u);
+                Write(0x0000000u);
                 return;
             }
 
-            if (objectPool.ContainsKey(obj))
+            if (!pendingStringWrites.TryGetValue(obj, out List<uint> list))
             {
-                Write(objectPool[obj] + 4);
+                pendingStringWrites.Add(obj, list = new List<uint>());
             }
-            else
-            {
-                if (!pendingStringWrites.ContainsKey(obj))
-                    pendingStringWrites.Add(obj, new List<uint>());
-                pendingStringWrites[obj].Add(Position);
-                Write(0xDEADC0DEu);
-            }
+            list.Add(Position);
+            Write(0xDEADC0DEu);
         }
 
         public void ThrowIfUnwrittenObjects()
@@ -567,7 +959,11 @@ namespace UndertaleModLib
             if ((pendingWrites.Count + pendingStringWrites.Count) != 0)
             {
                 var unwrittenObjects = pendingWrites.Concat(pendingStringWrites);
-                throw new IOException("Found pointer targets that were never written:\n" + String.Join("\n", unwrittenObjects.Take(10).Select((x) => x.Key + " at " + String.Join(", ", x.Value.Select((y) => "0x" + y.ToString("X8"))))) + (unwrittenObjects.Count() > 10 ? "\n(and more, " + unwrittenObjects.Count() + " total)" : ""));
+                throw new IOException("Found pointer targets that were never written:\n"
+                                      + String.Join("\n", unwrittenObjects.Take(10).Select((x) => x.Key + " at " + String.Join(", ", x.Value.Select((y) => "0x" + y.ToString("X8")))))
+                                      + (unwrittenObjects.Count() > 10
+                                         ? "\n(and more, " + unwrittenObjects.Count() + " total)"
+                                         : ""));
             }
         }
 
@@ -617,25 +1013,26 @@ namespace UndertaleModLib
     public static class UndertaleIO
     {
         public static UndertaleData Read(Stream stream, UndertaleReader.WarningHandlerDelegate warningHandler = null,
-                                                        UndertaleReader.MessageHandlerDelegate messageHandler = null)
+                                                        UndertaleReader.MessageHandlerDelegate messageHandler = null,
+                                                        bool onlyGeneralInfo = false)
         {
-            UndertaleReader reader = new UndertaleReader(stream, warningHandler, messageHandler);
-            var data = reader.ReadUndertaleData();
+            UndertaleReader reader = new(stream, warningHandler, messageHandler, onlyGeneralInfo);
+            UndertaleData data = reader.ReadUndertaleData();
             reader.ThrowIfUnreadObjects();
             return data;
         }
 
         public static void Write(Stream stream, UndertaleData data, UndertaleWriter.MessageHandlerDelegate messageHandler = null)
         {
-            UndertaleWriter writer = new UndertaleWriter(stream, messageHandler);
+            UndertaleWriter writer = new(stream, messageHandler);
             writer.WriteUndertaleData(data);
             writer.ThrowIfUnwrittenObjects();
-            writer.Flush();
+            writer.Flush(data);
         }
 
         public static Dictionary<uint, UndertaleObject> GenerateOffsetMap(Stream stream)
         {
-            UndertaleReader reader = new UndertaleReader(stream);
+            UndertaleReader reader = new(stream);
             reader.ReadUndertaleData();
             reader.ThrowIfUnreadObjects();
             return reader.GetOffsetMap();

@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UndertaleModLib.Models;
 using UndertaleModLib.ModelsDebug;
 
@@ -32,7 +29,7 @@ namespace UndertaleModLib
         internal override void UnserializeChunk(UndertaleReader reader)
         {
             Chunks.Clear();
-            uint startPos = reader.Position;
+            long startPos = reader.Position;
             while (reader.Position < startPos + Length)
             {
                 UndertaleChunk chunk = reader.ReadUndertaleChunk();
@@ -43,6 +40,11 @@ namespace UndertaleModLib
                     Chunks.Add(chunk.Name, chunk);
                 }
             }
+        }
+
+        internal override uint UnserializeObjectCount(UndertaleReader reader)
+        {
+            throw new NotImplementedException();
         }
     }
 

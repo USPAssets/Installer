@@ -1,0 +1,7 @@
+source_tex, atlas_tex, x, y, width, height
+C:\Users\Federico\Desktop\USPAssets\Translations\Deltarune\Fonts\glyphs\fnt_mainbig.png, C:\Users\Federico\Desktop\Undertale\Undertale OTHER\UndertaleModTool\UndertaleModTool_v0.8.2.0-Windows\Packager\atlas000.png, 0, 0, 256, 256
+C:\Users\Federico\Desktop\USPAssets\Translations\Deltarune\Fonts\glyphs\fnt_comicsans.png, C:\Users\Federico\Desktop\Undertale\Undertale OTHER\UndertaleModTool\UndertaleModTool_v0.8.2.0-Windows\Packager\atlas000.png, 258, 0, 256, 128
+C:\Users\Federico\Desktop\USPAssets\Translations\Deltarune\Fonts\glyphs\fnt_dotumche.png, C:\Users\Federico\Desktop\Undertale\Undertale OTHER\UndertaleModTool\UndertaleModTool_v0.8.2.0-Windows\Packager\atlas000.png, 0, 258, 256, 128
+C:\Users\Federico\Desktop\USPAssets\Translations\Deltarune\Fonts\glyphs\fnt_main.png, C:\Users\Federico\Desktop\Undertale\Undertale OTHER\UndertaleModTool\UndertaleModTool_v0.8.2.0-Windows\Packager\atlas000.png, 516, 0, 128, 128
+C:\Users\Federico\Desktop\USPAssets\Translations\Deltarune\Fonts\glyphs\fnt_small.png, C:\Users\Federico\Desktop\Undertale\Undertale OTHER\UndertaleModTool\UndertaleModTool_v0.8.2.0-Windows\Packager\atlas000.png, 258, 130, 128, 64
+C:\Users\Federico\Desktop\USPAssets\Translations\Deltarune\Fonts\glyphs\fnt_tinynoelle.png, C:\Users\Federico\Desktop\Undertale\Undertale OTHER\UndertaleModTool\UndertaleModTool_v0.8.2.0-Windows\Packager\atlas000.png, 258, 258, 128, 64

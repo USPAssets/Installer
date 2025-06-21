@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -77,6 +79,13 @@ namespace UndertaleModLib.Util
         {
             ResizeToFit((int)offset + value.Length);
             Buffer.BlockCopy(value, 0, buffer, (int)offset, value.Length);
+            offset += value.Length;
+        }
+
+        public void Write(MemoryStream value)
+        {
+            ResizeToFit((int)(offset + value.Length));
+            Buffer.BlockCopy(value.GetBuffer(), 0, buffer, (int)offset, (int)value.Length);
             offset += value.Length;
         }
 

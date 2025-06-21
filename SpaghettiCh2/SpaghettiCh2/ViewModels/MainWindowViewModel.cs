@@ -22,18 +22,234 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using UndertaleModLib;
-using UndertaleModLib.Models;
 using UndertaleModLib.Scripting;
+using Underanalyzer.Decompiler;
+using UndertaleModLib.Decompiler;
+using UndertaleModLib.Models;
+
 
 namespace SpaghettiCh2.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase, IScriptInterface
     {
-        bool IScriptInterface.GMLCacheEnabled => false;
 
-        Task<bool> IScriptInterface.GenerateGMLCache(ThreadLocal<UndertaleModLib.Decompiler.GlobalDecompileContext> decompileContext, object dialog, bool isSaving)
+        private ScriptOptions CliScriptOptions { get; }
+        public bool GMLCacheEnabled { get; set; }
+        public bool IsAppClosed { get; set; }
+        public UndertaleData Data { get; set; }
+        public object Selected { get; set; }
+        private int progressValue;
+
+        public bool MakeNewDataFile()
         {
-            return Task.FromResult(false);
+            Data = UndertaleData.CreateNew();
+            Console.WriteLine("New file created.");
+            return true;
+        }
+
+        public void ScriptWarning(string message)
+        {
+            Console.WriteLine($"WARNING: {message}");
+        }
+
+        public void SetProgressBar()
+        {
+            //no progress bar that can be setup to show
+        }
+        public void IncrementProgress()
+        {
+            progressValue++;
+        }
+        public void AddProgressParallel(int amount) //P - Parallel (multi-threaded)
+        {
+            Interlocked.Add(ref progressValue, amount); //thread-safe add operation (not the same as "lock ()")
+        }
+
+        public void IncrementProgressParallel()
+        {
+            Interlocked.Increment(ref progressValue); //thread-safe increment
+        }
+
+        /// <inheritdoc/>
+        public int GetProgress()
+        {
+            return progressValue;
+        }
+
+        /// <inheritdoc/>
+        public void SetProgress(int value)
+        {
+            progressValue = value;
+        }
+
+
+        #region Empty Inherited Methods
+
+        /// <inheritdoc/>
+        public void InitializeScriptDialog()
+        {
+            // CLI has no dialogs to initialize
+        }
+
+        /// <inheritdoc/>
+        public void HideProgressBar()
+        {
+            // nothing to hide..
+        }
+
+        /// <inheritdoc/>
+        public void EnableUI()
+        {
+            // nothing to enable...
+        }
+
+        /// <inheritdoc/>
+        public void SyncBinding(string resourceType, bool enable)
+        {
+            //there is no UI with any data binding
+        }
+
+        /// <inheritdoc/>
+        public void DisableAllSyncBindings()
+        {
+            //there is no UI with any data binding
+        }
+
+        public void StartProgressBarUpdater()
+        {
+
+        }
+
+        public async Task StopProgressBarUpdater() //"async" because "Wait()" blocks UI thread
+        {
+        }
+
+        public void ChangeSelection(object newSelection, bool inNewTab = false)
+        {
+            //this does *not* make sense, as CLI does not have any selections
+            //however, since Selection is a public object, it could potentially be used by scripts
+            Selected = newSelection;
+        }
+
+        public string PromptChooseDirectory()
+        {
+            string path;
+            DirectoryInfo directoryInfo;
+            do
+            {
+                Console.WriteLine("Please enter a path (or drag and drop) to a valid directory:");
+                Console.Write("Path: ");
+                path = RemoveQuotes(Console.ReadLine());
+                if (string.IsNullOrEmpty(path))
+                {
+                    return null;
+                }
+                directoryInfo = new DirectoryInfo(path);
+            }
+            while (!directoryInfo.Exists);
+
+            return path;
+        }
+
+        private static string RemoveQuotes(string s)
+
+        {
+            return s.Trim('"', '\'');
+        }
+
+        public string PromptSaveFile(string defaultExt, string filter)
+        {
+            string path;
+            do
+            {
+                Console.WriteLine("Please enter a path (or drag and drop) to save the file:");
+                Console.Write("Path: ");
+                path = RemoveQuotes(Console.ReadLine());
+
+                if (Directory.Exists(path))
+                {
+                    Console.WriteLine("Error: Directory exists at that path.");
+                    path = null; // Ensuring that the loop will work correctly
+                    continue;
+                }
+            }
+            while (string.IsNullOrWhiteSpace(path));
+
+            return path;
+        }
+
+
+
+        public string GetDecompiledText(string codeName, GlobalDecompileContext context = null, IDecompileSettings settings = null)
+        {
+            return GetDecompiledText(Data.Code.ByName(codeName), context, settings);
+        }
+        public string GetDecompiledText(UndertaleCode code, GlobalDecompileContext context = null, IDecompileSettings settings = null)
+        {
+            if (code.ParentEntry is not null)
+                return $"// This code entry is a reference to an anonymous function within \"{code.ParentEntry.Name.Content}\", decompile that instead.";
+
+            GlobalDecompileContext decompileContext = context is null ? new(Data) : context;
+            try
+            {
+                return code != null
+                    ? new DecompileContext(decompileContext, code, settings ?? Data.ToolInfo.DecompilerSettings).DecompileToString()
+                    : "";
+            }
+            catch (Exception e)
+            {
+                return "/*\nDECOMPILER FAILED!\n\n" + e + "\n*/";
+            }
+        }
+
+        public async Task ClickableSearchOutput(string title, string query, int resultsCount, IOrderedEnumerable<KeyValuePair<string, List<(int lineNum, string codeLine)>>> resultsDict, bool editorDecompile, IOrderedEnumerable<string> failedList = null)
+        {
+            await ClickableSearchOutput(title, query, resultsCount, resultsDict.ToDictionary(pair => pair.Key, pair => pair.Value), editorDecompile, failedList);
+        }
+
+        /// <inheritdoc/>
+        public async Task ClickableSearchOutput(string title, string query, int resultsCount, IDictionary<string, List<(int lineNum, string codeLine)>> resultsDict, bool editorDecompile, IEnumerable<string> failedList = null)
+        {
+            await Task.Delay(1); //dummy await
+
+            // If we have failed entries...
+            if (failedList is not null)
+            {
+                // Convert list to array first
+                string[] failedArray = failedList.ToArray();
+
+                // ...Print them all out
+                Console.ForegroundColor = ConsoleColor.Red;
+                if (failedArray.Length == 1)
+                    Console.Error.WriteLine("There is 1 code entry that encountered an error while searching:");
+                else
+                    Console.Error.WriteLine($"There are {failedArray.Length} code entries that encountered an error while searching");
+
+                foreach (string failedEntry in failedArray)
+                    Console.Error.WriteLine(failedEntry);
+
+                Console.ResetColor();
+                Console.WriteLine();
+            }
+
+            Console.WriteLine($"{resultsCount} results in {resultsDict.Count} code entries for \"{query}\".");
+            Console.WriteLine();
+
+            // Print in a pattern of:
+            // Results in code_file
+            // Line 3: line of code
+            // Line 6: line of code
+            //
+            // Results in code_file_1
+            // etc.
+            foreach (var dictEntry in resultsDict)
+            {
+                Console.WriteLine($"Results in {dictEntry.Key}:");
+                foreach (var resultEntry in dictEntry.Value)
+                    Console.WriteLine($"Line {resultEntry.lineNum}: {resultEntry.codeLine}");
+
+                Console.WriteLine();
+            }
         }
 
         private static async Task<bool> DirectoryCheck(string dirr)
@@ -207,7 +423,7 @@ namespace SpaghettiCh2.ViewModels
         }
 
         private readonly ScriptOptions? scriptOptions_ = null;
-                
+
 
         private async Task RunScript(string csxpath)
         {
@@ -242,21 +458,14 @@ namespace SpaghettiCh2.ViewModels
                 SetStatus = StringsModel.StatusLoading;
                 FilePath_ = winfile;
 
-                // UndertaleIO.Read method is blocking, we have to make a separate task on a separate scheduler
-                // and await it..................... :(
-                await Task.Run(() =>
-                {
-                    var stream = new FileStream(FilePath_, FileMode.Open, FileAccess.Read, FileShare.Read);
-                    Data_ = UndertaleIO.Read(stream,
-                        messageHandler: (string msg) => SetStatus = msg,
-                        warningHandler: (string msg) => SetStatus = $"[WARN]: {msg}"
-                    );
-                    stream.Dispose();
-                });
-                
+                var fs = new FileStream(FilePath_, FileMode.Open, FileAccess.Read, FileShare.Read);
+                Data_ = UndertaleIO.Read(fs, null, null);
+                fs.Close();
+
+
                 string csxpath;
                 string assetdir = AssetDir;
-                if (Data_.GeneralInfo.Filename.Content.ToLowerInvariant().Contains("deltarune"))
+                if (Data_.GeneralInfo.FileName.Content.ToLowerInvariant().Contains("deltarune"))
                 {
                     csxpath = Path.Combine(assetdir, "Deltarune", "DTScript.csx");
                 }
@@ -273,7 +482,7 @@ namespace SpaghettiCh2.ViewModels
                     SetStatus = StringsModel.StatusSaving;
                     await Task.Run(() =>
                     {
-                        using var stream = new FileStream(FilePath_, FileMode.Create, FileAccess.Write, FileShare.Read);
+                        using var stream = new FileStream(FilePath_.Replace(".win", "temp.win"), FileMode.Create, FileAccess.Write, FileShare.Read);
                         //Path.GetFileNameWithoutExtension
                         UndertaleIO.Write(stream, Data_,
                             messageHandler: (string msg) => SetStatus = msg);
@@ -577,7 +786,7 @@ namespace SpaghettiCh2.ViewModels
         string FilePath_ = "";
         string IScriptInterface.FilePath => FilePath_;
 
-        string ScriptPath_ = "";
+        public string ScriptPath_ = "";
         string IScriptInterface.ScriptPath => ScriptPath_;
 
         object Highlighted_;
@@ -607,36 +816,6 @@ namespace SpaghettiCh2.ViewModels
                 throw new ScriptException("Please load data.win first!");
         }
 
-        Task<bool> IScriptInterface.Make_New_File()
-        {
-            return Task.FromResult(false);
-        }
-
-        void IScriptInterface.ReplaceTempWithMain(bool ImAnExpertBTW)
-        {
-            
-        }
-
-        void IScriptInterface.ReplaceMainWithTemp(bool ImAnExpertBTW)
-        {
-            
-        }
-
-        void IScriptInterface.ReplaceTempWithCorrections(bool ImAnExpertBTW)
-        {
-            
-        }
-
-        void IScriptInterface.ReplaceCorrectionsWithTemp(bool ImAnExpertBTW)
-        {
-            
-        }
-
-        void IScriptInterface.UpdateCorrections(bool ImAnExpertBTW)
-        {
-            
-        }
-
         void IScriptInterface.ScriptMessage(string message)
         {
             SetStatus = message;
@@ -664,14 +843,43 @@ namespace SpaghettiCh2.ViewModels
             OpenBrowser(url);
         }
 
-        bool IScriptInterface.SendAUMIMessage(IpcMessage_t ipMessage, ref IpcReply_t outReply)
+        public bool RunUMTScript(string path)
         {
-            throw new NotImplementedException();
+            
+            RunCSharpFile(path);
+            return true;
+            
         }
 
-        bool IScriptInterface.RunUMTScript(string path)
+        private void RunCSharpFile(string path)
         {
-            throw new NotImplementedException();
+            string lines;
+            try
+            {
+                lines = File.ReadAllText(path, Encoding.UTF8);
+            }
+            catch (Exception exc)
+            {
+                // rethrow as otherwise this will get interpreted as success
+                Console.Error.WriteLine(exc.Message);
+                throw;
+            }
+
+            lines = $"#line 1 \"{path}\"\n" + lines;
+            ScriptPath_ = path;
+            RunCSharpCode(lines, path);
+        }
+
+        public string ScriptErrorMessage { get; set; }
+        public bool ScriptExecutionSuccess { get; set; }
+        public string ScriptPath { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+
+
+        private void RunCSharpCode(string code, string scriptFile = null)
+        {
+
+            CSharpScript.EvaluateAsync(code, scriptOptions_, this, typeof(IScriptInterface)).GetAwaiter().GetResult();
+    
         }
 
         bool IScriptInterface.LintUMTScript(string path)
@@ -684,24 +892,25 @@ namespace SpaghettiCh2.ViewModels
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.ReapplyProfileCode()
+        public string GetDisassemblyText(string codeName)
         {
-            throw new NotImplementedException();
+            return GetDisassemblyText(Data.Code.ByName(codeName));
         }
 
-        void IScriptInterface.NukeProfileGML(string codeName)
+        /// <inheritdoc/>
+        public string GetDisassemblyText(UndertaleCode code)
         {
-            throw new NotImplementedException();
-        }
+            if (code.ParentEntry is not null)
+                return $"; This code entry is a reference to an anonymous function within \"{code.ParentEntry.Name.Content}\", disassemble that instead.";
 
-        string IScriptInterface.GetDecompiledText(string codeName)
-        {
-            throw new NotImplementedException();
-        }
-
-        string IScriptInterface.GetDisassemblyText(string codeName)
-        {
-            throw new NotImplementedException();
+            try
+            {
+                return code != null ? code.Disassemble(Data.Variables, Data.CodeLocals?.For(code), Data.CodeLocals is null) : "";
+            }
+            catch (Exception e)
+            {
+                return "/*\nDISASSEMBLY FAILED!\n\n" + e + "\n*/"; // Please don't
+            }
         }
 
         bool IScriptInterface.AreFilesIdentical(string File01, string File02)
@@ -742,16 +951,6 @@ namespace SpaghettiCh2.ViewModels
             throw new NotImplementedException();
         }
 
-        Task IScriptInterface.ClickableTextOutput(string title, string query, int resultsCount, IOrderedEnumerable<KeyValuePair<string, List<string>>> resultsDict, bool editorDecompile, IOrderedEnumerable<string> failedList)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task IScriptInterface.ClickableTextOutput(string title, string query, int resultsCount, IDictionary<string, List<string>> resultsDict, bool editorDecompile, IEnumerable<string> failedList)
-        {
-            throw new NotImplementedException();
-        }
-
         void IScriptInterface.SetFinishedMessage(bool isFinishedMessageEnabled)
         {
             throw new NotImplementedException();
@@ -782,21 +981,6 @@ namespace SpaghettiCh2.ViewModels
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.IncProgress()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IScriptInterface.AddProgressP(int amount)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IScriptInterface.IncProgressP()
-        {
-            throw new NotImplementedException();
-        }
-
         int IScriptInterface.GetProgress()
         {
             throw new NotImplementedException();
@@ -822,74 +1006,25 @@ namespace SpaghettiCh2.ViewModels
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.SyncBinding(bool enable)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IScriptInterface.StartUpdater()
-        {
-            // ???
-        }
-
-        Task IScriptInterface.StopUpdater()
-        {
-            return Task.CompletedTask;
-        }
-
-        void IScriptInterface.ChangeSelection(object newsel)
-        {
-            Selected_ = newsel;
-        }
-
-        string IScriptInterface.PromptChooseDirectory(string prompt)
-        {
-            throw new NotImplementedException();
-        }
-
         string IScriptInterface.PromptLoadFile(string defaultExt, string filter)
         {
-            throw new NotImplementedException();
-        }
+            string path;
+            FileInfo fileInfo;
+            do
+            {
+                Console.WriteLine("Please enter a path (or drag and drop) to a valid file:");
+                Console.Write("Path: ");
+                path = RemoveQuotes(Console.ReadLine());
+                if (string.IsNullOrEmpty(path))
+                {
+                    return null;
+                }
+                fileInfo = new FileInfo(path);
+            }
+            while (fileInfo.Exists);
 
-        void IScriptInterface.ImportGMLString(string codeName, string gmlCode, bool doParse, bool CheckDecompiler)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IScriptInterface.ImportASMString(string codeName, string gmlCode, bool doParse, bool destroyASM, bool CheckDecompiler)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IScriptInterface.ImportGMLFile(string fileName, bool doParse, bool CheckDecompiler, bool wtf)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IScriptInterface.ImportASMFile(string fileName, bool doParse, bool destroyASM, bool CheckDecompiler, bool wtf)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IScriptInterface.ReplaceTextInGML(string codeName, string keyword, string replacement, bool case_sensitive, bool isRegex)
-        {
-            throw new NotImplementedException();
-        }
-
-        bool IScriptInterface.DummyBool()
-        {
-            return true;
-        }
-
-        void IScriptInterface.DummyVoid()
-        {
-            // lmao
-        }
-
-        string IScriptInterface.DummyString()
-        {
-            return $"<usp_installer>:{InstallerVer}";
+            return path;
         }
     }
+    #endregion
 }
