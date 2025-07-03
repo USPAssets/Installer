@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup>
@@ -23,29 +23,40 @@
     <DelaySign>false</DelaySign>
     <ApplicationIcon>Assets\avalonia-logo.ico</ApplicationIcon>
   </PropertyGroup>
-  <ItemGroup>
-    <AvaloniaResource Include="Assets\**" />
-    <None Remove=".gitignore" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Assets\avalonia-logo.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="..\.editorconfig" Link=".editorconfig" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="Avalonia" Version="0.10.11" />
-    <PackageReference Include="Avalonia.Desktop" Version="0.10.11" />
-    <!--This package is ABOVE Avalonia.Diagnostics to prevent a funny conflict, do not modify.-->
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="3.4.0" />
-    <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-    <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="0.10.11" />
-    <PackageReference Include="Avalonia.ReactiveUI" Version="0.10.11" />
-    <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\UndertaleModLib\UndertaleModLib.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="..\.editorconfig" Link=".editorconfig" />
+    </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Avalonia" Version="11.3.2" />
+        <PackageReference Include="Avalonia.Desktop" Version="11.3.2" />
+        <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.2" />
+        <!--This package is ABOVE Avalonia.Diagnostics to prevent a funny conflict, do not modify.-->
+        <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.14.0" />
+        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.2" />
+        <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.2" />
+        <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
+    </ItemGroup>
+    <ItemGroup>
+    <ProjectReference Include="..\UndertaleModTool\UndertaleModLib\UndertaleModLib.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+	    <AvaloniaResource Include="Assets\**" />
+    </ItemGroup>
+    <ItemGroup>
+	    <EmbeddedResource Update="Assets\Resources.resx">
+		    <Generator>PublicResXFileCodeGenerator</Generator>
+		    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+	    </EmbeddedResource>
+    </ItemGroup>
+
+    <ItemGroup>
+	    <Compile Update="Assets\Resources.Designer.cs">
+		    <DesignTime>True</DesignTime>
+		    <AutoGen>True</AutoGen>
+		    <DependentUpon>Resources.resx</DependentUpon>
+	    </Compile>
+    </ItemGroup>
   <ItemGroup>
     <None Update="SpaghettiCh2.icns">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

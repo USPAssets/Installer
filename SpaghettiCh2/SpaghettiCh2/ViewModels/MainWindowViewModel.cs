@@ -1,7 +1,6 @@
-#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-#pragma warning disable CS0649 // Null thing.
 using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Platform.Storage;
 using Avalonia.Threading;
 using Microsoft.CodeAnalysis.CSharp.Scripting;
 using Microsoft.CodeAnalysis.Scripting;
@@ -21,7 +20,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Underanalyzer.Decompiler;
 using UndertaleModLib;
+using UndertaleModLib.Decompiler;
 using UndertaleModLib.Models;
 using UndertaleModLib.Scripting;
 
@@ -29,13 +30,6 @@ namespace SpaghettiCh2.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase, IScriptInterface
     {
-        bool IScriptInterface.GMLCacheEnabled => false;
-
-        Task<bool> IScriptInterface.GenerateGMLCache(ThreadLocal<UndertaleModLib.Decompiler.GlobalDecompileContext> decompileContext, object dialog, bool isSaving)
-        {
-            return Task.FromResult(false);
-        }
-
         private static async Task<bool> DirectoryCheck(string dirr)
         {
             try
@@ -143,7 +137,11 @@ namespace SpaghettiCh2.ViewModels
         public ICommand BrowseCommand { get; }
         public ICommand DoItCommand { get; }
 
-        public OpenFileDialog? BrowseGameDialog { get; set; }
+        public  static FilePickerFileType ExecutableFileType { get; } = new("UNDERTALE / DELTARUNE exe")
+        {
+            Patterns = new[] { "*.exe", "*.app", "*.win", "*.ios", "*.unx" },
+            AppleUniformTypeIdentifiers = new[] { "public.executable" },
+        };
         public string BrowseDialogTitle => StringsModel.DialogTitle;
 
         private bool First_ = false;
@@ -249,14 +247,14 @@ namespace SpaghettiCh2.ViewModels
                     var stream = new FileStream(FilePath_, FileMode.Open, FileAccess.Read, FileShare.Read);
                     Data_ = UndertaleIO.Read(stream,
                         messageHandler: (string msg) => SetStatus = msg,
-                        warningHandler: (string msg) => SetStatus = $"[WARN]: {msg}"
+                        warningHandler: (string msg, bool important) => SetStatus = $"[WARN]: {msg}"
                     );
                     stream.Dispose();
                 });
                 
                 string csxpath;
                 string assetdir = AssetDir;
-                if (Data_.GeneralInfo.Filename.Content.ToLowerInvariant().Contains("deltarune"))
+                if (Data_.GeneralInfo.FileName.Content.ToLowerInvariant().Contains("deltarune"))
                 {
                     csxpath = Path.Combine(assetdir, "Deltarune", "DTScript.csx");
                 }
@@ -470,18 +468,6 @@ namespace SpaghettiCh2.ViewModels
             TextBoxEnabled = true;
             DoItEnabled = false;
 
-            BrowseGameDialog = new OpenFileDialog();
-            BrowseGameDialog.Title = BrowseDialogTitle;
-            BrowseGameDialog.AllowMultiple = false;
-            BrowseGameDialog.Filters.Add
-            (
-                new FileDialogFilter()
-                {
-                    Name = StringsModel.DialogFilterName,
-                    Extensions = new List<string>() { "exe", "app", "win", "ios", "unx" }
-                }
-            );
-
             InstallCommand = ReactiveCommand.Create(
                 () =>
                 {
@@ -505,12 +491,13 @@ namespace SpaghettiCh2.ViewModels
                     {
                         if (MyWindow is null) return;
                         // browse...
-                        var lines = await BrowseGameDialog.ShowAsync(MyWindow);
+                        var storage = this.MyWindow.StorageProvider;
+                        var lines = await storage.OpenFilePickerAsync(new FilePickerOpenOptions { Title = BrowseDialogTitle, AllowMultiple = false, SuggestedFileName = "DELTARUNE.exe", FileTypeFilter = new[] {ExecutableFileType} });
                         // do nothing if did not get the filename...
-                        if (lines is null || lines.Length < 1 || lines[0] is null) return;
+                        if (lines is null || lines.Count < 1 || lines[0] is null) return;
                         // update if OK.
                         var myline = lines[0];
-                        TextBoxContent = myline;
+                        TextBoxContent = myline.Path.AbsolutePath;
                     }
                     catch
                     {
@@ -601,40 +588,12 @@ namespace SpaghettiCh2.ViewModels
         string ScriptErrorType_ = "";
         string IScriptInterface.ScriptErrorType => ScriptErrorType_;
 
+        public bool IsAppClosed => throw new NotImplementedException();
+
         void IScriptInterface.EnsureDataLoaded()
         {
             if (Data_ == null)
                 throw new ScriptException("Please load data.win first!");
-        }
-
-        Task<bool> IScriptInterface.Make_New_File()
-        {
-            return Task.FromResult(false);
-        }
-
-        void IScriptInterface.ReplaceTempWithMain(bool ImAnExpertBTW)
-        {
-            
-        }
-
-        void IScriptInterface.ReplaceMainWithTemp(bool ImAnExpertBTW)
-        {
-            
-        }
-
-        void IScriptInterface.ReplaceTempWithCorrections(bool ImAnExpertBTW)
-        {
-            
-        }
-
-        void IScriptInterface.ReplaceCorrectionsWithTemp(bool ImAnExpertBTW)
-        {
-            
-        }
-
-        void IScriptInterface.UpdateCorrections(bool ImAnExpertBTW)
-        {
-            
         }
 
         void IScriptInterface.ScriptMessage(string message)
@@ -664,11 +623,6 @@ namespace SpaghettiCh2.ViewModels
             OpenBrowser(url);
         }
 
-        bool IScriptInterface.SendAUMIMessage(IpcMessage_t ipMessage, ref IpcReply_t outReply)
-        {
-            throw new NotImplementedException();
-        }
-
         bool IScriptInterface.RunUMTScript(string path)
         {
             throw new NotImplementedException();
@@ -680,21 +634,6 @@ namespace SpaghettiCh2.ViewModels
         }
 
         void IScriptInterface.InitializeScriptDialog()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IScriptInterface.ReapplyProfileCode()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IScriptInterface.NukeProfileGML(string codeName)
-        {
-            throw new NotImplementedException();
-        }
-
-        string IScriptInterface.GetDecompiledText(string codeName)
         {
             throw new NotImplementedException();
         }
@@ -742,16 +681,6 @@ namespace SpaghettiCh2.ViewModels
             throw new NotImplementedException();
         }
 
-        Task IScriptInterface.ClickableTextOutput(string title, string query, int resultsCount, IOrderedEnumerable<KeyValuePair<string, List<string>>> resultsDict, bool editorDecompile, IOrderedEnumerable<string> failedList)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task IScriptInterface.ClickableTextOutput(string title, string query, int resultsCount, IDictionary<string, List<string>> resultsDict, bool editorDecompile, IEnumerable<string> failedList)
-        {
-            throw new NotImplementedException();
-        }
-
         void IScriptInterface.SetFinishedMessage(bool isFinishedMessageEnabled)
         {
             throw new NotImplementedException();
@@ -782,21 +711,6 @@ namespace SpaghettiCh2.ViewModels
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.IncProgress()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IScriptInterface.AddProgressP(int amount)
-        {
-            throw new NotImplementedException();
-        }
-
-        void IScriptInterface.IncProgressP()
-        {
-            throw new NotImplementedException();
-        }
-
         int IScriptInterface.GetProgress()
         {
             throw new NotImplementedException();
@@ -822,74 +736,94 @@ namespace SpaghettiCh2.ViewModels
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.SyncBinding(bool enable)
+      string IScriptInterface.PromptLoadFile(string defaultExt, string filter)
         {
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.StartUpdater()
-        {
-            // ???
-        }
-
-        Task IScriptInterface.StopUpdater()
-        {
-            return Task.CompletedTask;
-        }
-
-        void IScriptInterface.ChangeSelection(object newsel)
-        {
-            Selected_ = newsel;
-        }
-
-        string IScriptInterface.PromptChooseDirectory(string prompt)
+        public bool MakeNewDataFile()
         {
             throw new NotImplementedException();
         }
 
-        string IScriptInterface.PromptLoadFile(string defaultExt, string filter)
+        public void ScriptWarning(string message)
         {
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.ImportGMLString(string codeName, string gmlCode, bool doParse, bool CheckDecompiler)
+        public string GetDecompiledText(string codeName, GlobalDecompileContext context = null, IDecompileSettings settings = null)
         {
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.ImportASMString(string codeName, string gmlCode, bool doParse, bool destroyASM, bool CheckDecompiler)
+        public string GetDecompiledText(UndertaleCode code, GlobalDecompileContext context = null, IDecompileSettings settings = null)
         {
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.ImportGMLFile(string fileName, bool doParse, bool CheckDecompiler, bool wtf)
+        public string GetDisassemblyText(UndertaleCode code)
         {
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.ImportASMFile(string fileName, bool doParse, bool destroyASM, bool CheckDecompiler, bool wtf)
+        public Task ClickableSearchOutput(string title, string query, int resultsCount, IOrderedEnumerable<KeyValuePair<string, List<(int lineNum, string codeLine)>>> resultsDict, bool showInDecompiledView, IOrderedEnumerable<string> failedList = null)
         {
             throw new NotImplementedException();
         }
 
-        void IScriptInterface.ReplaceTextInGML(string codeName, string keyword, string replacement, bool case_sensitive, bool isRegex)
+        public Task ClickableSearchOutput(string title, string query, int resultsCount, IDictionary<string, List<(int lineNum, string codeLine)>> resultsDict, bool showInDecompiledView, IEnumerable<string> failedList = null)
         {
             throw new NotImplementedException();
         }
 
-        bool IScriptInterface.DummyBool()
+        public void SetProgressBar()
         {
-            return true;
+            throw new NotImplementedException();
         }
 
-        void IScriptInterface.DummyVoid()
+        public void IncrementProgress()
         {
-            // lmao
+            throw new NotImplementedException();
         }
 
-        string IScriptInterface.DummyString()
+        public void AddProgressParallel(int amount)
         {
-            return $"<usp_installer>:{InstallerVer}";
+            throw new NotImplementedException();
+        }
+
+        public void IncrementProgressParallel()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DisableAllSyncBindings()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void StartProgressBarUpdater()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task StopProgressBarUpdater()
+        {
+            throw new NotImplementedException();
+        }
+
+        public void ChangeSelection(object newSelection, bool inNewTab = false)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string PromptChooseDirectory()
+        {
+            throw new NotImplementedException();
+        }
+
+        public string PromptSaveFile(string defaultExt, string filter)
+        {
+            throw new NotImplementedException();
         }
     }
 }
