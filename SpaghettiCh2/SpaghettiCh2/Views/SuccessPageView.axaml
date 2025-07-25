@@ -1,0 +1,39 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:USPInstaller.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+             x:Class="USPInstaller.Views.SuccessPageView"
+             x:DataType="vm:SuccessPageViewModel" >
+	<StackPanel Margin="20" Spacing="10" HorizontalAlignment="Center" VerticalAlignment="Center">
+		<TextBlock Text="Installazione completata con successo!"
+				   Margin="15"
+				   FontWeight="Bold"
+				   FontSize="24"
+				   HorizontalAlignment="Center"/>
+
+		<TextBlock
+				   FontSize="16"
+				   HorizontalAlignment="Center">
+			Apri il gioco e goditi la traduzione!
+		</TextBlock>
+		<TextBlock
+				FontSize="16"
+				TextWrapping="Wrap"
+				HorizontalAlignment="Center">
+			Puoi conservare questo installer per aggiornare la traduzione in futuro.
+		</TextBlock>
+
+		<StackPanel Orientation="Horizontal"
+					Spacing="10"
+					HorizontalAlignment="Center"
+					Margin="0,30">
+			<Button Command="{Binding VisitWebsiteCommand}"
+					Content="Visita il nostro sito"/>
+
+			<Button Command="{Binding BackToMenuCommand}"
+					Content="Torna al menu principale"/>
+		</StackPanel>
+	</StackPanel>
+</UserControl>

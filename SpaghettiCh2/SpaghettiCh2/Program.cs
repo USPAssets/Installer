@@ -1,11 +1,8 @@
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.ReactiveUI;
 using System;
-using System.IO;
-using System.Reflection;
 
-namespace SpaghettiCh2
+namespace USPInstaller
 {
     class Program
     {

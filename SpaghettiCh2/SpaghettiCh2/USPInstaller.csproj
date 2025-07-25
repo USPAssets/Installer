@@ -5,15 +5,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <PropertyGroup>
-    <CFBundleName>SpaghettiCh2</CFBundleName>
+    <CFBundleName>USPInstaller</CFBundleName>
     <!-- Also defines .app file name -->
     <CFBundleDisplayName>Italian Patcher by USP</CFBundleDisplayName>
-    <CFBundleIdentifier>com.uspitalian.SpaghettiCh2</CFBundleIdentifier>
+    <CFBundleIdentifier>com.uspitalian.USPInstaller</CFBundleIdentifier>
     <CFBundleVersion>1.0.0</CFBundleVersion>
     <CFBundlePackageType>APPL</CFBundlePackageType>
     <CFBundleSignature>utdt</CFBundleSignature>
-    <CFBundleExecutable>SpaghettiCh2</CFBundleExecutable>
-    <CFBundleIconFile>SpaghettiCh2.icns</CFBundleIconFile>
+    <CFBundleExecutable>USPInstaller</CFBundleExecutable>
+    <CFBundleIconFile>USPInstaller.icns</CFBundleIconFile>
     <CFBundleShortVersionString>1.0.0</CFBundleShortVersionString>
     <!-- Will be copied from output directory -->
     <NSPrincipalClass>NSApplication</NSPrincipalClass>
@@ -22,6 +22,7 @@
     <AssemblyOriginatorKeyFile>SpaghettiKey.pfx</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <ApplicationIcon>Assets\avalonia-logo.ico</ApplicationIcon>
+    <AssemblyVersion>2.0</AssemblyVersion>
   </PropertyGroup>
     <ItemGroup>
         <None Include="..\.editorconfig" Link=".editorconfig" />
@@ -30,7 +31,8 @@
         <PackageReference Include="Avalonia" Version="11.3.2" />
         <PackageReference Include="Avalonia.Desktop" Version="11.3.2" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.2" />
-        <!--This package is ABOVE Avalonia.Diagnostics to prevent a funny conflict, do not modify.-->
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		<!--This package is ABOVE Avalonia.Diagnostics to prevent a funny conflict, do not modify.-->
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.14.0" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.2" />
@@ -38,17 +40,18 @@
         <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
     </ItemGroup>
     <ItemGroup>
-    <ProjectReference Include="..\UndertaleModTool\UndertaleModLib\UndertaleModLib.csproj" />
-    </ItemGroup>
-    <ItemGroup>
 	    <AvaloniaResource Include="Assets\**" />
     </ItemGroup>
     <ItemGroup>
-	    <EmbeddedResource Update="Assets\Resources.resx">
-		    <Generator>PublicResXFileCodeGenerator</Generator>
-		    <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-	    </EmbeddedResource>
+      <ProjectReference Include="..\UndertaleModTool\Underanalyzer\Underanalyzer\Underanalyzer.csproj" />
+      <ProjectReference Include="..\UndertaleModTool\UndertaleModLib\UndertaleModLib.csproj" />
     </ItemGroup>
+	<ItemGroup>
+		<AvaloniaResource Update="Assets\Resources.resx">
+			<Generator>PublicResXFileCodeGenerator</Generator>
+			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
+		</AvaloniaResource>
+	</ItemGroup>
 
     <ItemGroup>
 	    <Compile Update="Assets\Resources.Designer.cs">
@@ -56,24 +59,22 @@
 	      <AutoGen>True</AutoGen>
 	      <DependentUpon>Resources.resx</DependentUpon>
 	    </Compile>
+	    <Compile Update="Views\StartPageView.axaml.cs">
+	      <DependentUpon>StartPageView.axaml</DependentUpon>
+	    </Compile>
+	    <Compile Update="Views\SuccessPageView.axaml.cs">
+	      <DependentUpon>SuccessPageView.axaml</DependentUpon>
+	    </Compile>
+	    <Compile Update="Views\InstallationView.axaml.cs">
+	      <DependentUpon>InstallationView.axaml</DependentUpon>
+	    </Compile>
+	    <Compile Update="Views\MainWindow.axaml.cs">
+	      <DependentUpon>MainWindow.axaml</DependentUpon>
+	    </Compile>
     </ItemGroup>
+	
   <ItemGroup>
-    <None Update="SpaghettiCh2.icns">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="USPAssets\Deltarune\Assets\NOTE.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="USPAssets\Deltarune\DTScript.csx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="USPAssets\Undertale\Assets\NOTE.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="USPAssets\Undertale\UTScript.csx">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="USPAssets\Version.txt">
+    <None Update="USPInstaller.icns">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>

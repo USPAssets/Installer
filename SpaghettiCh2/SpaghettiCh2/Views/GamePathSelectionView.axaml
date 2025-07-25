@@ -1,0 +1,32 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:USPInstaller.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+             x:Class="USPInstaller.Views.GamePathSelectionView"
+             x:DataType="vm:GamePathSelectionViewModel">
+    <Design.DataContext>
+        <vm:GamePathSelectionViewModel />
+    </Design.DataContext>
+
+    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Spacing="20" Margin="50">
+		<TextBlock>
+            Seleziona il percorso di installazione di <TextBlock Text="{Binding GameName}"/>.
+        </TextBlock>
+        <TextBlock IsVisible="{Binding IsDeltarune}">
+            (L'installer è compatibile sia con il gioco intero che con la demo.)
+        </TextBlock>
+        <TextBox Text="{Binding ExePath}" Watermark="{Binding PathWatermark}">
+            <TextBox.InnerRightContent>
+                <Button Command="{Binding ChooseFileCommand}" Content="Sfoglia"/>
+            </TextBox.InnerRightContent>
+        </TextBox>
+        <Button FontSize="30" FontFamily="{StaticResource DeterminationFont}" HorizontalAlignment="Center" Margin="50" Command="{Binding ContinueCommand}">
+            Avvia installazione!
+        </Button>
+		<Button HorizontalAlignment="Center" Command="{Binding GoBackCommand}">
+			Torna al menu principale
+		</Button>
+    </StackPanel>
+</UserControl>
