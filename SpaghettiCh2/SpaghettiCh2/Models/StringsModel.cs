@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// Contains all models of this Avalonia application.
 /// </summary>
-namespace SpaghettiCh2.Models
+namespace USPInstaller.Models
 {
     /// <summary>
     /// Varie stringhe

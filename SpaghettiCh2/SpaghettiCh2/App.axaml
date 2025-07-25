@@ -1,15 +1,16 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="using:SpaghettiCh2"
-             x:Class="SpaghettiCh2.App">
-    <Application.DataTemplates>
-        <local:ViewLocator/>
-    </Application.DataTemplates>
+             xmlns:local="using:USPInstaller"
+             x:Class="USPInstaller.App">
 
+	<Application.DataTemplates>
+		<local:ViewLocator/>
+	</Application.DataTemplates>
+	
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
 	<Application.Resources>
-		<FontFamily x:Key="DeterminationFont">avares://SpaghettiCh2/Assets/determination.ttf#Determination Sans</FontFamily>
+		<FontFamily x:Key="DeterminationFont">avares://USPInstaller/Assets/determination.ttf#Determination Sans</FontFamily>
 	</Application.Resources>
 </Application>

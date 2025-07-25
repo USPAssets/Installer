@@ -1,83 +1,43 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:vm="using:SpaghettiCh2.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="960" d:DesignHeight="540"
-        x:Class="SpaghettiCh2.Views.MainWindow"
-        Icon="/Assets/avalonia-logo.ico"
-		WindowStartupLocation="CenterScreen"
-        TransparencyLevelHint="AcrylicBlur"
-        ExtendClientAreaToDecorationsHint="True"
-        MinWidth="960"
-        MinHeight="540"
-        Background="Transparent">
+		xmlns:vm="using:USPInstaller.ViewModels"
+		xmlns:views="clr-namespace:USPInstaller.Views"
+		xmlns:assets="clr-namespace:USPInstaller.Assets"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+		Width="800" Height="450"
+        x:Class="USPInstaller.Views.MainWindow"
+		TransparencyLevelHint="AcrylicBlur"
+		Background="Transparent"
+		Icon="/Assets/avalonia-logo.ico"
+        Title="USPInstaller">
 
-    <Design.DataContext>
-        <vm:MainWindowViewModel/>
-    </Design.DataContext>
+	<Design.DataContext>
+		<vm:MainWindowViewModel/>
+	</Design.DataContext>
 
-	<!-- cursed -->
-	<Window.Title>
-		<Binding Path="WindowTitle"/>
-	</Window.Title>
-
-    <Panel>
-        <!-- funky look -->
-        <ExperimentalAcrylicBorder IsHitTestVisible="False">
-            <ExperimentalAcrylicBorder.Material>
-                <ExperimentalAcrylicMaterial
+	<Panel>
+		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+			<ExperimentalAcrylicBorder.Material>
+				<ExperimentalAcrylicMaterial
                     BackgroundSource="Digger"
                     TintColor="Black"
                     TintOpacity="1"
                     MaterialOpacity="0.55" />
-            </ExperimentalAcrylicBorder.Material>
-        </ExperimentalAcrylicBorder>
-    
-        <!-- controls go here -->
-        <Panel>
-            <Grid ColumnDefinitions="0.5*,1*" RowDefinitions="1*">
-                <Image Source="/Assets/deltarune.png" Grid.Row="0" Grid.Column="0"
-                         Stretch="UniformToFill" StretchDirection="Both" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                <!-- yes it's all grids since I do not know anything better -->
-                <Grid ColumnDefinitions="*" RowDefinitions="Auto,*" Grid.Column="1" Grid.Row="0">
-                    <!--<TextBlock Margin="0,30" TextAlignment="Center" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Greeting}" FontWeight="SemiBold" FontSize="40" FontStyle="Oblique"/>-->
-					<Image Source="/Assets/USP_Logo_Compact.png" Grid.Row="0" Grid.Column="0" Margin="30" Width="250" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <!-- main menu panel -->
-                    <Panel Grid.Row="1" Grid.Column="0" IsVisible="{Binding IsMainVisible}">
-                        <TextBlock TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding BelowGreeting}" FontFamily="{StaticResource DeterminationFont}" FontSize="40"/>
-                
-                        <Grid IsVisible="{Binding IsMainVisible}" ColumnDefinitions="*,*" RowDefinitions="*">
-                            <StackPanel Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                                <Button IsEnabled="{Binding !AssetError}" HorizontalAlignment="Center" Command="{Binding InstallCommand}" FontFamily="{StaticResource DeterminationFont}" FontSize="30" Content="{Binding InstallButtonText}"/>
-                                <TextBlock TextWrapping="Wrap" IsEnabled="{Binding AssetError}" HorizontalAlignment="Center" IsVisible="{Binding AssetError}" FontFamily="{StaticResource DeterminationFont}" FontSize="20" Text="{Binding AssetErrorMessage}"/>
-                            </StackPanel>
-                            
-                            <Button Command="{Binding VisitCommand}" FontFamily="{StaticResource DeterminationFont}" FontSize="30" Content="{Binding VisitButtonText}" Grid.Column="1" Grid.Row="0" HorizontalAlignment="Center"/>
-                        </Grid>
-                    </Panel>
-                
-                    <!-- installation panel -->
-                    <Panel Grid.Row="1" Grid.Column="0" IsVisible="{Binding !IsMainVisible}">
-                        
-                        <StackPanel Orientation="Vertical" Spacing="15" Margin="30,0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                            <TextBlock FontSize="25" FontFamily="{StaticResource DeterminationFont}" Text="{Binding AboveTextBox}"/>
-                            
-                            <TextBox IsEnabled="{Binding TextBoxEnabled}" FontFamily="{StaticResource DeterminationFont}" FontSize ="30" Watermark="{Binding TextBoxWatermark}" Text="{Binding TextBoxContent, Mode=TwoWay}" HorizontalAlignment="Stretch"/>
-                            <StackPanel Spacing="15" Orientation="Horizontal">
-                                <Button IsEnabled="{Binding BrowseEnabled}" Command="{Binding BrowseCommand}" FontFamily="{StaticResource DeterminationFont}" FontSize="25" Content="{Binding BrowseText}"/>
-                                <Button IsEnabled="{Binding DoItEnabled}" Command="{Binding DoItCommand}" FontFamily="{StaticResource DeterminationFont}" FontSize="25" Content="{Binding ApplyPatch}"/>
-                            </StackPanel>
-                            <TextBlock TextWrapping="Wrap" FontFamily="{StaticResource DeterminationFont}" FontSize="25" Text="{Binding StatusText}" Foreground="{Binding StatusBrush}"/>
-                        </StackPanel>
-                    </Panel>
-                </Grid>
-                
-                <!-- version info has to be in bottom right corner -->
-                <Panel HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10" Grid.Row="0" Grid.Column="1">
-                    <TextBlock FontSize="20" FontFamily="{StaticResource DeterminationFont}" Text="{Binding VersionString}"/>
-                </Panel>
-            </Grid>
-        </Panel>
-    </Panel>
+			</ExperimentalAcrylicBorder.Material>
+		</ExperimentalAcrylicBorder>
+		
+		<Grid ColumnDefinitions="0.5*,1*" RowDefinitions="1*">
+			<Image Source="/Assets/deltarune.png" Grid.Row="0" Grid.Column="0"
+                        Stretch="UniformToFill" StretchDirection="Both" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+			<TransitioningContentControl Content="{Binding Current}" Grid.Row="0" Grid.Column="1"/>
+		</Grid>
+		<!-- version info has to be in bottom right corner -->
+		<Panel HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10" Grid.Row="0" Grid.Column="1">
+			<TextBlock>
+				USPInstaller ver. <TextBlock Text="{Binding InstallerVersion}"/>
+			</TextBlock>
+		</Panel>
+	</Panel>
 </Window>

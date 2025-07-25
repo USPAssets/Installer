@@ -1,0 +1,21 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vm="using:USPInstaller.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="150"
+        x:Class="USPInstaller.Views.MessageBoxWindow"
+        Title="{Binding Title}"
+        Width="300" Height="150"
+        WindowStartupLocation="CenterOwner"
+        CanResize="False">
+
+    <StackPanel Margin="20" Spacing="20">
+        <TextBlock Text="{Binding Message}" TextWrapping="Wrap"/>
+        <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Spacing="10">
+            <Button Content="No" Command="{Binding NoCommand}" IsVisible="{Binding ShowNoButton}"/>
+            <Button Content="Sì" Command="{Binding YesCommand}" IsVisible="{Binding ShowYesButton}"/>
+            <Button Content="OK" Command="{Binding OkCommand}" IsVisible="{Binding ShowOkButton}"/>
+        </StackPanel>
+    </StackPanel>
+</Window>

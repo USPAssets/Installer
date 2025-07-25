@@ -1,0 +1,33 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:USPInstaller.ViewModels"
+             xmlns:assets="clr-namespace:USPInstaller.Assets"
+             mc:Ignorable="d" d:DesignWidth="600" d:DesignHeight="450"
+             x:Class="USPInstaller.Views.StartPageView"
+             x:DataType="vm:StartPageViewModel">
+	<Design.DataContext>
+		<vm:StartPageViewModel />
+	</Design.DataContext>
+	
+	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Stretch" Spacing="10">
+		<Image Source="/Assets/USP_Logo_Compact.png" MaxWidth="200" Margin="0,30,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+		<TextBlock Margin="0,0,0,20" FontSize="25" HorizontalAlignment="Center" FontFamily="{StaticResource DeterminationFont}" Text="Installer"/>
+
+		<TextBlock
+                   FontSize="14"
+                   HorizontalAlignment="Center">
+			Benvenuto all'installer di Undertale Spaghetti Project!
+			<LineBreak></LineBreak>
+			Scegli il gioco per cui installare la nostra traduzione:
+		</TextBlock>
+		<Button HorizontalAlignment="Center" Command="{Binding OnUndertaleClick}">
+			<Image Source="/Assets/Undertale-Logo.png" Height="50" MaxWidth="200"/>
+		</Button>
+		<Button FontFamily="{StaticResource DeterminationFont}" HorizontalAlignment="Center" Command="{Binding OnDeltaruneClick}">
+			<Image Source="/Assets/Deltarune-Logo.png" Height="50" MaxWidth="200"/>
+		</Button>
+		<Button VerticalAlignment="Bottom" Margin="0,30" HorizontalAlignment="Center" Command="{Binding OnWebsiteClick}">Visita il nostro sito web</Button>
+	</StackPanel>
+</UserControl>
