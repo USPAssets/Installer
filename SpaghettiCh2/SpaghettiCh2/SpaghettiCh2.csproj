@@ -52,9 +52,9 @@
 
     <ItemGroup>
 	    <Compile Update="Assets\Resources.Designer.cs">
-		    <DesignTime>True</DesignTime>
-		    <AutoGen>True</AutoGen>
-		    <DependentUpon>Resources.resx</DependentUpon>
+	      <DesignTime>True</DesignTime>
+	      <AutoGen>True</AutoGen>
+	      <DependentUpon>Resources.resx</DependentUpon>
 	    </Compile>
     </ItemGroup>
   <ItemGroup>

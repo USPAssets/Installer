@@ -9,4 +9,7 @@
     <Application.Styles>
         <FluentTheme />
     </Application.Styles>
+	<Application.Resources>
+		<FontFamily x:Key="DeterminationFont">avares://SpaghettiCh2/Assets/determination.ttf#Determination Sans</FontFamily>
+	</Application.Resources>
 </Application>
