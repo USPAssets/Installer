@@ -53,7 +53,7 @@ namespace SpaghettiCh2.ViewModels
             if (!dir.Exists)
             {
                 throw new DirectoryNotFoundException(
-                    "Source directory does not exist or could not be found: "
+                    "La directory non esiste: "
                     + sourceDirName);
             }
 
@@ -331,7 +331,7 @@ namespace SpaghettiCh2.ViewModels
 
                 if (string.IsNullOrWhiteSpace(reply))
                 {
-                    throw new Exception("Online version = null...?");
+                    throw new Exception("Versione online e' null?");
                 }
 
                 var myver = new Version(AssetVersion);
@@ -344,7 +344,7 @@ namespace SpaghettiCh2.ViewModels
                     var zipreq = await MyClient.GetStreamAsync("https://codeload.github.com/USPAssets/Online/zip/refs/heads/main");
                     if (zipreq is null)
                     {
-                        throw new Exception("Online zip error :(");
+                        throw new Exception("Errore con lo .zip Online :(");
                     }
 
                     var tempdir = Path.Combine(Path.GetTempPath(), "_USPUPDATE" + new Random().Next().ToString());
@@ -451,7 +451,7 @@ namespace SpaghettiCh2.ViewModels
         {
             HideUI();
             StatusBrush = Brushes.White;
-            SetStatus = "Applying...";
+            SetStatus = "Installando patch...";
             await OnPatchStart(TextBoxContent);
             RestoreUI();
         }
@@ -593,7 +593,7 @@ namespace SpaghettiCh2.ViewModels
         void IScriptInterface.EnsureDataLoaded()
         {
             if (Data_ == null)
-                throw new ScriptException("Please load data.win first!");
+                throw new ScriptException("Carica prima data.win!");
         }
 
         void IScriptInterface.ScriptMessage(string message)
@@ -751,12 +751,12 @@ namespace SpaghettiCh2.ViewModels
             throw new NotImplementedException();
         }
 
-        public string GetDecompiledText(string codeName, GlobalDecompileContext context = null, IDecompileSettings settings = null)
+        public string GetDecompiledText(string codeName, GlobalDecompileContext? context = null, IDecompileSettings? settings = null)
         {
             throw new NotImplementedException();
         }
 
-        public string GetDecompiledText(UndertaleCode code, GlobalDecompileContext context = null, IDecompileSettings settings = null)
+        public string GetDecompiledText(UndertaleCode code, GlobalDecompileContext? context = null, IDecompileSettings? settings = null)
         {
             throw new NotImplementedException();
         }
@@ -766,12 +766,12 @@ namespace SpaghettiCh2.ViewModels
             throw new NotImplementedException();
         }
 
-        public Task ClickableSearchOutput(string title, string query, int resultsCount, IOrderedEnumerable<KeyValuePair<string, List<(int lineNum, string codeLine)>>> resultsDict, bool showInDecompiledView, IOrderedEnumerable<string> failedList = null)
+        public Task ClickableSearchOutput(string title, string query, int resultsCount, IOrderedEnumerable<KeyValuePair<string, List<(int lineNum, string codeLine)>>> resultsDict, bool showInDecompiledView, IOrderedEnumerable<string>? failedList = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task ClickableSearchOutput(string title, string query, int resultsCount, IDictionary<string, List<(int lineNum, string codeLine)>> resultsDict, bool showInDecompiledView, IEnumerable<string> failedList = null)
+        public Task ClickableSearchOutput(string title, string query, int resultsCount, IDictionary<string, List<(int lineNum, string codeLine)>> resultsDict, bool showInDecompiledView, IEnumerable<string>? failedList = null)
         {
             throw new NotImplementedException();
         }
