@@ -14,6 +14,13 @@ namespace USPInstaller.ViewModels
 {
     partial class InstallationViewModel : PageViewModelBase
     {
+        // HACK: Avalonia wants a public empty constructor so that we can use the designer
+        // to see how the viewmodel looks at design-time. Not to be used in actual code.
+        public InstallationViewModel() 
+        {
+            this.gameType = GameType.Undertale;
+        }
+
         public InstallationViewModel(AssetFolder.GameType gameType)
         {
             this.gameType = gameType;

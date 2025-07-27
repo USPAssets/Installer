@@ -29,8 +29,6 @@
 					Spacing="10"
 					HorizontalAlignment="Center"
 					Margin="0,30">
-			<Button Command="{Binding VisitWebsiteCommand}"
-					Content="Visita il nostro sito"/>
 
 			<Button Command="{Binding BackToMenuCommand}"
 					Content="Torna al menu principale"/>

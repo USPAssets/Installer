@@ -10,24 +10,50 @@
 	<Design.DataContext>
 		<vm:StartPageViewModel />
 	</Design.DataContext>
-	
-	<StackPanel HorizontalAlignment="Center" VerticalAlignment="Stretch" Spacing="10">
-		<Image Source="/Assets/USP_Logo_Compact.png" MaxWidth="200" Margin="0,30,0,0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-		<TextBlock Margin="0,0,0,20" FontSize="25" HorizontalAlignment="Center" FontFamily="{StaticResource DeterminationFont}" Text="Installer"/>
 
-		<TextBlock
-                   FontSize="14"
-                   HorizontalAlignment="Center">
-			Benvenuto all'installer di Undertale Spaghetti Project!
-			<LineBreak></LineBreak>
-			Scegli il gioco per cui installare la nostra traduzione:
-		</TextBlock>
-		<Button HorizontalAlignment="Center" Command="{Binding OnUndertaleClick}">
-			<Image Source="/Assets/Undertale-Logo.png" Height="50" MaxWidth="200"/>
-		</Button>
-		<Button FontFamily="{StaticResource DeterminationFont}" HorizontalAlignment="Center" Command="{Binding OnDeltaruneClick}">
-			<Image Source="/Assets/Deltarune-Logo.png" Height="50" MaxWidth="200"/>
-		</Button>
-		<Button VerticalAlignment="Bottom" Margin="0,30" HorizontalAlignment="Center" Command="{Binding OnWebsiteClick}">Visita il nostro sito web</Button>
-	</StackPanel>
+	<Panel>
+		<ExperimentalAcrylicBorder IsHitTestVisible="False">
+			<ExperimentalAcrylicBorder.Material>
+				<ExperimentalAcrylicMaterial
+                    BackgroundSource="Digger"
+                    TintColor="Black"
+                    TintOpacity="1"
+                    MaterialOpacity="0.55" />
+			</ExperimentalAcrylicBorder.Material>
+		</ExperimentalAcrylicBorder>
+
+		<StackPanel HorizontalAlignment="Center" VerticalAlignment="Stretch" Spacing="10">
+			<Image Source="/Assets/USP_Logo_Compact.png" MaxWidth="200" Margin="0,30,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
+			<TextBlock Margin="0,0,0,20" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{StaticResource DeterminationFont}" Text="Installer"/>
+
+			<TextBlock
+					   FontSize="14"
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center"
+					   Margin="0,0,0,20">
+				Benvenutә nell'installer di Undertale Spaghetti Project!
+				<LineBreak />
+				Scegli il gioco per cui installare la nostra traduzione:
+			</TextBlock>
+			<Button HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding OnUndertaleClick}">
+				<Image Source="/Assets/Undertale-Logo.png" Height="50" MaxWidth="200"/>
+			</Button>
+			<Button HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding OnDeltaruneClick}">
+				<Image Source="/Assets/Deltarune-Logo.png" Height="50" MaxWidth="200"/>
+			</Button>
+		</StackPanel>
+		<Panel HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10">
+			<Grid ColumnDefinitions="1*, 1*, 1*" RowDefinitions="1*">
+				<Button Grid.Row="0" Grid.Column="0" ToolTip.Tip="Unisciti alla nostra community su Discord!">
+					<Image Source="/Assets/discord_white.png" Height="30" Width="30"/>
+				</Button>
+				<Button Grid.Row="0" Grid.Column="1" ToolTip.Tip="Visitaci su BlueSky!">
+					<Image Source="/Assets/bluesky_white.png" Height="30" Width="30"/>
+				</Button>
+				<Button Grid.Row="0" Grid.Column="2" ToolTip.Tip="Visita il nostro sito!">
+					<Image Source="/Assets/globe_white.png" Height="30" Width="30"/>
+				</Button>
+			</Grid>
+		</Panel>
+	</Panel>
 </UserControl>
