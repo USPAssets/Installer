@@ -7,7 +7,7 @@
              x:Class="USPInstaller.Views.InstallationView"
              x:DataType="vm:InstallationViewModel">
     <Design.DataContext>
-        <vm:InstallationProgressViewModel />
+        <vm:InstallationViewModel />
     </Design.DataContext>
 
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Spacing="20" Margin="50">

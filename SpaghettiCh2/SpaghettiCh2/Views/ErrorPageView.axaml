@@ -35,6 +35,10 @@
 			<Button Command="{Binding ContactUsCommand}"
 				  HorizontalAlignment="Center"
 				  Content="Contattaci"/>
+
+			<Button Command="{Binding CopyLogCommand}"
+			  HorizontalAlignment="Center"
+			  Content="Copia log"/>
 		</StackPanel>
 	</StackPanel>
 </UserControl>
