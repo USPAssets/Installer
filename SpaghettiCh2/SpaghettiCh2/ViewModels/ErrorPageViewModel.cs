@@ -31,7 +31,7 @@ namespace USPInstaller.ViewModels
         [RelayCommand]
         private static void ContactUs()
         {
-            MainWindowViewModel.OpenBrowser("https://undertaleita.net/deltarune.html");
+            MainWindowViewModel.OpenBrowser("mailto:undertalespaghettiproject@gmail.com");
         }
 
         [RelayCommand]

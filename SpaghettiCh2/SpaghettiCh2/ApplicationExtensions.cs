@@ -9,6 +9,7 @@ namespace USPInstaller
     {
         /// <summary>
         /// Returns the TopLevel from the main window or view. 
+        /// From: https://github.com/AvaloniaUI/Avalonia/discussions/11170
         /// </summary>
         /// <param name="app">The application to get the TopLevel for.</param>
         /// <returns>A TopLevel object.</returns>

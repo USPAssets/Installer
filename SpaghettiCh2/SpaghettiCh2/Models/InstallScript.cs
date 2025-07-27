@@ -7,7 +7,6 @@ using System.Reflection;
 using System.Threading.Tasks;
 using UndertaleModLib;
 using UndertaleModLib.Scripting;
-using UndertaleModLib.Util;
 
 namespace USPInstaller.Models
 {

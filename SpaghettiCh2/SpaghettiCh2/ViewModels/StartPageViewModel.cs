@@ -1,11 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
-using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using ReactiveUI;
 using System.Reactive;
-using System.Text;
-using System.Threading.Tasks;
 using USPInstaller.Models;
 
 namespace USPInstaller.ViewModels
