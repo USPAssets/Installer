@@ -11,15 +11,6 @@ public partial class MainWindow : Window
         InitializeComponent();
     }
 
-    protected override void OnLoaded(RoutedEventArgs e)
-    {
-        base.OnLoaded(e);
-        MinWidth = 800;
-        MinHeight = 450;
-        MaxWidth = 800;
-        MaxHeight = 450;
-    }
-
     private void InitializeComponent()
     {
         AvaloniaXamlLoader.Load(this);
