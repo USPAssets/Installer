@@ -44,13 +44,13 @@
 		</StackPanel>
 		<Panel HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10">
 			<Grid ColumnDefinitions="1*, 1*, 1*" RowDefinitions="1*">
-				<Button Grid.Row="0" Grid.Column="0" ToolTip.Tip="Unisciti alla nostra community su Discord!" RenderOptions.BitmapInterpolationMode="HighQuality">
-					<Image Source="/Assets/discord_white.png" Height="30" Width="30"/>
+				<Button Grid.Row="0" Grid.Column="0" ToolTip.Tip="Unisciti alla nostra community su Discord!" Command="{Binding OnDiscordClick}">
+					<Image Source="/Assets/discord_white.png" Height="30" Width="30" RenderOptions.BitmapInterpolationMode="HighQuality"/>
 				</Button>
-				<Button Grid.Row="0" Grid.Column="1" ToolTip.Tip="Visitaci su BlueSky!">
+				<Button Grid.Row="0" Grid.Column="1" ToolTip.Tip="Visitaci su BlueSky!" Command="{Binding OnBlueSkyClick}">
 					<Image Source="/Assets/bluesky_white.png" Height="30" Width="30" RenderOptions.BitmapInterpolationMode="HighQuality"/>
 				</Button>
-				<Button Grid.Row="0" Grid.Column="2" ToolTip.Tip="Visita il nostro sito!">
+				<Button Grid.Row="0" Grid.Column="2" ToolTip.Tip="Visita il nostro sito!" Command="{Binding OnWebsiteClick}">
 					<Image Source="/Assets/globe_white.png" Height="30" Width="30" RenderOptions.BitmapInterpolationMode="HighQuality"/>
 				</Button>
 			</Grid>
