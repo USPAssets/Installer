@@ -17,6 +17,7 @@ E con qualsiasi versione di Windows, macOS o distribuzione Linux in grado di far
 
 ## Prerequisiti
 
+- Se avete installato la patch in precedenza, reinstallate il gioco seguendo le istruzioni nella [sezione qui sotto](#rimuovere-la-patch).
 - Come prima cosa, trovate la cartella dove avete installato *UNDERTALE* o *DELTARUNE*; generalmente, per esempio su Windows, se avete installato il gioco tramite Steam, questa sarà:
 ```
 // Per Undertale
@@ -28,7 +29,8 @@ C:\Programmi(x86)\Steam\steamapps\common\DELTARUNE
 ```
 - Installate il **runtime di .NET 8.0**:
 	- **Windows**: Andate sulla [pagina ufficiale](https://dotnet.microsoft.com/download/dotnet/8.0/runtime) e selezionate *Download x64* o *Download x86* sotto *Run desktop apps*, a seconda se avete un sistema a 64 o 32 bit rispettivamente, e installate il runtime seguendo le istruzioni.
-	- **Linux**: Seguite le istruzioni per la vostra distribuzione qua: https://docs.microsoft.com/it-it/dotnet/core/install/linux, in particolare dovrete installare il pacchetto **dotnet-runtime-8.0**.
+	- **Linux (tranne Steam Deck)**: Seguite le istruzioni per la vostra distribuzione qua: https://docs.microsoft.com/it-it/dotnet/core/install/linux, in particolare dovrete installare il pacchetto **dotnet-runtime-8.0**.
+	- **Steam Deck**: Dovrete installare .NET tramite lo script di Microsoft. Segui la guida [qua](https://learn.microsoft.com/en-us/dotnet/core/install/linux-scripted-manual#scripted-install), e installa la versione 8.0.0. (Speriamo di poter mettere a disposizione un modo più facile presto...).
 	- **macOS**: Andate sulla [pagina ufficiale](https://dotnet.microsoft.com/download/dotnet/8.0/runtime) e selezionate *Download x64 (Intel)* o *Download Arm64 (Apple Silicon)* sotto *Run apps*, a seconda se state utilizzando un Mac con processore Intel o con processore Apple Silicon (tipo M1, M2, etc.).
 
 ## Installazione
@@ -36,7 +38,7 @@ C:\Programmi(x86)\Steam\steamapps\common\DELTARUNE
 - Decomprimete il contenuto del file in una cartella
 - Eseguite **USPInstaller.bat** su *Windows*, eseguite **USPInstaller.sh** su *macOS* o *Linux*.
 - Scegliete il gioco per cui volete installare la patch.
-- Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **DELTARUNE.exe** o **UNDERTALE.exe**.
+- Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **DELTARUNE.exe** o **UNDERTALE.exe** (o gli eseguibili di referenza nelle altre piattaforme).
 - Cliccate **Avvia installazione!**, e attendete
 - Appena sara' tutto concluso, il vostro gioco sara' tradotto! Potete ora avviarlo e giocare
 
