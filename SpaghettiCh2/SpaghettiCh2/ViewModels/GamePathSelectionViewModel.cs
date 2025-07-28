@@ -61,12 +61,9 @@ namespace USPInstaller.ViewModels
 
         private async Task<IStorageFile?> DoOpenFilePickerAsync(AssetFolder.GameType type)
         {
-            // For learning purposes, we opted to directly get the reference
-            // for StorageProvider APIs here inside the ViewModel. 
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
-                desktop.MainWindow?.StorageProvider is { } provider)
+            if (Application.Current?.GetTopLevel()?.StorageProvider is IStorageProvider storageProvider)
             {
-                var files = await provider.OpenFilePickerAsync(new FilePickerOpenOptions
+                var files = await storageProvider.OpenFilePickerAsync(new FilePickerOpenOptions
                 {
                     Title = "Seleziona l'eseguibile del gioco",
                     SuggestedFileName = GameName + ".exe",
