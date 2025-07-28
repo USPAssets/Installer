@@ -74,8 +74,9 @@ namespace USPInstaller.ViewModels
                     FileTypeFilter = new[] {
                     new FilePickerFileType("Eseguibile")
                     {
-                        Patterns = new[] { "*.exe", "*.app" },
+                        Patterns = new[] { "*.exe", "*.app", "*.sh" },
                         AppleUniformTypeIdentifiers = new[] { "public.executable" },
+                        MimeTypes = new[] { "application/x-executable", "application/x-sh", "application/x-elf" }
                     }}
                 });
 

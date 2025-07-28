@@ -83,12 +83,21 @@ namespace USPInstaller.ViewModels
                         return dataPath;
                     }
                     // Try linux style path
-                    dataPath = Path.Combine(dirn, "game.unx");
+                    dataPath = Path.Combine(dirn, "assets", "game.unx");
                     if (File.Exists(dataPath))
                     {
                         return dataPath;
                     }
                     return null;
+                }
+                else if (extn == ".sh")
+                {
+                    return Path.Combine(dirn, "assets", "game.unx");
+                }
+                else if (extn == ".apk")
+                {
+                    // For Android, we assume the data file is in the same directory as the executable
+                    return Path.Combine(dirn, "assets", "game.android");
                 }
                 else if (extn == ".app")
                 {
