@@ -30,8 +30,8 @@
 		</ExperimentalAcrylicBorder>
 		
 		<Grid ColumnDefinitions="0.5*,1*" RowDefinitions="1*">
-			<Image Source="/Assets/deltarune.png" Grid.Row="0" Grid.Column="0"
-                        Stretch="UniformToFill" StretchDirection="Both" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+			<Image Source="/Assets/alphys.png" Grid.Row="0" Grid.Column="0"
+                        Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 			<TransitioningContentControl Content="{Binding Current}" Grid.Row="0" Grid.Column="1"/>
 		</Grid>
 		<!-- version info has to be in bottom right corner -->
