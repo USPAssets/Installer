@@ -44,7 +44,7 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\UndertaleModTool\Underanalyzer\Underanalyzer\Underanalyzer.csproj" />
-      <ProjectReference Include="..\UndertaleModTool\UndertaleModLib\UndertaleModLib.csproj" />
+		<ProjectReference Include="..\UndertaleModTool\UndertaleModLib\UndertaleModLib.csproj" />
     </ItemGroup>
 	<ItemGroup>
 		<AvaloniaResource Update="Assets\Resources.resx">
@@ -78,4 +78,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <PropertyGroup>
+	  <SatelliteResourceLanguages>en-US;it-IT</SatelliteResourceLanguages>
+  </PropertyGroup>
 </Project>
