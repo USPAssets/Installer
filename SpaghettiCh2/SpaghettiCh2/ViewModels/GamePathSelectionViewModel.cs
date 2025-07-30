@@ -23,12 +23,12 @@ namespace USPInstaller.ViewModels
 
             ChooseFileCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                ExePath = (await DoOpenFilePickerAsync(type))?.Path.LocalPath;
+                ExePath = (await OpenGamePathSelectionDialog(type))?.Path.LocalPath;
             });
 
             var isValidPath = this.WhenAnyValue(
                 x => x.ExePath,
-                x => !string.IsNullOrWhiteSpace(x) && (Directory.Exists(x)  || File.Exists(x)));
+                x => !string.IsNullOrWhiteSpace(x) && (Directory.Exists(x) || File.Exists(x)));
             ContinueCommand = ReactiveCommand.Create(() => OnPathSelected(ExePath!), isValidPath);
 
             GoBackCommand = ReactiveCommand.Create(OnBackSelected);
@@ -40,24 +40,41 @@ namespace USPInstaller.ViewModels
         {
             AssetFolder.GameType.Undertale => "UNDERTALE",
             AssetFolder.GameType.Deltarune => "DELTARUNE",
-            _ => throw new NotImplementedException()
+            _ => throw new NotImplementedException(),
         };
 
         public bool IsDeltarune => gameType == AssetFolder.GameType.Deltarune;
 
-        [ObservableProperty] 
+        [ObservableProperty]
         private string? _exePath;
 
         public ReactiveCommand<Unit, Unit> ChooseFileCommand { get; }
         public ReactiveCommand<Unit, Unit> ContinueCommand { get; }
         public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
 
-        public string PathWatermark => gameType switch
+        public string PathWatermark
         {
-            AssetFolder.GameType.Undertale => "Percorso di UNDERTALE.exe",
-            AssetFolder.GameType.Deltarune => "Percorso di DELTARUNE.exe",
-            _ => "Percorso del gioco non riconosciuto"
-        };
+            get
+            {
+                if (OperatingSystem.IsMacOS())
+                {
+                    return $"Percorso di {GameName}.app";
+                }
+                else
+                {
+                    return $"Percorso di {GameName}.exe";
+                }
+            }
+        }
+
+        private async Task<IStorageItem?> OpenGamePathSelectionDialog(AssetFolder.GameType type)
+        {
+            if (OperatingSystem.IsMacOS())
+            {
+                return await DoOpenFolderPickerAsync(type);
+            }
+            return await DoOpenFilePickerAsync(type);
+        }
 
         private async Task<IStorageFile?> DoOpenFilePickerAsync(AssetFolder.GameType type)
         {
@@ -78,6 +95,25 @@ namespace USPInstaller.ViewModels
                         AppleUniformTypeIdentifiers = new[] { "public.executable", "public.application" },
                         MimeTypes = new[] { "application/x-executable", "application/x-sh", "application/x-elf" }
                     }}
+                });
+
+                return files.Count >= 1 ? files[0] : null;
+            }
+            return null;
+        }
+
+        private async Task<IStorageFolder?> DoOpenFolderPickerAsync(AssetFolder.GameType type)
+        {
+            // For learning purposes, we opted to directly get the reference
+            // for StorageProvider APIs here inside the ViewModel. 
+            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
+                desktop.MainWindow?.StorageProvider is { } provider)
+            {
+                var files = await provider.OpenFolderPickerAsync(new FolderPickerOpenOptions
+                {
+                    Title = "Seleziona l'applicazione del gioco",
+                    SuggestedFileName = GameName + ".app",
+                    AllowMultiple = false,
                 });
 
                 return files.Count >= 1 ? files[0] : null;

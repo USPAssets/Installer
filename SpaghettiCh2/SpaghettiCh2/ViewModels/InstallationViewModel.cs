@@ -88,6 +88,15 @@ namespace USPInstaller.ViewModels
                     {
                         return dataPath;
                     }
+                    // MacOS .app bundle could be a file or a folder, who knows??
+                    if (dirn.EndsWith(".app"))
+                    {
+                        dataPath = Path.Combine(exePath, "Contents", "Resources", "game.ios");
+                        if (File.Exists(dataPath))
+                        {
+                            return dataPath;
+                        }
+                    }
                     return null;
                 }
                 else if (extn == ".sh")
@@ -118,11 +127,11 @@ namespace USPInstaller.ViewModels
         private async Task InstallDeltarune(string assetPath, string exePath)
         {
             string scriptsPath = Path.Join(assetPath, "Deltarune", "InstallScripts");
-            string gameFolder = Path.GetDirectoryName(exePath) ?? throw new InvalidOperationException("Il percorso dell'eseguibile non è valido.");
-            string dataPath = GetDataFileName(exePath)!;
+            string dataPath = GetDataFileName(exePath)! ?? throw new FileNotFoundException("Non trovo il file di dati del gioco", exePath);
             string dataFilename = Path.GetFileName(dataPath);
+            string dataFolder = Path.GetDirectoryName(dataPath) ?? throw new InvalidOperationException("Il percorso dell'eseguibile non è valido.");
 
-            if (Directory.Exists(Path.Join(gameFolder, "lang")))
+            if (Directory.Exists(Path.Join(dataFolder, "lang")))
             {
                 // Assume this is the Deltarune Steam demo, run the demo installation script
                 OverallProgressMessage = "Installazione in corso...";
@@ -134,7 +143,7 @@ namespace USPInstaller.ViewModels
             await RunScriptOn(Path.Join(scriptsPath, "launcher.csx"), dataPath);
 
             // Iterate thorugh subdirectories in the game folder that start with "chapter" followed by a number and extract that number
-            foreach (string chapterFolder in Directory.EnumerateDirectories(gameFolder)
+            foreach (string chapterFolder in Directory.EnumerateDirectories(dataFolder)
                 .Where(d => Path.GetFileName(d).StartsWith("chapter", StringComparison.OrdinalIgnoreCase)))
             {
                 // Ignore _windows or _mac suffix
