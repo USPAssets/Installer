@@ -17,6 +17,10 @@
         <TextBlock IsVisible="{Binding IsDeltarune}">
             (L'installer è compatibile sia con il gioco intero che con la demo.)
         </TextBlock>
+		<TextBlock IsVisible="{Binding ShowMacWarning}" >
+			<Bold>NOTA</Bold>: Su macOS il pulsante "Sfoglia" potrebbe non funzionare,<LineBreak />
+			nel caso puoi copiare e incollare il percorso del gioco qui sotto.
+		</TextBlock>
         <TextBox Text="{Binding ExePath}" Watermark="{Binding PathWatermark}">
             <TextBox.InnerRightContent>
                 <Button Command="{Binding ChooseFileCommand}" Content="Sfoglia"/>

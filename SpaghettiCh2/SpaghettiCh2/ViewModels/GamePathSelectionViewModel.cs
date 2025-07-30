@@ -1,5 +1,4 @@
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using ReactiveUI;
@@ -36,6 +35,8 @@ namespace USPInstaller.ViewModels
 
         private readonly AssetFolder.GameType gameType;
 
+        public static bool ShowMacWarning => OperatingSystem.IsMacOS();
+
         public string GameName => gameType switch
         {
             AssetFolder.GameType.Undertale => "UNDERTALE",
@@ -56,6 +57,12 @@ namespace USPInstaller.ViewModels
         {
             get
             {
+                // Undertale has a native Linux version
+                if (OperatingSystem.IsLinux() && gameType == AssetFolder.GameType.Undertale)
+                {
+                    return $"Percorso di run.sh nella directory di {GameName}";
+                }
+
                 if (OperatingSystem.IsMacOS())
                 {
                     return $"Percorso di {GameName}.app";
@@ -78,10 +85,7 @@ namespace USPInstaller.ViewModels
 
         private async Task<IStorageFile?> DoOpenFilePickerAsync(AssetFolder.GameType type)
         {
-            // For learning purposes, we opted to directly get the reference
-            // for StorageProvider APIs here inside the ViewModel. 
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
-                desktop.MainWindow?.StorageProvider is { } provider)
+            if (Application.Current?.GetTopLevel()?.StorageProvider is IStorageProvider provider)
             {
                 var files = await provider.OpenFilePickerAsync(new FilePickerOpenOptions
                 {
@@ -92,7 +96,7 @@ namespace USPInstaller.ViewModels
                     new FilePickerFileType("Eseguibile")
                     {
                         Patterns = new[] { "*.exe", "*.app", "*.sh" },
-                        AppleUniformTypeIdentifiers = new[] { "public.executable", "public.application" },
+                        AppleUniformTypeIdentifiers = new[] { "public.executable", "com.apple.application" },
                         MimeTypes = new[] { "application/x-executable", "application/x-sh", "application/x-elf" }
                     }}
                 });
@@ -104,10 +108,7 @@ namespace USPInstaller.ViewModels
 
         private async Task<IStorageFolder?> DoOpenFolderPickerAsync(AssetFolder.GameType type)
         {
-            // For learning purposes, we opted to directly get the reference
-            // for StorageProvider APIs here inside the ViewModel. 
-            if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop &&
-                desktop.MainWindow?.StorageProvider is { } provider)
+            if (Application.Current?.GetTopLevel()?.StorageProvider is IStorageProvider provider)
             {
                 var files = await provider.OpenFolderPickerAsync(new FolderPickerOpenOptions
                 {
@@ -122,11 +123,7 @@ namespace USPInstaller.ViewModels
         }
 
         public event Action<string, AssetFolder.GameType>? PathSelected;
-        protected virtual void OnPathSelected(string path)
-        {
-            PathSelected?.Invoke(path, gameType);
-        }
-
+        protected virtual void OnPathSelected(string path) => PathSelected?.Invoke(path, gameType);
 
         public event Action? BackSelected;
         protected virtual void OnBackSelected() => BackSelected?.Invoke();
