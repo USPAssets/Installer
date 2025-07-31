@@ -26,9 +26,11 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso).
 ## Installazione
 - Scaricate [l'ultima release dell'installer](https://github.com/USPAssets/Installer/releases/latest) (la trovate anche sul [sito](https://undertaleita.net/)).
 - Decomprimete il contenuto del file in una cartella
-- Eseguite **USPInstaller.bat** su *Windows*, eseguite **USPInstaller.sh** su *macOS* o *Linux*.
+- (DA RIVEDERE) Eseguite **USPInstaller.bat** su *Windows*, eseguite **USPInstaller.sh** su *macOS* o *Linux*.
 - Scegliete il gioco per cui volete installare la patch.
-- Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **DELTARUNE.exe** o **UNDERTALE.exe** (o gli eseguibili di referenza nelle altre piattaforme).
+- Inserite il percorso all'eseguibile del gioco:
+	- **(Windows/Linux)**: Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **DELTARUNE.exe** o **UNDERTALE.exe**.
+	- **(macOS)**: Copiate e incollate il percorso di **UNDERTALE.app** o **DELTARUNE.app** nel box.
 - Cliccate **Avvia installazione!**, e attendete
 - Appena sara' tutto concluso, il vostro gioco sara' tradotto! Potete ora avviarlo e giocare
 
@@ -44,7 +46,7 @@ A questo punto Steam provvederà a riscaricare il gioco e la patch sarà rimossa
 ## Risoluzione problemi
 - Se su macOS ricevete un avviso che non vi permette di aprire l'installer, seguite le [istruzioni di Apple](https://support.apple.com/it-it/102445) per aprire l'app, con particolare attenzione alla sezione *Se vuoi aprire un'app non autenticata o proveniente da uno sviluppatore non identificato*.
 - Se quando provate ad eseguire l'exe su Windows vi si apre un pop-up di *Windows SmartScreen*, cliccate su *Ulteriori Informazioni*, e poi su *Esegui comunque*. 
-- Se su macOS o Linux doveste ricevere un avviso di *accesso negato* quando provate ad eseguire lo script, eseguite i seguenti passaggi:
+- (DA RIVEDERE) Se su macOS o Linux doveste ricevere un avviso di *accesso negato* quando provate ad eseguire lo script, eseguite i seguenti passaggi:
 	- Aprite una finestra di terminale, e navigate tramite `cd` nella directory in cui avete decompresso l'installer. Poi eseguite i seguenti comandi:
 
 ```
