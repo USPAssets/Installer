@@ -7,7 +7,7 @@ Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTA
 ## Compatibilita'
 
 L'installer e' compatibile con le seguenti versioni dei giochi:
-- **DELTARUNE (Chaper 1 & 2 DEMO)**
+- **DELTARUNE (Chaper 1 & 2 DEMO)**, verione Itch o Steam.
 - **DELTARUNE**, testato con:
 	- Capitolo 1 v1.38
 	- Capitolo 2 v1.44
@@ -18,19 +18,9 @@ E con qualsiasi versione di Windows, macOS o distribuzione Linux in grado di far
 ## Prerequisiti
 
 - Se avete installato la patch in precedenza, reinstallate il gioco seguendo le istruzioni nella [sezione qui sotto](#rimuovere-la-patch).
-- Come prima cosa, trovate la cartella dove avete installato *UNDERTALE* o *DELTARUNE*; generalmente, per esempio su Windows, se avete installato il gioco tramite Steam, questa sarà:
-```
-// Per Undertale
-C:\Programmi(x86)\Steam\steamapps\common\Undertale 
-// Per DELTARUNE Demo
-C:\Programmi(x86)\Steam\steamapps\common\DELTARUNEdemo
-// Per DELTARUNE
-C:\Programmi(x86)\Steam\steamapps\common\DELTARUNE
-```
-- Installate il **runtime di .NET 8.0**:
+- Trovate la cartella dove avete installato *UNDERTALE* o *DELTARUNE*; se avete il gioco su Steam potete andare in *Libreria*, cliccare col tasto destro sul gioco e selezione *Sfoglia file locali*.
+- *(Solo per Windows e macOS)* - Installate il **runtime di .NET 8.0**:
 	- **Windows**: Andate sulla [pagina ufficiale](https://dotnet.microsoft.com/download/dotnet/8.0/runtime) e selezionate *Download x64* o *Download x86* sotto *Run desktop apps*, a seconda se avete un sistema a 64 o 32 bit rispettivamente, e installate il runtime seguendo le istruzioni.
-	- **Linux (tranne Steam Deck)**: Seguite le istruzioni per la vostra distribuzione qua: https://docs.microsoft.com/it-it/dotnet/core/install/linux, in particolare dovrete installare il pacchetto **dotnet-runtime-8.0**.
-	- **Steam Deck**: Dovrete installare .NET tramite lo script di Microsoft. Segui la guida [qua](https://learn.microsoft.com/en-us/dotnet/core/install/linux-scripted-manual#scripted-install), e installa la versione 8.0.0. (Speriamo di poter mettere a disposizione un modo più facile presto...).
 	- **macOS**: Andate sulla [pagina ufficiale](https://dotnet.microsoft.com/download/dotnet/8.0/runtime) e selezionate *Download x64 (Intel)* o *Download Arm64 (Apple Silicon)* sotto *Run apps*, a seconda se state utilizzando un Mac con processore Intel o con processore Apple Silicon (tipo M1, M2, etc.).
 
 ## Installazione
@@ -64,7 +54,7 @@ $ ./USPInstaller.sh
 ## Note aggiuntive 
 L'installer non potrebbe esistere senza [UndertaleModTool](https://github.com/UnderminersTeam/UndertaleModTool). Un grazie speciale a tutte le persone che hanno contribuito al progetto!
 
-Se doveste avere problemi, [REDACTED]
+Se doveste avere problemi, [HYPERLINK_BLOCKED]
 
 A presto!
 
