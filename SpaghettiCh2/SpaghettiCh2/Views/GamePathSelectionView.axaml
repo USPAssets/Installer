@@ -12,7 +12,7 @@
 
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Spacing="20" Margin="50">
 		<TextBlock>
-            Seleziona il percorso di installazione di <TextBlock Text="{Binding GameName}"/>.
+            Seleziona il percorso dell'eseguibile di <TextBlock Text="{Binding GameName}"/>.
         </TextBlock>
         <TextBlock IsVisible="{Binding IsDeltarune}">
             (L'installer è compatibile sia con il gioco intero che con la demo.)
