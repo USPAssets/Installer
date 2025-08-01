@@ -31,7 +31,7 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso).
 - Inserite il percorso all'eseguibile del gioco:
 	- **(Windows/Linux)**: Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **DELTARUNE.exe** o **UNDERTALE.exe**.
 		- **NOTA PER UNDERTALE E LINUX**: UNDERTALE ha una versione nativa su Linux. Se la state utilizzando, potete selezionare in quel caso *runner* o *run.sh* nella directory del gioco. 
-	- **(macOS)**: Copiate e incollate il percorso di **UNDERTALE.app** o **DELTARUNE.app** nel box. Potete cliccare col tasto destro sull'app per copiarne il percorso.
+	- **(macOS)**: Copiate e incollate il percorso di **UNDERTALE.app** o **DELTARUNE.app** nel box. Potete cliccare col tasto destro sull'app, tenere premuto il pusalnte *Opzione* sulla tastiera e cliccare su *Copia nome_del_file come percorso*.
 - Cliccate **Avvia installazione!**, e attendete
 - Appena sara' tutto concluso, il vostro gioco sara' tradotto! Potete ora avviarlo e giocare
 
