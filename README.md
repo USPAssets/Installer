@@ -18,7 +18,7 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso).
 ## Prerequisiti
 
 - Se avete installato la patch in precedenza, reinstallate il gioco seguendo le istruzioni nella [sezione qui sotto](#rimuovere-la-patch).
-- Trovate la cartella dove avete installato *UNDERTALE* o *DELTARUNE*; se avete il gioco su Steam potete andare in *Libreria*, cliccare col tasto destro sul gioco e selezionare *Sfoglia file locali*.
+- Trovate dove avete installato *UNDERTALE* o *DELTARUNE*; se avete il gioco su Steam potete andare in *Libreria*, cliccare col tasto destro sul gioco e selezionare *Sfoglia file locali*.
 - *(Solo per Windows e macOS)* - Installate il **runtime di .NET 8.0**:
 	- **Windows**: Andate sulla [pagina ufficiale](https://dotnet.microsoft.com/download/dotnet/8.0/runtime) e selezionate *Download x64* o *Download x86* sotto *Run desktop apps*, a seconda se avete un sistema a 64 o 32 bit rispettivamente, e installate il runtime seguendo le istruzioni.
 	- **macOS**: Andate sulla [pagina ufficiale](https://dotnet.microsoft.com/download/dotnet/8.0/runtime) e selezionate *Download x64 (Intel)* o *Download Arm64 (Apple Silicon)* sotto *Run apps*, a seconda se state utilizzando un Mac con processore Intel o con processore Apple Silicon (tipo M1, M2, etc.).
