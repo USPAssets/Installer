@@ -19,23 +19,33 @@ namespace USPInstaller.Models
 
         public static async Task<string> DownloadLatestAsync(string owner, string repo, string? targetPath)
         {
-            using HttpClient httpClient = new()
-            {
-                Timeout = TimeSpan.FromSeconds(10)
-            };
+            using HttpClient httpClient = new();
+            httpClient.Timeout = TimeSpan.FromSeconds(10);
             httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("USPInstaller", "2.0"));
 
             var assetsPath = Path.Combine(targetPath ?? ".", "Assets");
             Directory.CreateDirectory(assetsPath);
 
+            var branchOverrideFile = Path.Combine(assetsPath, ".branch");
+            string branchName;
+            if (File.Exists(branchOverrideFile))
+            {
+                var branchNameTask = await File.ReadAllTextAsync(branchOverrideFile);
+                branchName = branchNameTask.Trim();
+            }
+            else
+            {
+                branchName = "main";
+            }
+            
             // Get latest commit info to check version
-            var apiUrl = $"https://api.github.com/repos/{owner}/{repo}/commits/main";
+            var apiUrl = $"https://api.github.com/repos/{owner}/{repo}/commits/{branchName}";
             var request = new HttpRequestMessage(HttpMethod.Get, apiUrl);
             var response = await httpClient.SendAsync(request);
             response.EnsureSuccessStatusCode();
 
             var commitInfo = JsonNode.Parse(await response.Content.ReadAsStringAsync());
-            var latestSha = commitInfo["sha"].GetValue<string>();
+            var latestSha = commitInfo?["sha"]?.GetValue<string>();
 
             // Check if we already have this version
             var versionFile = Path.Combine(assetsPath, ".version");
@@ -53,7 +63,7 @@ namespace USPInstaller.Models
             }
 
             // Download the repository
-            var zipUrl = $"https://api.github.com/repos/{owner}/{repo}/zipball/main";
+            var zipUrl = $"https://api.github.com/repos/{owner}/{repo}/zipball/{branchName}";
             Stream zipStream = await httpClient.GetStreamAsync(zipUrl);
             using (ZipArchive archive = new ZipArchive(zipStream))
             {

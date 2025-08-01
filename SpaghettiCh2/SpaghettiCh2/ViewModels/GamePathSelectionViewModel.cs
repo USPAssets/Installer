@@ -35,7 +35,7 @@ namespace USPInstaller.ViewModels
 
         private readonly AssetFolder.GameType gameType;
 
-        public static bool ShowMacWarning => OperatingSystem.IsMacOS();
+        public static bool IsMacOs => OperatingSystem.IsMacOS();
 
         public string GameName => gameType switch
         {
