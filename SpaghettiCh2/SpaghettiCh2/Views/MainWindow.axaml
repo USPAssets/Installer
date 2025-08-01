@@ -36,8 +36,9 @@
 		</Grid>
 		<!-- version info has to be in bottom right corner -->
 		<Panel HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10" Grid.Row="0" Grid.Column="1">
-			<TextBlock>
-				USPInstaller ver. <TextBlock Text="{Binding InstallerVersion}"/>
+			<TextBlock TextAlignment="Right">
+				USPInstaller ver. <TextBlock Text="{Binding InstallerVersion}"/> <LineBreak />
+                Art by @wi-fu
 			</TextBlock>
 		</Panel>
 	</Panel>
