@@ -1,5 +1,5 @@
 
-# Installer universale per DELTARUNE e UNDERTALE by USP
+# USPInstaller - Patcher universale per DELTARUNE e UNDERTALE in italiano by USP
 
 Ciao! 
 Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTALE* e *DELTARUNE* (Capitolo 1 e 2), sia su **Windows**, **macOS** e **Linux**! L'installer vi permettera' anche di aggiornare la patch nel caso rilasceremo aggiornamenti. Insomma, conveniente!
@@ -26,11 +26,12 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso).
 ## Installazione
 - Scaricate [l'ultima release dell'installer](https://github.com/USPAssets/Installer/releases/latest) (la trovate anche sul [sito](https://undertaleita.net/)).
 - Decomprimete il contenuto del file in una cartella
-- (DA RIVEDERE) Eseguite **USPInstaller.bat** su *Windows*, eseguite **USPInstaller.sh** su *macOS* o *Linux*.
+- Eseguite **USPInstaller.exe** su *Windows*, eseguite **USPInstaller** su *Linux* e **USPInstaller.app** su *macOS*.
 - Scegliete il gioco per cui volete installare la patch.
 - Inserite il percorso all'eseguibile del gioco:
 	- **(Windows/Linux)**: Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **DELTARUNE.exe** o **UNDERTALE.exe**.
-	- **(macOS)**: Copiate e incollate il percorso di **UNDERTALE.app** o **DELTARUNE.app** nel box.
+		- **NOTA PER UNDERTALE E LINUX**: UNDERTALE ha una versione nativa su Linux. Se la state utilizzando, potete selezionare in quel caso *runner* o *run.sh* nella directory del gioco. 
+	- **(macOS)**: Copiate e incollate il percorso di **UNDERTALE.app** o **DELTARUNE.app** nel box. Potete cliccare col tasto destro sull'app per copiarne il percorso.
 - Cliccate **Avvia installazione!**, e attendete
 - Appena sara' tutto concluso, il vostro gioco sara' tradotto! Potete ora avviarlo e giocare
 
@@ -45,14 +46,8 @@ A questo punto Steam provvederà a riscaricare il gioco e la patch sarà rimossa
 
 ## Risoluzione problemi
 - Se su macOS ricevete un avviso che non vi permette di aprire l'installer, seguite le [istruzioni di Apple](https://support.apple.com/it-it/102445) per aprire l'app, con particolare attenzione alla sezione *Se vuoi aprire un'app non autenticata o proveniente da uno sviluppatore non identificato*.
-- Se quando provate ad eseguire l'exe su Windows vi si apre un pop-up di *Windows SmartScreen*, cliccate su *Ulteriori Informazioni*, e poi su *Esegui comunque*. 
-- (DA RIVEDERE) Se su macOS o Linux doveste ricevere un avviso di *accesso negato* quando provate ad eseguire lo script, eseguite i seguenti passaggi:
-	- Aprite una finestra di terminale, e navigate tramite `cd` nella directory in cui avete decompresso l'installer. Poi eseguite i seguenti comandi:
+- Se quando provate ad eseguire l'exe su Windows vi si apre un pop-up di *Windows SmartScreen*, cliccate su *Ulteriori Informazioni*, e poi su *Esegui comunque*.
 
-```
-$ chmod a+x USPInstaller.sh
-$ ./USPInstaller.sh
-```
 ## Note aggiuntive 
 L'installer non potrebbe esistere senza [UndertaleModTool](https://github.com/UnderminersTeam/UndertaleModTool). Un grazie speciale a tutte le persone che hanno contribuito al progetto!
 
