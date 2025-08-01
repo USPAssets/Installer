@@ -30,7 +30,7 @@
 		</ExperimentalAcrylicBorder>
 		
 		<Grid ColumnDefinitions="0.5*,1*" RowDefinitions="1*">
-			<Image Source="/Assets/alphys.png" Grid.Row="0" Grid.Column="0"
+			<Image Source="/Assets/alphys.png" Grid.Row="0" Grid.Column="0" RenderOptions.BitmapInterpolationMode="HighQuality"
                         Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 			<TransitioningContentControl Content="{Binding Current}" Grid.Row="0" Grid.Column="1"/>
 		</Grid>
