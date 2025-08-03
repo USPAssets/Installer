@@ -45,6 +45,7 @@ Il modo migliore di rimuovere la patch è reinstallare il gioco (i vostri salvat
 A questo punto Steam provvederà a riscaricare il gioco e la patch sarà rimossa! 
 
 ## Risoluzione problemi
+- Se ricevete un avviso che vi dice che il file va prima estratto, seguite la guida apposita [qui](https://github.com/USPAssets/Installer/blob/main/GUIDA_ESTRAZIONE_UT.md).
 - Se su macOS ricevete un avviso che non vi permette di aprire l'installer, seguite le [istruzioni di Apple](https://support.apple.com/it-it/102445) per aprire l'app, con particolare attenzione alla sezione *Se vuoi aprire un'app non autenticata o proveniente da uno sviluppatore non identificato*.
 - Se quando provate ad eseguire l'exe su Windows vi si apre un pop-up di *Windows SmartScreen*, cliccate su *Ulteriori Informazioni*, e poi su *Esegui comunque*.
 
