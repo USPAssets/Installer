@@ -23,6 +23,13 @@ namespace USPInstaller.ViewModels
             ChooseFileCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 ExePath = (await OpenGamePathSelectionDialog(type))?.Path.LocalPath;
+                // Try to detect (and reject) CAB self-extracting executable by file size
+                if (ExePath != null && new FileInfo(ExePath).Length > 100 * 1024 * 1024) // 100 MB
+                {
+                    const string message = "Il file selezionato va estratto prima di poter installare la traduzione.\nConsulta la guida all'installazione per ulteriori informazioni.";
+                    await MessageBoxViewModel.ShowWithLink(message, "Avviso", "https://github.com/USPAssets/Installer", "Apri la Guida");
+                    ExePath = null;
+                }
             });
 
             var isValidPath = this.WhenAnyValue(
@@ -81,6 +88,7 @@ namespace USPInstaller.ViewModels
                 return await DoOpenFolderPickerAsync(type);
             }
             return await DoOpenFilePickerAsync(type);
+
         }
 
         private async Task<IStorageFile?> DoOpenFilePickerAsync(AssetFolder.GameType type)

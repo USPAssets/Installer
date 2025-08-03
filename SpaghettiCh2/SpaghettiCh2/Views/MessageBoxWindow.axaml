@@ -7,16 +7,21 @@
         x:Class="USPInstaller.Views.MessageBoxWindow"
         Title="{Binding Title}"
         MinWidth="300" MinHeight="150"
+		x:DataType="vm:MessageBoxViewModel"
         WindowStartupLocation="CenterOwner"
 		SizeToContent="WidthAndHeight"
         CanResize="False">
-
+	<Design.DataContext>
+		<vm:MessageBoxViewModel/>
+	</Design.DataContext>
+	
 	<DockPanel Margin="20">
         <TextBlock Text="{Binding Message}" TextWrapping="Wrap" DockPanel.Dock="Top"/>
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Spacing="10">
             <Button Content="No" Command="{Binding NoCommand}" IsVisible="{Binding ShowNoButton}"/>
             <Button Content="Sì" Command="{Binding YesCommand}" IsVisible="{Binding ShowYesButton}"/>
-            <Button Content="OK" Command="{Binding OkCommand}" IsVisible="{Binding ShowOkButton}"/>
-        </StackPanel>
+			<Button Content="{Binding LinkTitle}" Command="{Binding OpenLinkCommand}" IsVisible="{Binding ShowLink}"/>
+			<Button Content="OK" Command="{Binding OkCommand}" IsVisible="{Binding ShowOkButton}"/>
+		</StackPanel>
 	</DockPanel>
 </Window>

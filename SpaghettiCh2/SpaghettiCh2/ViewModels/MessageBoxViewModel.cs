@@ -17,13 +17,21 @@ namespace USPInstaller.ViewModels
         private string _message = "Message";
 
         [ObservableProperty]
-        private bool _showYesButton;
+        private string _linkTitle= "Apri Link";
+
+        private string linkTarget = string.Empty;
 
         [ObservableProperty]
-        private bool _showNoButton;
+        private bool _showYesButton = true;
 
         [ObservableProperty]
-        private bool _showOkButton;
+        private bool _showNoButton = true;
+
+        [ObservableProperty]
+        private bool _showOkButton = true;
+
+        [ObservableProperty]
+        private bool _showLinkButton = true;
 
         public Action<bool> ResultCallback { get; set; }
 
@@ -45,7 +53,14 @@ namespace USPInstaller.ViewModels
             ResultCallback?.Invoke(true);
         }
 
-        public static Task<bool> Show(string message, string title = "", bool showYesNo = false)
+
+        [RelayCommand]
+        private void OpenLink()
+        {
+            MainWindowViewModel.OpenBrowser(linkTarget);
+        }
+
+        public static Task<bool> Show(string message, string title, bool showYesNo = false)
         {
             var tcs = new TaskCompletionSource<bool>();
 
@@ -59,6 +74,49 @@ namespace USPInstaller.ViewModels
                     ShowYesButton = showYesNo,
                     ShowNoButton = showYesNo,
                     ShowOkButton = !showYesNo,
+                    ResultCallback = result =>
+                    {
+                        tcs.SetResult(result);
+                        window.Close();
+                    }
+                };
+                window.DataContext = viewModel;
+
+                if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+                    window.ShowDialog(desktop.MainWindow!);
+                else
+                    window.Show();
+            }
+
+            if (Avalonia.Threading.Dispatcher.UIThread.CheckAccess())
+            {
+                ShowDialogOnUIThread();
+            }
+            else
+            {
+                Avalonia.Threading.Dispatcher.UIThread.Post(ShowDialogOnUIThread);
+            }
+
+            return tcs.Task;
+        }
+
+        public static Task<bool> ShowWithLink(string message, string title, string linkTarget, string linkTitle)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            void ShowDialogOnUIThread()
+            {
+                var window = new MessageBoxWindow();
+                var viewModel = new MessageBoxViewModel
+                {
+                    Title = title,
+                    Message = message,
+                    ShowYesButton = false,
+                    ShowNoButton = false,
+                    ShowOkButton = true,
+                    ShowLinkButton = true,
+                    linkTarget = linkTarget,
+                    LinkTitle = linkTitle,
                     ResultCallback = result =>
                     {
                         tcs.SetResult(result);
