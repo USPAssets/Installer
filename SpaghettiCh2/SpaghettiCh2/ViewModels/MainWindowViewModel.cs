@@ -1,7 +1,6 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Diagnostics;
-using System.Reflection;
 using System.Runtime.InteropServices;
 using USPInstaller.Models;
 
@@ -56,8 +55,6 @@ namespace USPInstaller.ViewModels
             successPage.BackRequested += ReturnToMainMenu;
             Current = successPage;
         }
-
-        public Version InstallerVersion => Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0);
 
         [ObservableProperty]
         public PageViewModelBase _current;
