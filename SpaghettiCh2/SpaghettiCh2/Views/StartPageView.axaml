@@ -56,12 +56,10 @@
 			</Grid>
 		</Panel>
 		<Panel HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10">
-			<Grid ColumnDefinitions="1*, 1*, 1*" RowDefinitions="1*">
-				<TextBlock TextAlignment="Right">
-					USPInstaller ver. <TextBlock Text="{Binding InstallerVersion}"/> <LineBreak />
-					Art by @wi-fu
-				</TextBlock>
-			</Grid>
+			<TextBlock TextAlignment="Right">
+				USPInstaller ver. <TextBlock Text="{Binding InstallerVersion}"/> <LineBreak />
+				Art by @wi-fu
+			</TextBlock>
 		</Panel>
 	</Panel>
 </UserControl>
