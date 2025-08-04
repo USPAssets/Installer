@@ -26,7 +26,7 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso).
 ## Installazione
 - Scaricate [l'ultima release dell'installer](https://github.com/USPAssets/Installer/releases/latest) (la trovate anche sul [sito](https://undertaleita.net/)).
 - Decomprimete il contenuto del file in una cartella
-- Eseguite **USPInstaller.exe** su *Windows*, eseguite **USPInstaller** su *Linux* e **USPInstaller.app** su *macOS*.
+- Eseguite **USPInstaller.exe** su *Windows*, eseguite **USPInstaller** su *Linux* e **USPInstaller.command** su *macOS*.
 - Scegliete il gioco per cui volete installare la patch.
 - Inserite il percorso all'eseguibile del gioco:
 	- **(Windows/Linux)**: Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **DELTARUNE.exe** o **UNDERTALE.exe**.
