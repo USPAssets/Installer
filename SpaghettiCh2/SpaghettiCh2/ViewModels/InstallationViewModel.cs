@@ -3,7 +3,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UndertaleModLib;
@@ -51,9 +50,11 @@ namespace USPInstaller.ViewModels
         {
             try
             {
-                string executablePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+                // On Win: C:\Users\{user}\AppData\Local\Temp\USPInstaller\
+                var tempAssetsPath = Path.Combine(Path.GetTempPath(), "USPInstaller");
+
                 OverallProgressMessage = "Scarico l'ultima versione della traduzione...";
-                string assetPath = await AssetFolder.DownloadLatestAsync("USPAssets", "Online", executablePath);
+                string assetPath = await AssetFolder.DownloadLatestAsync("USPAssets", "Online", tempAssetsPath);
                 switch (gameType)
                 {
                     case GameType.Undertale:

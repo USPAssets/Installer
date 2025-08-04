@@ -3,6 +3,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Text.Json.Nodes;
 using System.Threading.Tasks;
 
@@ -26,7 +27,8 @@ namespace USPInstaller.Models
             var assetsPath = Path.Combine(targetPath ?? ".", "Assets");
             Directory.CreateDirectory(assetsPath);
 
-            var branchOverrideFile = Path.Combine(assetsPath, ".branch");
+            var branchOverrideFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, ".branch");
+
             string branchName;
             if (File.Exists(branchOverrideFile))
             {
@@ -62,7 +64,10 @@ namespace USPInstaller.Models
                 }
             }
 
-            // Download the repository
+            // Download the repository - we clean the assets folder to make sure we don't get stale files
+            Directory.Delete(assetsPath, true);
+            Directory.CreateDirectory(assetsPath);
+
             var zipUrl = $"https://api.github.com/repos/{owner}/{repo}/zipball/{branchName}";
             Stream zipStream = await httpClient.GetStreamAsync(zipUrl);
             using (ZipArchive archive = new ZipArchive(zipStream))
