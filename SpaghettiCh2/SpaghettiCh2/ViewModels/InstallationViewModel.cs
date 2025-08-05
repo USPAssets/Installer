@@ -46,13 +46,6 @@ namespace USPInstaller.ViewModels
         public event Action<Exception, string>? InstallationError;
         public event Action? InstallationSuccess;
 
-        private async Task DumpLog(string log)
-        {
-            var tempPath = Path.Combine(Path.GetTempPath(), "USPInstaller");
-            var logFileName = $"install_log_{DateTime.Now:dd_MM_yy_hh_mm}.txt";
-            await File.WriteAllTextAsync(Path.Combine(tempPath, logFileName), log);
-        }
-
         public async Task InstallGame(string exePath)
         {
             try
@@ -78,7 +71,21 @@ namespace USPInstaller.ViewModels
                 InstallationError?.Invoke(ex, log.ToString());
             }
 
-            await DumpLog(log.ToString());
+            try
+            {
+                await DumpLog(log.ToString());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Couldn't dump the log because of: " + e.ToString());
+                Console.WriteLine(log);
+            }
+        }
+        private async Task DumpLog(string log)
+        {
+            var tempPath = Path.Combine(Path.GetTempPath(), "USPInstaller");
+            var logFileName = $"install_log_{DateTime.Now:dd_MM_yy_hh_mm}.txt";
+            await File.WriteAllTextAsync(Path.Combine(tempPath, logFileName), log);
         }
 
         private string? GetDataFileName(string exePath)

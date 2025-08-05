@@ -34,7 +34,7 @@ namespace USPInstaller.ViewModels
                 // Try to detect (and reject) CAB self-extracting executable by file size - only apply to UNDERTALE
                 if (checkIfSelfExtractingExe(ExePath)) // 100 MB
                 {
-                    const string message = "Il file selezionato va estratto prima di poter installare la traduzione.\nConsulta la guida all'installazione per ulteriori informazioni.";
+                    string message = "Il file selezionato va estratto prima di poter installare la traduzione." + Environment.NewLine + "Consulta la guida all'installazione per ulteriori informazioni.";
                     await MessageBoxViewModel.ShowWithLink(message, "Avviso", "https://github.com/USPAssets/Installer/blob/main/GUIDA_ESTRAZIONE_UT.md", "Apri la Guida");
                     ExePath = null;
                 }
