@@ -31,7 +31,7 @@ namespace USPInstaller.ViewModels
         private bool _showOkButton = true;
 
         [ObservableProperty]
-        private bool _showLinkButton = true;
+        private bool _showLinkButton = false;
 
         public Action<bool> ResultCallback { get; set; }
 
@@ -74,6 +74,7 @@ namespace USPInstaller.ViewModels
                     ShowYesButton = showYesNo,
                     ShowNoButton = showYesNo,
                     ShowOkButton = !showYesNo,
+                    ShowLinkButton = false,
                     ResultCallback = result =>
                     {
                         tcs.SetResult(result);
