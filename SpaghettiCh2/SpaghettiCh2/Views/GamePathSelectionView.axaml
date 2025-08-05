@@ -12,7 +12,9 @@
 
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" Spacing="20" Margin="50">
 		<TextBlock>
-            Seleziona il percorso dell'eseguibile di <TextBlock Text="{Binding GameName}"/>.
+            Seleziona il percorso dell'eseguibile di <TextBlock Text="{Binding GameName}"/>. L'installer inserisce
+			<LineBreak />
+			automaticamente il percorso del gioco completo su Steam se presente.
         </TextBlock>
         <TextBlock IsVisible="{Binding IsDeltarune}">
             (L'installer è compatibile sia con il gioco intero che con la demo.)
