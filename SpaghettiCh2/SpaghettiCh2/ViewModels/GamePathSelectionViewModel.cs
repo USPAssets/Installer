@@ -22,19 +22,11 @@ namespace USPInstaller.ViewModels
 
             AutoFillGamePath();
 
-            var checkIfSelfExtractingExe = (string? exePath) =>
-            {
-                return exePath != null 
-                    && OperatingSystem.IsWindows() 
-                    && gameType == AssetFolder.GameType.Undertale 
-                    && new FileInfo(exePath).Length > 100 * 1024 * 1024; // 100 MB
-            };
-
             ChooseFileCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 ExePath = (await OpenGamePathSelectionDialog(type))?.Path.LocalPath;
                 // Try to detect (and reject) CAB self-extracting executable by file size - only apply to UNDERTALE
-                if (checkIfSelfExtractingExe(ExePath)) // 100 MB
+                if (CheckIfSelfExtractingExe(ExePath)) // 100 MB
                 {
                     string message = "Il file selezionato va estratto prima di poter installare la traduzione." + Environment.NewLine + "Consulta la guida all'installazione per ulteriori informazioni.";
                     await MessageBoxViewModel.ShowWithLink(message, "Avviso", "https://github.com/USPAssets/Installer/blob/main/GUIDA_ESTRAZIONE_UT.md", "Apri la Guida");
@@ -87,6 +79,14 @@ namespace USPInstaller.ViewModels
                     return $"Percorso di {GameName}.exe";
                 }
             }
+        }
+
+        private bool CheckIfSelfExtractingExe(string? exePath)
+        {
+            return exePath != null
+                && OperatingSystem.IsWindows()
+                && gameType == AssetFolder.GameType.Undertale
+                && new FileInfo(exePath).Length > 100 * 1024 * 1024; // 100 MB
         }
 
         private void AutoFillGamePath()
