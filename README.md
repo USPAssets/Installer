@@ -2,18 +2,18 @@
 # USPInstaller - Patcher universale per DELTARUNE e UNDERTALE in italiano by USP
 
 Ciao! 
-Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTALE* e *DELTARUNE* (Capitolo 1 e 2), sia su **Windows**, **macOS** e **Linux**! Potete riusare lo stesso installer per aggiornare la patch nel caso dovessimo rilasciare aggiornamenti. Insomma, conveniente!
+Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTALE* e *DELTARUNE* (Capitolo 1 e 2) su **Windows**, **macOS** e **Linux**! Potete riutilizzare lo stesso installer per aggiornare la patch nel caso dovessimo rilasciare aggiornamenti. Insomma, conveniente!
 
-## Compatibilita'
+## Compatibilità
 
-L'installer e' compatibile con le seguenti versioni dei giochi:
+L'installer è compatibile con le seguenti versioni dei giochi:
 - **DELTARUNE (Chaper 1 & 2 DEMO)**, verione Itch o Steam.
-- **DELTARUNE**, testato con:
+- **DELTARUNE (versione completa)**, testato con:
 	- Capitolo 1 v1.40
 	- Capitolo 2 v1.46
 - **UNDERTALE**, v1.08
 
-L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). L'installer è compatibile con Apple Silicon tramite Rosetta (più dettagli sotto).
+L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). È inoltre compatibile con Apple Silicon tramite Rosetta (più dettagli sotto).
 
 ## Prerequisiti
 
@@ -33,8 +33,8 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). L'in
 	- **(Windows/Linux)**: Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **DELTARUNE.exe** o **UNDERTALE.exe**.
 		- **NOTA PER UNDERTALE E LINUX**: UNDERTALE ha una versione nativa su Linux. Se la state utilizzando, potete selezionare in quel caso *runner* o *run.sh* nella directory del gioco. 
 	- **(macOS)**: Copiate e incollate il percorso di **UNDERTALE.app** o **DELTARUNE.app** nel box. Potete cliccare col tasto destro sull'app, tenere premuto il pusalnte *Opzione* sulla tastiera e cliccare su *Copia nome_del_file come percorso*. Se il percorso contiene virgolette all'inizio e alla fine, toglietele.
-- Cliccate **Avvia installazione!**, e attendete
-- Appena sarà tutto concluso, il vostro gioco sarà tradotto! Potete ora avviarlo e giocare
+- Cliccate **Avvia installazione!**, e attendete che la patch venga applicata.
+- Appena sarà tutto concluso, il vostro gioco sarà tradotto! Potete ora avviarlo e giocare.
 
 ## Rimuovere la patch
 
@@ -48,7 +48,7 @@ A questo punto Steam provvederà a riscaricare il gioco e la patch sarà rimossa
 
 ## Risoluzione problemi
 
-- Se su Windows ricevete un avviso che vi dice che il file va prima estratto, seguite la guida apposita [qui](https://github.com/USPAssets/Installer/blob/main/GUIDA_ESTRAZIONE_UT.md).
+- Se su Windows ricevete un avviso durante l'installazione che vi dice che il file va prima estratto, seguite la guida apposita [qui](https://github.com/USPAssets/Installer/blob/main/GUIDA_ESTRAZIONE_UT.md).
 - Se quando provate ad eseguire l'exe su Windows vi si apre un pop-up di *Windows SmartScreen*, cliccate su *Ulteriori Informazioni*, e poi su *Esegui comunque*.
 - Se avete un computer con Apple Silicon (come M1, M3, etc.) potreste ricevere un avviso che vi dice che dovete installare Rosetta per aprire l'installer. Questo step è necessario, più informazioni [qui](https://support.apple.com/it-it/102527).
 - Se su macOS ricevete un avviso che non vi permette di aprire l'installer, seguite le [istruzioni di Apple](https://support.apple.com/it-it/102445) per aprire l'app, con particolare attenzione alla sezione *Se vuoi aprire un'app non autenticata o proveniente da uno sviluppatore non identificato*.
