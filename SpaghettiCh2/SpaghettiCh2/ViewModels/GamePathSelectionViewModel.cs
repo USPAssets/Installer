@@ -65,11 +65,9 @@ namespace USPInstaller.ViewModels
 
         [ObservableProperty]
         private string? _exePath;
-
         public ReactiveCommand<Unit, Unit> ChooseFileCommand { get; }
         public ReactiveCommand<Unit, Unit> ContinueCommand { get; }
         public ReactiveCommand<Unit, Unit> GoBackCommand { get; }
-
         public string PathWatermark
         {
             get
@@ -93,17 +91,14 @@ namespace USPInstaller.ViewModels
 
         private void AutoFillGamePath()
         {
-            // Check if we can autofill the game path on Steam Deck
-            // and macOS
-
             if (OperatingSystem.IsMacOS())
             {
-                string userFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string steamFolder = Path.Combine(userFolder, "Application Support\\Steam\\steamapps\\common\\");
+                string userFolder = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+                string steamFolder = Path.Combine(userFolder, "Steam", "steamapps", "common");
 
                 if (gameType == AssetFolder.GameType.Undertale)
                 {
-                    string undertalePath = Path.Combine(steamFolder, "Undertale\\UNDERTALE.app");
+                    string undertalePath = Path.Combine(steamFolder, "Undertale", "UNDERTALE.app");
                     if (Path.Exists(undertalePath))
                     {
                         ExePath = undertalePath;
@@ -111,54 +106,66 @@ namespace USPInstaller.ViewModels
                 }
                 else if (gameType == AssetFolder.GameType.Deltarune)
                 {
-                    string deltarunePath = Path.Combine(steamFolder, "DELTARUNE\\DELTARUNE.app");
+                    string deltarunePath = Path.Combine(steamFolder, "DELTARUNE", "DELTARUNE.app");
+                    string deltaruneDemoPath = Path.Combine(steamFolder, "DELTARUNEDemo", "DELTARUNE.app");
+
                     if (Path.Exists(deltarunePath))
                     {
                         ExePath = deltarunePath;
+                    }
+                    else if (Path.Exists(deltaruneDemoPath))
+                    {
+                        ExePath = deltaruneDemoPath;
                     }
                 }
             }
             
             if (OperatingSystem.IsLinux())
             {
-                string steamPath = "\\home\\deck\\.local\\share\\Steam\\steamapps\\common\\";
+                // Should be /home/deck/.local/share/ - it should work at least on Steam Deck
+                string userFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                string steamPath = Path.Combine(userFolder, "Steam", "steamapps", "common");
 
-                // We short-circuit early here in case we're not on Steam Deck
-                if (Path.Exists(steamPath))
+                if (gameType == AssetFolder.GameType.Undertale)
                 {
-                    if (gameType == AssetFolder.GameType.Undertale)
-                    {
-                        string undertalePathLinuxVer = Path.Combine(steamPath, "Undertale\\run.sh");
-                        string undertalePathProtonVer = Path.Combine(steamPath, "Undertale\\UNDERTALE.exe");
+                    string undertalePathLinuxVer = Path.Combine(steamPath, "Undertale", "run.sh");
+                    string undertalePathProtonVer = Path.Combine(steamPath, "Undertale", "UNDERTALE.exe");
 
-                        // We try the native version first
-                        if (Path.Exists(undertalePathLinuxVer))
-                        {
-                            ExePath = undertalePathLinuxVer;
-                        }
-                        else if (Path.Exists(undertalePathProtonVer))
-                        {
-                            ExePath = undertalePathProtonVer;
-                        }
-                    }
-                    else if (gameType == AssetFolder.GameType.Deltarune)
+                    // We try the native version first
+                    if (Path.Exists(undertalePathLinuxVer))
                     {
-                        string deltarunePath = Path.Combine(steamPath, "DELTARUNE\\DELTARUNE.exe");
-                        if (Path.Exists(deltarunePath))
-                        {
-                            ExePath = deltarunePath;
-                        }
+                        ExePath = undertalePathLinuxVer;
+                    }
+                    else if (Path.Exists(undertalePathProtonVer))
+                    {
+                        ExePath = undertalePathProtonVer;
+                    }
+                }
+                else if (gameType == AssetFolder.GameType.Deltarune)
+                {
+                    string deltarunePath = Path.Combine(steamPath, "DELTARUNE", "DELTARUNE.exe");
+                    string deltaruneDemoPath = Path.Combine(steamPath, "DELTARUNEDemo", "DELTARUNE.exe");
+
+                    if (Path.Exists(deltarunePath))
+                    {
+                        ExePath = deltarunePath;
+                    }
+                    else if (Path.Exists(deltaruneDemoPath))
+                    {
+                        ExePath = deltaruneDemoPath;
                     }
                 }
             }   
 
             if (OperatingSystem.IsWindows())
             {
-                string steamPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-                
+                string programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+                string steamPath = Path.Combine(programFilesPath, "Steam", "steamapps", "common");
+
                 if (gameType == AssetFolder.GameType.Undertale)
                 {
-                    string undertalePath = Path.Combine(steamPath, "Steam\\steamapps\\common\\Undertale\\UNDERTALE.exe");
+                    string undertalePath = Path.Combine(steamPath, "Undertale", "UNDERTALE.exe");
+
                     if (Path.Exists(undertalePath))
                     {
                         ExePath = undertalePath;
@@ -166,10 +173,16 @@ namespace USPInstaller.ViewModels
                 }
                 else if (gameType == AssetFolder.GameType.Deltarune)
                 {
-                    string deltarunePath = Path.Combine(steamPath, "Steam\\steamapps\\common\\DELTARUNE\\DELTARUNE.exe");
+                    string deltarunePath = Path.Combine(steamPath, "DELTARUNE", "DELTARUNE.exe");
+                    string deltaruneDemoPath = Path.Combine(steamPath, "DELTARUNEDemo", "DELTARUNE.exe");
+
                     if (Path.Exists(deltarunePath))
                     {
                         ExePath = deltarunePath;
+                    }
+                    else if (Path.Exists(deltaruneDemoPath))
+                    {
+                        ExePath = deltaruneDemoPath;
                     }
                 }
             }
