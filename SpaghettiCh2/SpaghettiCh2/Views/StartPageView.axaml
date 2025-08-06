@@ -36,10 +36,10 @@
 				Scegli il gioco per cui installare la nostra traduzione:
 			</TextBlock>
 			<Button HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding OnUndertaleClick}">
-				<Image Source="/Assets/Undertale-Logo.png" Height="50" MaxWidth="200"/>
+				<Image Source="/Assets/Undertale-Logo.png" Height="50" MaxWidth="200" RenderOptions.BitmapInterpolationMode="HighQuality"/>
 			</Button>
 			<Button HorizontalAlignment="Center" VerticalAlignment="Center" Command="{Binding OnDeltaruneClick}">
-				<Image Source="/Assets/Deltarune-Logo.png" Height="50" MaxWidth="200"/>
+				<Image Source="/Assets/Deltarune-Logo.png" Height="50" MaxWidth="200" RenderOptions.BitmapInterpolationMode="HighQuality"/>
 			</Button>
 		</StackPanel>
 		<Panel HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10">
@@ -54,6 +54,12 @@
 					<Image Source="/Assets/globe_white.png" Height="30" Width="30" RenderOptions.BitmapInterpolationMode="HighQuality"/>
 				</Button>
 			</Grid>
+		</Panel>
+		<Panel HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10">
+			<TextBlock TextAlignment="Right">
+				USPInstaller ver. <TextBlock Text="{Binding InstallerVersion}"/> <LineBreak />
+				Art by @wi-fu
+			</TextBlock>
 		</Panel>
 	</Panel>
 </UserControl>

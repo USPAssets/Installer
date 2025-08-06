@@ -3,7 +3,6 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UndertaleModLib;
@@ -51,9 +50,11 @@ namespace USPInstaller.ViewModels
         {
             try
             {
-                string executablePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+                // On Win: C:\Users\{user}\AppData\Local\Temp\USPInstaller\
+                var tempAssetsPath = Path.Combine(Path.GetTempPath(), "USPInstaller");
+
                 OverallProgressMessage = "Scarico l'ultima versione della traduzione...";
-                string assetPath = await AssetFolder.DownloadLatestAsync("USPAssets", "Online", executablePath);
+                string assetPath = await AssetFolder.DownloadLatestAsync("USPAssets", "Online", tempAssetsPath);
                 switch (gameType)
                 {
                     case GameType.Undertale:
@@ -69,6 +70,22 @@ namespace USPInstaller.ViewModels
             {
                 InstallationError?.Invoke(ex, log.ToString());
             }
+
+            try
+            {
+                await DumpLog(log.ToString());
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Couldn't dump the log because of: " + e.ToString());
+                Console.WriteLine(log);
+            }
+        }
+        private async Task DumpLog(string log)
+        {
+            var tempPath = Path.Combine(Path.GetTempPath(), "USPInstaller");
+            var logFileName = $"install_log_{DateTime.Now:dd_MM_yy_hh_mm}.txt";
+            await File.WriteAllTextAsync(Path.Combine(tempPath, logFileName), log);
         }
 
         private string? GetDataFileName(string exePath)

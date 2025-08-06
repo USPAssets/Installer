@@ -1,5 +1,7 @@
 ﻿using ReactiveUI;
+using System;
 using System.Reactive;
+using System.Reflection;
 using USPInstaller.Models;
 
 namespace USPInstaller.ViewModels
@@ -14,6 +16,8 @@ namespace USPInstaller.ViewModels
         public ReactiveCommand<Unit, Unit> OnWebsiteClick { get; }
         public ReactiveCommand<Unit, Unit> OnBlueSkyClick { get; }
         public ReactiveCommand<Unit, Unit> OnDiscordClick { get; }
+
+        public Version InstallerVersion => Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0);
 
         public StartPageViewModel()
         {

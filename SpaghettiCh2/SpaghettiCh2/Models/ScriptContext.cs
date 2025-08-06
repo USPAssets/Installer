@@ -45,7 +45,7 @@ namespace USPInstaller.Models
 
         public bool ScriptQuestion(string message)
         {
-            return MessageBoxViewModel.Show(message, "Domanda", true).Result;
+            return MessageBoxViewModel.Show(message, "Avviso", true).Result;
         }
 
         public void UpdateProgressValue(double progressValue)

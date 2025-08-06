@@ -1,82 +1,64 @@
 
-# Installer universale per DELTARUNE e UNDERTALE by USP
+# USPInstaller - Patcher universale per DELTARUNE e UNDERTALE in italiano by USP
 
 Ciao! 
-Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTALE* e *DELTARUNE* (Capitolo 1 e 2), sia su **Windows**, **macOS** e **Linux**! L'installer vi permettera' anche di aggiornare la patch nel caso rilasceremo aggiornamenti. Insomma, conveniente!
+Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTALE* e *DELTARUNE* (Capitolo 1 e 2) su **Windows**, **macOS** e **Linux**! Potete riutilizzare lo stesso installer per aggiornare la patch nel caso dovessimo rilasciare aggiornamenti. Insomma, conveniente!
 
-## Compatibilita'
+## Compatibilità
 
-L'installer e' compatibile con le seguenti versioni dei giochi:
--  **DELTARUNE (Chaper 1 & 2 DEMO)**, versione **1.07**
--  **UNDERTALE**, versione **1.08**
-E con qualsiasi versione di Windows, macOS o distribuzione Linux in grado di far girare **.NET Runtime 5.0** (piu' info nei prerequisit).
+L'installer è compatibile con le seguenti versioni dei giochi:
+- **DELTARUNE (Chaper 1 & 2 DEMO)**, verione Itch o Steam.
+- **DELTARUNE (versione completa)**, testato con:
+	- Capitolo 1 v1.40
+	- Capitolo 2 v1.46
+- **UNDERTALE**, v1.08
+
+L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). È inoltre compatibile con Apple Silicon tramite Rosetta (più dettagli sotto).
 
 ## Prerequisiti
 
-- Come prima cosa, trovate la cartella dove avete installato *UNDERTALE* o *DELTARUNE*; generalmente, per esempio su Windows, se avete installato il gioco tramite Steam, questa sarà:
-```
-C:\Programmi(x86)\Steam\steamapps\common\Undertale 
-// oppure
-C:\Programmi(x86)\Steam\steamapps\common\DELTARUNEdemo
-```
-- Verificate se il vostro sistema è a 32Bit o 64Bit, potete farlo andando su Informazioni sul Sistema dalla barra di ricerca di Windows in basso a sinistra.
-- **Solo per Windows e Linux**, nstallate il runtime di .NET 5.0 da qua: https://dotnet.microsoft.com/download/dotnet/5.0/runtime, 
-	- **Windows**: Selezionate *Download x64* o *Download x86* sotto *Run desktop apps*, a seconda se avete un sistema a 64 o 32 bit rispettivamente, e installate il runtime seguendo le istruzioni,
-	- **Linux**: Seguite le istruzioni per la vostra distribuzione qua: https://docs.microsoft.com/it-it/dotnet/core/install/linux, in particolare dovrete installare il pacchetto **dotnet-runtime-5.0**
-	- 
-## Installazione su Windows
-- Scaricate il file .zip con l'installer dal sito https://undertaleita.net/
+- Se avete installato la patch in precedenza, reinstallate il gioco seguendo le istruzioni nella [sezione qui sotto](#rimuovere-la-patch).
+- Trovate dove avete installato *UNDERTALE* o *DELTARUNE*; se avete il gioco su Steam potete andare in *Libreria*, cliccare col tasto destro sul gioco e selezionare *Sfoglia file locali*.
+- *(Solo per Windows)* - Installate il **runtime di .NET 8.0**:
+	- **Windows**: Andate sulla [pagina ufficiale](https://dotnet.microsoft.com/download/dotnet/8.0/runtime) e selezionate *Download x64* o *Download x86* sotto *Run desktop apps*, a seconda se avete un sistema a 64 o 32 bit rispettivamente, e installate il runtime seguendo le istruzioni.
+
+## Installazione
+
+- Scaricate [l'ultima release dell'installer](https://github.com/USPAssets/Installer/releases/latest) (la trovate anche sul [sito](https://undertaleita.net/)).
 - Decomprimete il contenuto del file in una cartella
-- Aprite *Italian Patcher by USP*
-- Aspettate che l'installer scarichi gli aggiornamenti, poi cliccate su **Installa**.
-- Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **data.win**, o **DELTARUNE.exe** o **UNDERTALE.exe**.
-- Cliccate **Applica la patch**, e attendete
-- Appena sara' tutto concluso, il vostro gioco sara' tradotto! Potete ora avviarlo e giocare
+- Eseguite **USPInstaller.exe** su *Windows*, eseguite **USPInstaller** su *Linux* e **USPInstaller.app** su *macOS*.
+	- Potreste essere bloccati da dei pop-up di sicurezza su Windows e macOS. Potete leggere la sezione [*Risoluzione problemi*](#risoluzione-problemi) per come aprire l'installer in questi casi.
+- Scegliete il gioco per cui volete installare la patch.
+- L'installer ora proverà a cercare il gioco nella libreria di default di Steam e se presente metterà già il percorso, altrimenti potete inserire voi il percorso all'eseguibile del gioco:
+	- **(Windows/Linux)**: Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **DELTARUNE.exe** o **UNDERTALE.exe**.
+		- **NOTA PER UNDERTALE E LINUX**: UNDERTALE ha una versione nativa su Linux. Se la state utilizzando, potete selezionare in quel caso *runner* o *run.sh* nella directory del gioco. 
+	- **(macOS)**: Copiate e incollate il percorso di **UNDERTALE.app** o **DELTARUNE.app** nel box. Potete cliccare col tasto destro sull'app, tenere premuto il pusalnte *Opzione* sulla tastiera e cliccare su *Copia nome_del_file come percorso*. Se il percorso contiene virgolette all'inizio e alla fine, toglietele.
+- Cliccate **Avvia installazione!**, e attendete che la patch venga applicata.
+- Appena sarà tutto concluso, il vostro gioco sarà tradotto! Potete ora avviarlo e giocare.
 
-**NOTA**: Se quando provate ad avviare l'exe Windows vi blocca con un popup di Windows SmartScreen, cliccate su *Ulteriori Informazioni*, e poi su *Esegui comunque*.
+## Rimuovere la patch
 
-## Installazione su macOS
-- Scaricate il file .tar con l'installer dal sito https://undertaleita.net/
-- Decomprimete il contenuto del file
-- Spostate il file *Italian Patch by USP* nella cartella *Applicazioni* (**IMPORTANTE**)
-- Aprite il *Finder*, navigate nella cartella *Applicazioni*, fate tasto destro su *Spaghetti Installer* e cliccate su **Apri**.
-- Accettate qualsiasi avviso apparira' su schermo.
-- Aspettate che l'installer scarichi gli aggiornamenti, poi cliccate su **Installa**.
-- Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **game.ios**, o **DELTARUNE.app** o **UNDERTALE.app**.
-- Cliccate **Applica la patch**, e attendete
-- Appena sara' tutto concluso, il vostro gioco sara' tradotto! Potete ora avviarlo e giocare
+Il modo migliore di rimuovere la patch è reinstallare il gioco (i vostri salvataggi rimarranno intatti). Su Steam, potete eseguire i seguenti passaggi:
+- Tasto destro sul gioco in *Libreria*.
+- Cliccate su *Proprietà*.
+- Nella barra a sinistra cliccate su *File installati*.
+- Cliccate su *Verifica integrità dei file del gioco*.
 
-## Installazione su Linux
-**NOTA**: Le istruzioni per Linux verranno fornite per essere eseguite tramite terminale.
-- Scaricate il file .tar con l'installer dal sito https://undertaleita.net/
-- Decomprimete il contenuto del file in una cartella
-- **ASSICURATEVI DI AVER INSTALLATO IL RUNTIME DI .NET**, leggi i prerequisiti in caso.
-- Aprite una finestra di terminale, e navigate tramite `cd` nella directory in cui avete decompresso, per esempio se ho decompresso il gioco in `~/SpaghettiInstaller` faro':
-```
-$ cd ~/SpaghettiInstaller
-```
-- Ora eseguite i seguenti comandi:
-```
-$ chmod a+x ItalianPatcherLinux.sh
-$ ./ItalianPatcherLinux.sh
-```
-- Aspettate che l'installer scarichi gli aggiornamenti, poi cliccate su **Installa**.
-- Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **game.unx**
-- Cliccate **Applica la patch**, e attendete
-- Appena sara' tutto concluso, il vostro gioco sara' tradotto! Potete ora avviarlo e giocare
+A questo punto Steam provvederà a riscaricare il gioco e la patch sarà rimossa! 
+
+## Risoluzione problemi
+
+- Se su Windows ricevete un avviso durante l'installazione che vi dice che il file va prima estratto, seguite la guida apposita [qui](https://github.com/USPAssets/Installer/blob/main/GUIDA_ESTRAZIONE_UT.md).
+- Se quando provate ad eseguire l'exe su Windows vi si apre un pop-up di *Windows SmartScreen*, cliccate su *Ulteriori Informazioni*, e poi su *Esegui comunque*.
+- Se avete un computer con Apple Silicon (come M1, M3, etc.) potreste ricevere un avviso che vi dice che dovete installare Rosetta per aprire l'installer. Questo step è necessario, più informazioni [qui](https://support.apple.com/it-it/102527).
+- Se su macOS ricevete un avviso che non vi permette di aprire l'installer, seguite le [istruzioni di Apple](https://support.apple.com/it-it/102445) per aprire l'app, con particolare attenzione alla sezione *Se vuoi aprire un'app non autenticata o proveniente da uno sviluppatore non identificato*.
 
 ## Note aggiuntive 
-L'installer e' stato possibile grazie al nostro [@Nik](https://github.com/nkrapivin). In più, un grazie speciale a [@krzys_h](https://github.com/krzys-h) per aver sviluppato *UndertaleModTool*, che è stato essenziale per lo sviluppo.
 
-Se avete problemi, scriveteci su Facebook o mandateci un'email a *undertalespaghettiproject@gmail.com*. Grazie del supporto e della pazienza! Speriamo possiate divertirvi con DELTARUNE e UNDERTALE in italiano!
+L'installer non potrebbe esistere senza [UndertaleModTool](https://github.com/UnderminersTeam/UndertaleModTool). Un grazie speciale a tutte le persone che hanno contribuito al progetto!
+
+Se doveste avere problemi, [HYPERLINK_BLOCKED]
 
 A presto!
 
 *Renard*
-
-## Building notes (in English)
-
-for Windows and Linux there's a VS publishing profile called `ReleaseProfile`, use that.
-
-for macOS, open `View` -> `Terminal`, type `./macOSBuild.ps1`, hit Enter, wait for the `.app` "folder" in `SpaghettiCh2/bin/Release/net5.0/publish/USPMac`. Archive as .tar under Windows.
-
