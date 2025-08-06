@@ -20,7 +20,7 @@
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right" Spacing="10">
             <Button Content="No" Command="{Binding NoCommand}" IsVisible="{Binding ShowNoButton}"/>
             <Button Content="Sì" Command="{Binding YesCommand}" IsVisible="{Binding ShowYesButton}"/>
-			<Button Content="{Binding LinkTitle}" Command="{Binding OpenLinkCommand}" IsVisible="{Binding ShowLink}"/>
+			<Button Content="{Binding LinkTitle}" Command="{Binding OpenLinkCommand}" IsVisible="{Binding ShowLinkButton}"/>
 			<Button Content="OK" Command="{Binding OkCommand}" IsVisible="{Binding ShowOkButton}"/>
 		</StackPanel>
 	</DockPanel>
