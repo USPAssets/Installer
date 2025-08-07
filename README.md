@@ -57,7 +57,7 @@ A questo punto Steam provvederà a riscaricare il gioco e la patch sarà rimossa
 
 L'installer non potrebbe esistere senza [UndertaleModTool](https://github.com/UnderminersTeam/UndertaleModTool). Un grazie speciale a tutte le persone che hanno contribuito al progetto!
 
-Se doveste avere problemi, [HYPERLINK_BLOCKED]
+Se doveste avere problemi, unitevi al [nostro Discord](https://discord.gg/YrEkAJ5MrG) dovete potete comunicare con noi in modo piu diretto.
 
 A presto!
 
