@@ -123,7 +123,7 @@ EOF
 chmod +x "$_pkgdir/AppRun"
 echo " OK"
 
-cd "$_dir"
+cd "$current_dir"
 echo "Creazione AppImage..."
 ARCH=x86_64 "$_download_dir/appimagetool.AppImage" "$_pkgdir" "$PATCHER_NAME.AppImage"
 
