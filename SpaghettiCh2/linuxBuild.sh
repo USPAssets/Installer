@@ -85,10 +85,10 @@ echo -n "Estrazione di dotnet 8.0..."
 tar -xzf "$DOTNET.tar.gz" -C "$_pkgdir/usr/bin/"
 echo " OK"
 
-cd $current_dir
+cd "$current_dir"
 
 echo -n "Compilazione del patcher..."
-dotnet build -c Release -o $_pkgdir/opt/spaghettiproject
+dotnet build -c Release -o "$_pkgdir/opt/spaghettiproject"
 echo " OK"
 
 echo -n "Creazione script di avvio..."
@@ -123,7 +123,7 @@ EOF
 chmod +x "$_pkgdir/AppRun"
 echo " OK"
 
-cd "$current_dir"
+cd "$_dir"
 echo "Creazione AppImage..."
 ARCH=x86_64 "$_download_dir/appimagetool.AppImage" "$_pkgdir" "$PATCHER_NAME.AppImage"
 
