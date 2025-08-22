@@ -36,7 +36,7 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). È i
 - Cliccate **Avvia installazione!**, e attendete che la patch venga applicata.
 - Appena sarà tutto concluso, il vostro gioco sarà tradotto! Potete ora avviarlo e giocare.
 
-## Rimuovere la patch
+## Reinstallare il gioco (rimuovere la patch)
 
 Il modo migliore di rimuovere la patch è reinstallare il gioco (i vostri salvataggi rimarranno intatti). Su Steam, potete eseguire i seguenti passaggi:
 - Tasto destro sul gioco in *Libreria*.
