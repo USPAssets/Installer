@@ -11,7 +11,7 @@ using static USPInstaller.Models.AssetFolder;
 
 namespace USPInstaller.ViewModels
 {
-    partial class InstallationViewModel : PageViewModelBase
+    public partial class InstallationViewModel : PageViewModelBase
     {
         // HACK: Avalonia wants a public empty constructor so that we can use the designer
         // to see how the viewmodel looks at design-time. Not to be used in actual code.
@@ -38,9 +38,19 @@ namespace USPInstaller.ViewModels
             ProgressValue = value / maxValue * 100;
         }
 
-        public void Log(string s)
+        public virtual void Log(string s)
         {
             log.AppendLine(s);
+        }
+
+        public virtual void LogError(string s)
+        {
+            log.AppendLine(s);
+        }
+
+        public virtual bool AskUserQuestion(string message)
+        {
+            return MessageBoxViewModel.Show(message, "Avviso", true).Result;
         }
 
         public event Action<Exception, string>? InstallationError;
@@ -131,9 +141,9 @@ namespace USPInstaller.ViewModels
                 }
             }
             return null;
-       }
+        }
 
-        private async Task InstallUndertale(string assetPath, string exePath)
+        public async Task InstallUndertale(string assetPath, string exePath)
         {
             string scriptPath = Path.Join(assetPath, "Undertale", "installer.csx");
 
@@ -141,7 +151,7 @@ namespace USPInstaller.ViewModels
             await RunScriptOn(scriptPath, GetDataFileName(exePath)!);
         }
 
-        private async Task InstallDeltarune(string assetPath, string exePath)
+        public async Task InstallDeltarune(string assetPath, string exePath)
         {
             string scriptsPath = Path.Join(assetPath, "Deltarune", "InstallScripts");
             string dataPath = GetDataFileName(exePath)! ?? throw new FileNotFoundException("Non trovo il file di dati del gioco", exePath);
