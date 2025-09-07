@@ -2,7 +2,7 @@
 
 namespace USPInstaller.ViewModels
 {
-    class PageViewModelBase : ObservableObject
+    public class PageViewModelBase : ObservableObject
     {
     }
 }
