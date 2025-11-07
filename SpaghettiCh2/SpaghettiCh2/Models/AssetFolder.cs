@@ -17,17 +17,48 @@ namespace USPInstaller.Models
             Deltarune
         }
 
-
-        public static async Task<string> DownloadLatestAsync(string owner, string repo, string? targetPath)
+        public static async Task<string> DownloadLatestAsync(string owner, string repo, string? targetPath, bool privateRepo = false)
         {
             using HttpClient httpClient = new();
             httpClient.Timeout = TimeSpan.FromSeconds(10);
             httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("USPInstaller", "2.0"));
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.raw+json"));
 
-            var assetsPath = Path.Combine(targetPath ?? ".", "Assets");
+            var assetsPath = Path.Combine(targetPath ?? ".", privateRepo ? "PrivateAssets" : "Assets");
             Directory.CreateDirectory(assetsPath);
 
             var branchOverrideFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, ".branch");
+            var branchOverrideFileExists = File.Exists(branchOverrideFile);
+
+            if (privateRepo)
+            {
+                var privKeyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "key.pem");
+                var deetsFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, ".auth");
+
+                var authData = new AuthData(privKeyPath, deetsFilePath);
+                await authData.Init();
+
+                if (!authData.IsInitialised)
+                {
+                    Console.WriteLine("Couldn't initialise AuthData for private repo");
+                    return string.Empty;
+                }
+
+                var privToken = await authData.GetInstallationToken();
+                if (string.IsNullOrEmpty(privToken))
+                {
+                    Console.WriteLine("AuthData failed retrieving private token");
+                    return string.Empty;
+                }
+
+                if (!branchOverrideFileExists)
+                {
+                    Console.WriteLine("Branch file required for private repo");
+                    return string.Empty;
+                }
+
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", privToken);
+            }
 
             string branchName;
             if (File.Exists(branchOverrideFile))
@@ -39,7 +70,7 @@ namespace USPInstaller.Models
             {
                 branchName = "main";
             }
-            
+
             // Get latest commit info to check version
             var apiUrl = $"https://api.github.com/repos/{owner}/{repo}/commits/{branchName}";
             var request = new HttpRequestMessage(HttpMethod.Get, apiUrl);
@@ -86,7 +117,7 @@ namespace USPInstaller.Models
 
                     entryName = entryName.Replace('/', Path.DirectorySeparatorChar); // Normalize path separators
                     string destPath = Path.Combine(assetsPath, entryName);
-                    Directory.CreateDirectory(Path.GetDirectoryName(destPath));
+                    Directory.CreateDirectory(Path.GetDirectoryName(destPath)!);
                     entry.ExtractToFile(destPath);
                     await Task.Yield(); // Yield to avoid blocking the thread
                 }
