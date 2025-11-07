@@ -24,7 +24,7 @@
 
 		<StackPanel HorizontalAlignment="Center" VerticalAlignment="Stretch" Spacing="10">
 			<Image Source="/Assets/USP_Logo_Compact.png" MaxWidth="200" Margin="0,30,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" />
-			<TextBlock Margin="0,0,0,20" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{StaticResource DeterminationFont}" Text="Installer"/>
+			<TextBlock Margin="0,0,0,20" FontSize="25" HorizontalAlignment="Center" VerticalAlignment="Center" FontFamily="{StaticResource DeterminationFont}" Text="{Binding Subtitle}"/>
 
 			<TextBlock
 					   FontSize="14"
@@ -43,7 +43,7 @@
 			</Button>
 		</StackPanel>
 		<Panel HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="10">
-			<Grid ColumnDefinitions="1*, 1*, 1*" RowDefinitions="1*">
+			<Grid ColumnDefinitions="1*, 1*, 1*, 1*" RowDefinitions="1*">
 				<Button Grid.Row="0" Grid.Column="0" ToolTip.Tip="Unisciti alla nostra community su Discord!" Command="{Binding OnDiscordClick}">
 					<Image Source="/Assets/discord_white.png" Height="30" Width="30" RenderOptions.BitmapInterpolationMode="HighQuality"/>
 				</Button>
@@ -52,6 +52,9 @@
 				</Button>
 				<Button Grid.Row="0" Grid.Column="2" ToolTip.Tip="Visita il nostro sito!" Command="{Binding OnWebsiteClick}">
 					<Image Source="/Assets/globe_white.png" Height="30" Width="30" RenderOptions.BitmapInterpolationMode="HighQuality"/>
+				</Button>
+				<Button Grid.Row="0" Grid.Column="3" ToolTip.Tip="Enable QA Mode" Command="{Binding OnToggleQAModeClick}" IsVisible="{Binding HasQAMode}">
+					<Image Source="/Assets/wrench.png" Height="30" Width="30" RenderOptions.BitmapInterpolationMode="HighQuality"/>
 				</Button>
 			</Grid>
 		</Panel>

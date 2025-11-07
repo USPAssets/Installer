@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace USPInstaller.Models
 {
+#if QA
     public class AuthData
     {
         private readonly string keyPath;
@@ -100,4 +101,5 @@ namespace USPInstaller.Models
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
+#endif
 }

@@ -54,14 +54,25 @@ namespace USPInstaller.ViewModels
                 var tempAssetsPath = Path.Combine(Path.GetTempPath(), "USPInstaller");
 
                 OverallProgressMessage = "Scarico l'ultima versione della traduzione...";
-                string assetPath = await AssetFolder.DownloadLatestAsync("USPAssets", "Online", tempAssetsPath);
+                string repo = "Online";
+                bool qaMode = false;
+
+#if QA
+                if (Globals.QAMode)
+                {
+                    repo = "Translations";
+                    qaMode = true;
+                }
+#endif
+
+                string assetPath = await AssetFolder.DownloadLatestAsync("USPAssets", repo, tempAssetsPath, qaMode);
                 switch (gameType)
                 {
                     case GameType.Undertale:
                         await InstallUndertale(assetPath, exePath);
                         break;
                     case GameType.Deltarune:
-                        await InstallDeltarune(assetPath, exePath);
+                        await InstallDeltarune(assetPath, exePath, qaMode);
                         break;
                 }
                 InstallationSuccess?.Invoke();
@@ -174,6 +185,7 @@ namespace USPInstaller.ViewModels
                 }
                 int chapterNumber = int.Parse(chapterName.Substring("chapter".Length));
 
+#if QA
                 // TODO: better choose chapter number - even better make a new button in the installer to install debug mod
                 if (installDebugMod && chapterNumber == 3)
                 {
@@ -181,6 +193,7 @@ namespace USPInstaller.ViewModels
                     string debugScriptPath = Path.Join(assetPath, "Deltarune", "Codes", "debug", "spaghetti_debug.csx");
                     await RunScriptOn(debugScriptPath, Path.Join(chapterFolder, dataFilename));
                 }
+#endif
 
                 OverallProgressMessage = $"Installo capitolo {chapterNumber}...";
                 await RunScriptOn(scriptPath, Path.Join(chapterFolder, dataFilename));

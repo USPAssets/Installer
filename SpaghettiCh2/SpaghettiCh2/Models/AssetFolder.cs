@@ -30,6 +30,7 @@ namespace USPInstaller.Models
             var branchOverrideFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, ".branch");
             var branchOverrideFileExists = File.Exists(branchOverrideFile);
 
+#if QA
             if (privateRepo)
             {
                 var privKeyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "key.pem");
@@ -59,6 +60,7 @@ namespace USPInstaller.Models
 
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", privToken);
             }
+#endif
 
             string branchName;
             if (File.Exists(branchOverrideFile))
