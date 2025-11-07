@@ -46,7 +46,7 @@ namespace USPInstaller.ViewModels
                 var enableQAMode = await MessageBoxViewModel.Show(message, "Info", true);
 #if QA
                 Globals.QAMode = enableQAMode;
-                Subtitle = enableQAMode ? "Installer - QA Mode Enable" : "Installer";
+                Subtitle = enableQAMode ? "Installer - QA Mode Enabled" : "Installer";
 #endif
             });
         }
