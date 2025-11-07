@@ -141,7 +141,7 @@ namespace USPInstaller.ViewModels
             await RunScriptOn(scriptPath, GetDataFileName(exePath)!);
         }
 
-        private async Task InstallDeltarune(string assetPath, string exePath)
+        private async Task InstallDeltarune(string assetPath, string exePath, bool installDebugMod = false)
         {
             string scriptsPath = Path.Join(assetPath, "Deltarune", "InstallScripts");
             string dataPath = GetDataFileName(exePath)! ?? throw new FileNotFoundException("Non trovo il file di dati del gioco", exePath);
@@ -173,6 +173,15 @@ namespace USPInstaller.ViewModels
                     continue;
                 }
                 int chapterNumber = int.Parse(chapterName.Substring("chapter".Length));
+
+                // TODO: better choose chapter number - even better make a new button in the installer to install debug mod
+                if (installDebugMod && chapterNumber == 3)
+                {
+                    OverallProgressMessage = $"Installo la debug mod per capitolo {chapterNumber}...";
+                    string debugScriptPath = Path.Join(assetPath, "Deltarune", "Codes", "debug", "spaghetti_debug.csx");
+                    await RunScriptOn(debugScriptPath, Path.Join(chapterFolder, dataFilename));
+                }
+
                 OverallProgressMessage = $"Installo capitolo {chapterNumber}...";
                 await RunScriptOn(scriptPath, Path.Join(chapterFolder, dataFilename));
             }
