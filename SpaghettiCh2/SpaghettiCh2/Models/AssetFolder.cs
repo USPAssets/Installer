@@ -36,7 +36,7 @@ namespace USPInstaller.Models
                 var deetsFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, ".auth");
 
                 var authData = new AuthData(privKeyPath, deetsFilePath);
-                await authData.Init();
+                authData.Init();
 
                 if (!authData.IsInitialised)
                 {

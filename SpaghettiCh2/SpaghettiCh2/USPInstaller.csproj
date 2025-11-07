@@ -38,6 +38,8 @@
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.2" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.2" />
         <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
     </ItemGroup>
     <ItemGroup>
 	    <AvaloniaResource Include="Assets\**" />
