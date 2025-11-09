@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using ReactiveUI;
 using System;
 using System.Reactive;
 using System.Reflection;
@@ -6,7 +7,7 @@ using USPInstaller.Models;
 
 namespace USPInstaller.ViewModels
 {
-    class StartPageViewModel : PageViewModelBase
+    partial class StartPageViewModel : PageViewModelBase
     {
         public delegate void GameSelectedEventHandler(AssetFolder.GameType gameType);
         public GameSelectedEventHandler? GameSelected;
@@ -20,16 +21,8 @@ namespace USPInstaller.ViewModels
 
         public bool HasQAMode => Globals.HasQAMode;
 
+        [ObservableProperty]
         private string _subtitle = "Installer";
-        public string Subtitle
-        {
-            get => _subtitle;
-            set
-            {
-                _subtitle = value;
-                OnPropertyChanged(nameof(Subtitle));
-            }
-        }
 
         public Version InstallerVersion => Assembly.GetExecutingAssembly().GetName().Version ?? new Version(0, 0);
 

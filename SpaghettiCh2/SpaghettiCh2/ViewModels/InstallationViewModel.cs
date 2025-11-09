@@ -48,6 +48,7 @@ namespace USPInstaller.ViewModels
 
         public async Task InstallGame(string exePath)
         {
+            string assetPath = "";
             try
             {
                 // On Win: C:\Users\{user}\AppData\Local\Temp\USPInstaller\
@@ -65,7 +66,7 @@ namespace USPInstaller.ViewModels
                 }
 #endif
 
-                string assetPath = await AssetFolder.DownloadLatestAsync("USPAssets", repo, tempAssetsPath, qaMode);
+                assetPath = await AssetFolder.DownloadLatestAsync("USPAssets", repo, tempAssetsPath, qaMode);
                 switch (gameType)
                 {
                     case GameType.Undertale:
@@ -81,6 +82,14 @@ namespace USPInstaller.ViewModels
             {
                 InstallationError?.Invoke(ex, log.ToString());
             }
+
+#if QA
+            // If we're in QA mode - we will also clean the assetspath
+            if (Globals.QAMode && Directory.Exists(assetPath))
+            {
+                Directory.Delete(assetPath, true);
+            }
+#endif
 
             try
             {

@@ -10,7 +10,8 @@
 		x:DataType="vm:MessageBoxViewModel"
         WindowStartupLocation="CenterOwner"
 		SizeToContent="WidthAndHeight"
-        CanResize="False">
+        CanResize="False"
+        SystemDecorations="BorderOnly">
 	<Design.DataContext>
 		<vm:MessageBoxViewModel/>
 	</Design.DataContext>

@@ -23,7 +23,7 @@
     <AssemblyOriginatorKeyFile>SpaghettiKey.pfx</AssemblyOriginatorKeyFile>
     <DelaySign>false</DelaySign>
     <ApplicationIcon>Assets\avalonia-logo.ico</ApplicationIcon>
-    <AssemblyVersion>2.0</AssemblyVersion>
+    <AssemblyVersion>2.1</AssemblyVersion>
   </PropertyGroup>
     <ItemGroup>
         <None Include="..\.editorconfig" Link=".editorconfig" />

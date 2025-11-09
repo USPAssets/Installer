@@ -62,6 +62,10 @@ namespace USPInstaller.ViewModels
 
         public static Task<bool> Show(string message, string title, bool showYesNo = false)
         {
+            // TODO: Handle better the dialogue window - for now we have to disable
+            // window decorations because we're not handling properly closing a dialogue
+            // window by pressing the X button
+
             var tcs = new TaskCompletionSource<bool>();
 
             void ShowDialogOnUIThread()
@@ -81,7 +85,7 @@ namespace USPInstaller.ViewModels
                         window.Close();
                     }
                 };
-                window.DataContext = viewModel;
+                window.DataContext = viewModel;    
 
                 if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                     window.ShowDialog(desktop.MainWindow!);
