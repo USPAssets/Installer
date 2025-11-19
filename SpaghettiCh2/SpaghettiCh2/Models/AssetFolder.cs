@@ -27,14 +27,16 @@ namespace USPInstaller.Models
             var assetsPath = Path.Combine(targetPath ?? ".", privateRepo ? "PrivateAssets" : "Assets");
             Directory.CreateDirectory(assetsPath);
 
-            var branchOverrideFile = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, ".branch");
+            var lookupDirForExtraFiles = OperatingSystem.IsMacOS() ? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "...", "Resources")) : AppContext.BaseDirectory;
+
+            var branchOverrideFile = Path.Combine(lookupDirForExtraFiles, ".branch");
             var branchOverrideFileExists = File.Exists(branchOverrideFile);
 
 #if QA
             if (privateRepo)
             {
-                var privKeyPath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, "key.pem");
-                var deetsFilePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!, ".auth");
+                var privKeyPath = Path.Combine(lookupDirForExtraFiles, "key.pem");
+                var deetsFilePath = Path.Combine(lookupDirForExtraFiles, ".auth");
 
                 var authData = new AuthData(privKeyPath, deetsFilePath);
                 authData.Init();
