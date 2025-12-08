@@ -61,7 +61,7 @@
 		<Panel HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10">
 			<TextBlock TextAlignment="Right">
 				USPInstaller ver. <TextBlock Text="{Binding InstallerVersion}"/> <LineBreak />
-				Art by @wi-fu
+				Art by @krppling
 			</TextBlock>
 		</Panel>
 	</Panel>
