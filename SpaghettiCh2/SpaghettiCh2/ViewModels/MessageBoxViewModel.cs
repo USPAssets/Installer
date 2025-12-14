@@ -85,7 +85,7 @@ namespace USPInstaller.ViewModels
                         window.Close();
                     }
                 };
-                window.DataContext = viewModel;    
+                window.DataContext = viewModel;
 
                 if (Application.Current?.ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
                     window.ShowDialog(desktop.MainWindow!);
