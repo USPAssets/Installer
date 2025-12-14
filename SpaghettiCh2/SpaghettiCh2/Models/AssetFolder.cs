@@ -37,9 +37,7 @@ namespace USPInstaller.Models
             {
                 var privKeyPath = Path.Combine(lookupDirForExtraFiles, "key.pem");
                 var deetsFilePath = Path.Combine(lookupDirForExtraFiles, ".auth");
-
-                var authData = new AuthData(privKeyPath, deetsFilePath);
-                authData.Init();
+                var authData = AuthData.InitAuthData(privKeyPath, deetsFilePath);
 
                 if (!authData.IsInitialised)
                 {

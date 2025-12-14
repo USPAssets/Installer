@@ -15,44 +15,45 @@ namespace USPInstaller.Models
     public class AuthData
     {
         private readonly string keyPath;
-        private readonly string deetsPath;
         private string appId;
         private string installationId;
 
         public bool IsInitialised { get; private set; }
 
-        public AuthData(string? keyPath, string? detailsFilePath)
+        private AuthData(string appId, string installationId, string keyPath)
         {
+            this.appId = appId ?? string.Empty;
+            this.installationId = installationId ?? string.Empty;
             this.keyPath = keyPath ?? string.Empty;
-            this.deetsPath = detailsFilePath ?? string.Empty;
+        }
+
+        private AuthData()
+        {
+            // Error auth data when Init fails
+            keyPath = string.Empty;
             appId = string.Empty;
             installationId = string.Empty;
         }
 
-        public void Init()
+        public static AuthData InitAuthData(string? keyPath, string? detailsFilePath)
         {
-            if (IsInitialised)
-            {
-                return;
-            }
-
-            if (!File.Exists(keyPath) || !File.Exists(deetsPath))
+            if (!File.Exists(keyPath) || !File.Exists(detailsFilePath))
             {
                 Console.WriteLine("Key file or auth file don't exist");
-                return;
+                return new AuthData();
             }
 
-            var deets = File.ReadAllLines(deetsPath);
+            var deets = File.ReadAllLines(detailsFilePath);
             if (deets.Length < 2)
             {
                 Console.WriteLine("Auth file badly formatted");
-                return;
+                return new AuthData();
             }
 
-            appId = deets[0];
-            installationId = deets[1];
+            AuthData data = new AuthData(deets[0], deets[1], keyPath);
+            data.IsInitialised = true;
 
-            IsInitialised = true;
+            return data;
         }
 
         public async Task<string?> GetInstallationToken()
