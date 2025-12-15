@@ -1,6 +1,10 @@
 
 # USPInstaller - Patcher universale per DELTARUNE e UNDERTALE in italiano by USP
 
+<img width="802" height="482" alt="Screenshot dell'installer di USP" src="https://github.com/user-attachments/assets/a8725eeb-90f0-4e82-814d-5bfaeffb1ba1" />
+
+<p/>
+
 Ciao! 
 Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTALE* e *DELTARUNE* su **Windows**, **macOS** e **Linux**! Potete riutilizzare lo stesso installer per aggiornare la patch nel caso dovessimo rilasciare aggiornamenti. Insomma, conveniente! Per DELTARUNE, al momento sono tradotti in italiano i capitolo 1, 2 e 3.
 
