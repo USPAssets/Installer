@@ -50,7 +50,7 @@ namespace USPInstaller.Models
                 return new AuthData();
             }
 
-            AuthData data = new AuthData(deets[0], deets[1], keyPath);
+            AuthData data = new(deets[0], deets[1], keyPath);
             data.IsInitialised = true;
 
             return data;
