@@ -1,4 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿#if QA
+
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.IO;
@@ -11,7 +13,6 @@ using System.Threading.Tasks;
 
 namespace USPInstaller.Models
 {
-#if QA
     public class AuthData
     {
         private readonly string keyPath;
@@ -102,5 +103,6 @@ namespace USPInstaller.Models
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
-#endif
 }
+
+#endif

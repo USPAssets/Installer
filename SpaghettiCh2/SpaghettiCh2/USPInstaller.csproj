@@ -10,12 +10,12 @@
     <!-- Also defines .app file name -->
     <CFBundleDisplayName>USPInstaller</CFBundleDisplayName>
     <CFBundleIdentifier>com.usp.USPInstaller</CFBundleIdentifier>
-    <CFBundleVersion>2.0.0</CFBundleVersion>
+    <CFBundleVersion>2.1.0</CFBundleVersion>
     <CFBundlePackageType>APPL</CFBundlePackageType>
     <CFBundleSignature>utdt</CFBundleSignature>
     <CFBundleExecutable>USPInstaller</CFBundleExecutable>
     <CFBundleIconFile>USPInstaller.icns</CFBundleIconFile>
-    <CFBundleShortVersionString>2.0.0</CFBundleShortVersionString>
+    <CFBundleShortVersionString>2.1.0</CFBundleShortVersionString>
     <!-- Will be copied from output directory -->
     <NSPrincipalClass>NSApplication</NSPrincipalClass>
     <NSHighResolutionCapable>true</NSHighResolutionCapable>
@@ -39,8 +39,10 @@
         <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.2" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.2" />
         <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
-        <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' == 'QA'">
+      <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
+      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.14.0" />
     </ItemGroup>
     <ItemGroup>
 	    <AvaloniaResource Include="Assets\**" />
