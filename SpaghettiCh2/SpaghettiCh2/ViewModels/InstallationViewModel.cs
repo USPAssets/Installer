@@ -48,20 +48,32 @@ namespace USPInstaller.ViewModels
 
         public async Task InstallGame(string exePath)
         {
+            string assetPath = "";
             try
             {
                 // On Win: C:\Users\{user}\AppData\Local\Temp\USPInstaller\
                 var tempAssetsPath = Path.Combine(Path.GetTempPath(), "USPInstaller");
 
                 OverallProgressMessage = "Scarico l'ultima versione della traduzione...";
-                string assetPath = await AssetFolder.DownloadLatestAsync("USPAssets", "Online", tempAssetsPath);
+                string repo = "Online";
+                bool qaMode = false;
+
+#if QA
+                if (Globals.QAMode)
+                {
+                    repo = "Translations";
+                    qaMode = true;
+                }
+#endif
+
+                assetPath = await AssetFolder.DownloadLatestAsync("USPAssets", repo, tempAssetsPath, qaMode);
                 switch (gameType)
                 {
                     case GameType.Undertale:
                         await InstallUndertale(assetPath, exePath);
                         break;
                     case GameType.Deltarune:
-                        await InstallDeltarune(assetPath, exePath);
+                        await InstallDeltarune(assetPath, exePath, qaMode);
                         break;
                 }
                 InstallationSuccess?.Invoke();
@@ -70,6 +82,14 @@ namespace USPInstaller.ViewModels
             {
                 InstallationError?.Invoke(ex, log.ToString());
             }
+
+#if QA
+            // If we're in QA mode - we will also clean the assetspath
+            if (Globals.QAMode && Directory.Exists(assetPath))
+            {
+                Directory.Delete(assetPath, true);
+            }
+#endif
 
             try
             {
@@ -141,7 +161,7 @@ namespace USPInstaller.ViewModels
             await RunScriptOn(scriptPath, GetDataFileName(exePath)!);
         }
 
-        private async Task InstallDeltarune(string assetPath, string exePath)
+        private async Task InstallDeltarune(string assetPath, string exePath, bool installDebugMod = false)
         {
             string scriptsPath = Path.Join(assetPath, "Deltarune", "InstallScripts");
             string dataPath = GetDataFileName(exePath)! ?? throw new FileNotFoundException("Non trovo il file di dati del gioco", exePath);
@@ -173,6 +193,17 @@ namespace USPInstaller.ViewModels
                     continue;
                 }
                 int chapterNumber = int.Parse(chapterName.Substring("chapter".Length));
+
+#if QA
+                // TODO: better choose chapter number - even better make a new button in the installer to install debug mod
+                if (installDebugMod && chapterNumber == 3)
+                {
+                    OverallProgressMessage = $"Installo la debug mod per capitolo {chapterNumber}...";
+                    string debugScriptPath = Path.Join(assetPath, "Deltarune", "Codes", "debug", "spaghetti_debug.csx");
+                    await RunScriptOn(debugScriptPath, Path.Join(chapterFolder, dataFilename));
+                }
+#endif
+
                 OverallProgressMessage = $"Installo capitolo {chapterNumber}...";
                 await RunScriptOn(scriptPath, Path.Join(chapterFolder, dataFilename));
             }

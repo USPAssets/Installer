@@ -2,7 +2,7 @@
 # USPInstaller - Patcher universale per DELTARUNE e UNDERTALE in italiano by USP
 
 Ciao! 
-Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTALE* e *DELTARUNE* (Capitolo 1 e 2) su **Windows**, **macOS** e **Linux**! Potete riutilizzare lo stesso installer per aggiornare la patch nel caso dovessimo rilasciare aggiornamenti. Insomma, conveniente!
+Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTALE* e *DELTARUNE* su **Windows**, **macOS** e **Linux**! Potete riutilizzare lo stesso installer per aggiornare la patch nel caso dovessimo rilasciare aggiornamenti. Insomma, conveniente! Per DELTARUNE, al momento sono tradotti in italiano i capitolo 1, 2 e 3.
 
 ## Compatibilità
 
@@ -11,6 +11,7 @@ L'installer è compatibile con le seguenti versioni dei giochi:
 - **DELTARUNE (versione completa)**, testato con:
 	- Capitolo 1 v1.40
 	- Capitolo 2 v1.46
+	- Capitolo 3 v0.0.98
 - **UNDERTALE**, v1.08
 
 L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). È inoltre compatibile con Apple Silicon tramite Rosetta (più dettagli sotto).
@@ -52,6 +53,13 @@ A questo punto Steam provvederà a riscaricare il gioco e la patch sarà rimossa
 - Se quando provate ad eseguire l'exe su Windows vi si apre un pop-up di *Windows SmartScreen*, cliccate su *Ulteriori Informazioni*, e poi su *Esegui comunque*.
 - Se avete un computer con Apple Silicon (come M1, M3, etc.) potreste ricevere un avviso che vi dice che dovete installare Rosetta per aprire l'installer. Questo step è necessario, più informazioni [qui](https://support.apple.com/it-it/102527).
 - Se su macOS ricevete un avviso che non vi permette di aprire l'installer, seguite le [istruzioni di Apple](https://support.apple.com/it-it/102445) per aprire l'app, con particolare attenzione alla sezione *Se vuoi aprire un'app non autenticata o proveniente da uno sviluppatore non identificato*.
+
+## Domande frequenti
+
+- Devo scaricare di nuovo l'installer?
+	- No, se il vostro installer è alla versione 2.0.0 (puoi vederlo in basso a destra quando lo apri), non serve che lo scarichi di nuovo. Se sei in dubbio, [scaricarlo di nuovo non fa male](https://github.com/USPAssets/Installer/releases/latest).
+- Ho già installato la traduzione per Capitolo 1 e 2, posso eseguire l'installer direttamente?
+	- Raccomandiamo sempre di reinstallare il gioco prima di riapplicare la patch, le istruzioni sono [qua sopra](#rimuovere-la-patch), il vostri salvataggi non saranno toccati.
 
 ## Note aggiuntive 
 
