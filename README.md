@@ -58,6 +58,13 @@ A questo punto Steam provvederà a riscaricare il gioco e la patch sarà rimossa
 - Se avete un computer con Apple Silicon (come M1, M3, etc.) potreste ricevere un avviso che vi dice che dovete installare Rosetta per aprire l'installer. Questo step è necessario, più informazioni [qui](https://support.apple.com/it-it/102527).
 - Se su macOS ricevete un avviso che non vi permette di aprire l'installer, seguite le [istruzioni di Apple](https://support.apple.com/it-it/102445) per aprire l'app, con particolare attenzione alla sezione *Se vuoi aprire un'app non autenticata o proveniente da uno sviluppatore non identificato*.
 
+## Domande frequenti
+
+- Devo scaricare di nuovo l'installer?
+	- No, se il vostro installer è alla versione 2.0.0 (puoi vederlo in basso a destra quando lo apri), non serve che lo scarichi di nuovo. Se sei in dubbio, [scaricarlo di nuovo non fa male](https://github.com/USPAssets/Installer/releases/latest).
+- Ho già installato la traduzione per Capitolo 1 e 2, posso eseguire l'installer direttamente?
+	- Raccomandiamo sempre di reinstallare il gioco prima di riapplicare la patch, le istruzioni sono [qua sopra](#rimuovere-la-patch), il vostri salvataggi non saranno toccati.
+
 ## Note aggiuntive 
 
 L'installer non potrebbe esistere senza [UndertaleModTool](https://github.com/UnderminersTeam/UndertaleModTool). Un grazie speciale a tutte le persone che hanno contribuito al progetto!
