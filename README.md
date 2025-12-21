@@ -18,7 +18,7 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). È i
 
 ## Prerequisiti
 
-- Se avete installato la patch in precedenza, reinstallate il gioco seguendo le istruzioni nella [sezione qui sotto](#rimuovere-la-patch).
+- Se avete installato la patch in precedenza, reinstallate il gioco seguendo le istruzioni nella [sezione qui sotto](#reinstallare-il-gioco-rimuovere-la-patch).
 - Trovate dove avete installato *UNDERTALE* o *DELTARUNE*; se avete il gioco su Steam potete andare in *Libreria*, cliccare col tasto destro sul gioco e selezionare *Sfoglia file locali*.
 - *(Solo per Windows)* - Installate il **runtime di .NET 8.0**:
 	- **Windows**: Andate sulla [pagina ufficiale](https://dotnet.microsoft.com/download/dotnet/8.0/runtime) e selezionate *Download x64* o *Download x86* sotto *Run desktop apps*, a seconda se avete un sistema a 64 o 32 bit rispettivamente, e installate il runtime seguendo le istruzioni.
@@ -57,9 +57,9 @@ A questo punto Steam provvederà a riscaricare il gioco e la patch sarà rimossa
 ## Domande frequenti
 
 - Devo scaricare di nuovo l'installer?
-	- No, se il vostro installer è alla versione 2.0.0 (puoi vederlo in basso a destra quando lo apri), non serve che lo scarichi di nuovo. Se sei in dubbio, [scaricarlo di nuovo non fa male](https://github.com/USPAssets/Installer/releases/latest).
+	- No, se il vostro installer è almeno alla versione 2.0.0 (puoi vederlo in basso a destra quando lo apri), non serve che lo scarichi di nuovo. Se sei in dubbio, [scaricarlo di nuovo non fa male](https://github.com/USPAssets/Installer/releases/latest).
 - Ho già installato la traduzione per Capitolo 1 e 2, posso eseguire l'installer direttamente?
-	- Raccomandiamo sempre di reinstallare il gioco prima di riapplicare la patch, le istruzioni sono [qua sopra](#rimuovere-la-patch), il vostri salvataggi non saranno toccati.
+	- Raccomandiamo sempre di reinstallare il gioco prima di riapplicare la patch, le istruzioni sono [qua sopra](#reinstallare-il-gioco-rimuovere-la-patch), i vostri salvataggi non verranno toccati.
 
 ## Note aggiuntive 
 
