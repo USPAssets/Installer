@@ -31,6 +31,7 @@ namespace USPInstaller.ViewModels
 
         private AssetFolder.GameType gameType;
         private StringBuilder log = new StringBuilder();
+        private bool[]? debugModeChapters;
 
         public void UpdateProgress(string message, string subMessage, double value, double maxValue)
         {
@@ -163,6 +164,11 @@ namespace USPInstaller.ViewModels
 
         private async Task InstallDeltarune(string assetPath, string exePath, bool installDebugMod = false)
         {
+            if (installDebugMod && debugModeChapters == null)
+            {
+                await GetDRDebugModeChapters();
+            }
+
             string scriptsPath = Path.Join(assetPath, "Deltarune", "InstallScripts");
             string dataPath = GetDataFileName(exePath)! ?? throw new FileNotFoundException("Non trovo il file di dati del gioco", exePath);
             string dataFilename = Path.GetFileName(dataPath);
@@ -196,7 +202,7 @@ namespace USPInstaller.ViewModels
 
 #if QA
                 // TODO: better choose chapter number - even better make a new button in the installer to install debug mod
-                if (installDebugMod && chapterNumber == 3)
+                if (installDebugMod && debugModeChapters![--chapterNumber])
                 {
                     OverallProgressMessage = $"Installo la debug mod per capitolo {chapterNumber}...";
                     string debugScriptPath = Path.Join(assetPath, "Deltarune", "Codes", "debug", "spaghetti_debug.csx");
@@ -237,6 +243,26 @@ namespace USPInstaller.ViewModels
             }
 
             ScriptProgressMessage = null;
+        }
+
+        private async Task GetDRDebugModeChapters()
+        {
+            debugModeChapters = new bool[7];
+            var lookupDirForExtraFiles = OperatingSystem.IsMacOS() ? 
+                Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "...", "Resources")) : AppContext.BaseDirectory;
+            var debugModeInfoFile = Path.Combine(lookupDirForExtraFiles, ".debuginfo");
+            if (!File.Exists(debugModeInfoFile))
+                return;
+
+            var deets = await File.ReadAllLinesAsync(debugModeInfoFile);
+
+            foreach (var str in deets)
+            {
+                if (int.TryParse(str, out int chapNumber) && chapNumber > 0 && chapNumber <= debugModeChapters.Length)
+                {
+                    debugModeChapters[--chapNumber] = true;
+                }
+            }
         }
     }
 }
