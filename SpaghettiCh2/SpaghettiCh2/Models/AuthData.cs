@@ -85,7 +85,10 @@ namespace USPInstaller.Models
             rsa.ImportFromPem(privateKeyPem.ToCharArray());
 
             var key = new RsaSecurityKey(rsa);
-            var creds = new SigningCredentials(key, SecurityAlgorithms.RsaSha256);
+            var creds = new SigningCredentials(key, SecurityAlgorithms.RsaSha256)
+            {
+                CryptoProviderFactory = new CryptoProviderFactory { CacheSignatureProviders = false }
+            };
             var now = DateTimeOffset.UtcNow;
 
             var cl = new Claim[]
