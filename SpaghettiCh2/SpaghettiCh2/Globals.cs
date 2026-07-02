@@ -4,7 +4,7 @@
     {
 #if QA
         public const bool HasQAMode = true;
-        public static bool QAMode { get; set; } = false;
+        public static bool EnableQAMode { get; set; } = false;
 #else
         public const bool HasQAMode = false;
 #endif
