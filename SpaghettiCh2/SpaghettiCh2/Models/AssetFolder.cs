@@ -28,49 +28,25 @@ namespace USPInstaller.Models
 
             var lookupDirForExtraFiles = OperatingSystem.IsMacOS() ? Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "...", "Resources")) : AppContext.BaseDirectory;
 
+            var branchName = "main";
             var branchOverrideFile = Path.Combine(lookupDirForExtraFiles, ".branch");
-            var branchOverrideFileExists = File.Exists(branchOverrideFile);
+            if (File.Exists(branchOverrideFile))
+            {
+                var branchNameTask = await File.ReadAllTextAsync(branchOverrideFile);
+                branchName = branchNameTask.Trim();
+            }
 
 #if QA
             if (privateRepo)
             {
                 var privKeyPath = Path.Combine(lookupDirForExtraFiles, "key.pem");
                 var deetsFilePath = Path.Combine(lookupDirForExtraFiles, ".auth");
-                var authData = AuthData.InitAuthData(privKeyPath, deetsFilePath);
-
-                if (!authData.IsInitialised)
-                {
-                    Console.WriteLine("Couldn't initialise AuthData for private repo");
-                    return string.Empty;
-                }
+                var authData = AuthData.Init(privKeyPath, deetsFilePath);
 
                 var privToken = await authData.GetInstallationToken();
-                if (string.IsNullOrEmpty(privToken))
-                {
-                    Console.WriteLine("AuthData failed retrieving private token");
-                    return string.Empty;
-                }
-
-                if (!branchOverrideFileExists)
-                {
-                    Console.WriteLine("Branch file required for private repo");
-                    return string.Empty;
-                }
-
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", privToken);
             }
 #endif
-
-            string branchName;
-            if (File.Exists(branchOverrideFile))
-            {
-                var branchNameTask = await File.ReadAllTextAsync(branchOverrideFile);
-                branchName = branchNameTask.Trim();
-            }
-            else
-            {
-                branchName = "main";
-            }
 
             // Get latest commit info to check version
             var apiUrl = $"https://api.github.com/repos/{owner}/{repo}/commits/{branchName}";
