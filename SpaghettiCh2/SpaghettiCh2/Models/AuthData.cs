@@ -13,51 +13,20 @@ using System.Threading.Tasks;
 
 namespace USPInstaller.Models
 {
-    public class AuthData
+    public class AuthData(string appId, string installationId, string keyPath)
     {
-        private readonly string keyPath;
-        private string appId;
-        private string installationId;
 
-        public bool IsInitialised { get; private set; }
-
-        private AuthData(string appId, string installationId, string keyPath)
+        public static AuthData Init(string keyPath, string detailsFilePath)
         {
-            this.appId = appId ?? string.Empty;
-            this.installationId = installationId ?? string.Empty;
-            this.keyPath = keyPath ?? string.Empty;
-        }
-
-        private AuthData()
-        {
-            // Error auth data when Init fails
-            keyPath = string.Empty;
-            appId = string.Empty;
-            installationId = string.Empty;
-        }
-
-        public static AuthData InitAuthData(string? keyPath, string? detailsFilePath)
-        {
-            if (!File.Exists(keyPath) || !File.Exists(detailsFilePath))
-            {
-                Console.WriteLine("Key file or auth file don't exist");
-                return new AuthData();
-            }
-
             var deets = File.ReadAllLines(detailsFilePath);
             if (deets.Length < 2)
             {
-                Console.WriteLine("Auth file badly formatted");
-                return new AuthData();
+                throw new InvalidOperationException("Auth file badly formatted");
             }
-
-            AuthData data = new(deets[0], deets[1], keyPath);
-            data.IsInitialised = true;
-
-            return data;
+            return new AuthData(deets[0], deets[1], keyPath);
         }
 
-        public async Task<string?> GetInstallationToken()
+        public async Task<string> GetInstallationToken()
         {
             var jwt = GetJWT();
 
@@ -74,6 +43,11 @@ namespace USPInstaller.Models
             var json = await response.Content.ReadAsStringAsync();
             var doc = JsonNode.Parse(json);
             var token = doc?["token"]?.GetValue<string>();
+
+            if (string.IsNullOrEmpty(token))
+            {
+                throw new InvalidOperationException("Failed to retrieve installation token");
+            }
 
             return token;
         }
