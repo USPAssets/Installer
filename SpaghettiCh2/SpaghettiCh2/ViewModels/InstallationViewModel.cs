@@ -59,7 +59,7 @@ namespace USPInstaller.ViewModels
                 bool qaMode = false;
 
 #if QA
-                if (Globals.QAMode)
+                if (Globals.EnableQAMode)
                 {
                     repo = "Translations";
                     qaMode = true;
@@ -82,14 +82,6 @@ namespace USPInstaller.ViewModels
             {
                 InstallationError?.Invoke(ex, log.ToString());
             }
-
-#if QA
-            // If we're in QA mode - we will also clean the assetspath
-            if (Globals.QAMode && Directory.Exists(assetPath))
-            {
-                Directory.Delete(assetPath, true);
-            }
-#endif
 
             try
             {
@@ -195,8 +187,7 @@ namespace USPInstaller.ViewModels
                 int chapterNumber = int.Parse(chapterName.Substring("chapter".Length));
 
 #if QA
-                // TODO: better choose chapter number - even better make a new button in the installer to install debug mod
-                if (installDebugMod && chapterNumber == 3)
+                if (installDebugMod)
                 {
                     OverallProgressMessage = $"Installo la debug mod per capitolo {chapterNumber}...";
                     string debugScriptPath = Path.Join(assetPath, "Deltarune", "Codes", "debug", "spaghetti_debug.csx");
