@@ -26,7 +26,7 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). È i
 
 ## Installazione
 
-- Scaricate [l'ultima release dell'installer](https://github.com/USPAssets/Installer/releases/latest) (la trovate anche sul [sito](https://undertaleita.net/)).
+- Scaricate [l'ultima release dell'installer](https://github.com/USPAssets/Installer/releases/latest).
 - Decomprimete il contenuto del file in una cartella
 - Eseguite **USPInstaller.exe** su *Windows*, eseguite **USPInstaller** su *Linux* e **USPInstaller.app** su *macOS*.
 	- Potreste essere bloccati da dei pop-up di sicurezza su Windows e macOS. Potete leggere la sezione [*Risoluzione problemi*](#risoluzione-problemi) per come aprire l'installer in questi casi.
