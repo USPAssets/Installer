@@ -9,7 +9,7 @@ Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTA
 L'installer è compatibile con le seguenti versioni dei giochi:
 - **DELTARUNE (Chaper 1 & 2 DEMO)**, versione Itch o Steam.
 - **DELTARUNE (versione completa)**, testato con:
-  	- DR v22
+  	- DR v23
 	- Capitolo 1 v1.43
 	- Capitolo 2 v1.52
 	- Capitolo 3 v0.0.105
