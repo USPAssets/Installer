@@ -160,9 +160,10 @@ namespace USPInstaller.ViewModels
             string dataFilename = Path.GetFileName(dataPath);
             string dataFolder = Path.GetDirectoryName(dataPath) ?? throw new InvalidOperationException("Il percorso dell'eseguibile non è valido.");
 
-            if (Directory.Exists(Path.Join(dataFolder, "lang")))
+            bool isDeltaruneDemo = await IsDeltaruneDemo(assetPath, dataPath);
+            if (isDeltaruneDemo)
             {
-                // Assume this is the Deltarune Steam demo, run the demo installation script
+                // Install the patch on DELTARUNEDemo
                 OverallProgressMessage = "Installazione in corso...";
                 await RunScriptOn(Path.Join(assetPath, "Deltarune", "InstallScripts", "demo.csx"), dataPath);
                 return;
@@ -228,6 +229,31 @@ namespace USPInstaller.ViewModels
             }
 
             ScriptProgressMessage = null;
+        }
+
+        private async Task<bool> IsDeltaruneDemo(string assetFolder, string dataPath)
+        {
+            // Let's try to find out whether we are on the DELTARUNE demo or not
+            string dataFolder = Path.GetDirectoryName(dataPath)!;
+            bool hasLangFolder = Directory.Exists(Path.Join(dataFolder, "lang"));
+            if (!hasLangFolder)
+                return false;
+
+            // Check data.win file
+            try
+            {
+                await RunScriptOn(Path.Join(assetFolder, "Deltarune", "InstallScripts", "util", "demoCheck.csx"), dataPath);
+                // If script completes, it means we are on the demo version of DELTARUNE
+                return true;
+            }
+            catch (Exception)
+            {
+                // The script throwing means that it failed, we continue
+            }
+
+            // If we really have no idea, just ask the user:
+            string message = "Vuoi installare la patch sulla versione DEMO di DELTARUNE?";
+            return await MessageBoxViewModel.Show(message, "Domanda", true);
         }
     }
 }
