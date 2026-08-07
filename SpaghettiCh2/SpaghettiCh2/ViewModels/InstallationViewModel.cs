@@ -248,7 +248,8 @@ namespace USPInstaller.ViewModels
                     data = await Task.Run(() => UndertaleIO.Read(dataStream, (s, imp) => Log(s), Log));
                 }
 
-                return data.GeneralInfo.DisplayName.Content.Equals("deltarune chapter 1&2", StringComparison.InvariantCultureIgnoreCase);
+                if (data.GeneralInfo.DisplayName.Content.Equals("deltarune chapter 1&2", StringComparison.InvariantCultureIgnoreCase))
+                    return true;
             }
             catch (Exception)
             {
@@ -256,7 +257,10 @@ namespace USPInstaller.ViewModels
             }
 
             // If we really have no idea, just ask the user:
-            string message = "Vuoi installare la patch sulla versione DEMO di DELTARUNE?";
+            string message = 
+@"Vuoi installare la patch sulla versione DEMO di DELTARUNE? 
+Se stai usando la versione completa del gioco, seleziona 'No'.";
+
             return await MessageBoxViewModel.Show(message, "Domanda", true);
         }
     }
