@@ -160,7 +160,7 @@ namespace USPInstaller.ViewModels
             string dataFilename = Path.GetFileName(dataPath);
             string dataFolder = Path.GetDirectoryName(dataPath) ?? throw new InvalidOperationException("Il percorso dell'eseguibile non è valido.");
 
-            bool isDeltaruneDemo = await IsDeltaruneDemo(assetPath, dataPath);
+            bool isDeltaruneDemo = await IsDeltaruneDemo(dataPath);
             if (isDeltaruneDemo)
             {
                 // Install the patch on DELTARUNEDemo
@@ -231,7 +231,7 @@ namespace USPInstaller.ViewModels
             ScriptProgressMessage = null;
         }
 
-        private async Task<bool> IsDeltaruneDemo(string assetFolder, string dataPath)
+        private async Task<bool> IsDeltaruneDemo(string dataPath)
         {
             // Let's try to find out whether we are on the DELTARUNE demo or not
             string dataFolder = Path.GetDirectoryName(dataPath)!;
@@ -242,13 +242,17 @@ namespace USPInstaller.ViewModels
             // Check data.win file
             try
             {
-                await RunScriptOn(Path.Join(assetFolder, "Deltarune", "InstallScripts", "util", "demoCheck.csx"), dataPath);
-                // If script completes, it means we are on the demo version of DELTARUNE
-                return true;
+                UndertaleData data;
+                using (Stream dataStream = File.OpenRead(dataPath))
+                {
+                    data = await Task.Run(() => UndertaleIO.Read(dataStream, (s, imp) => Log(s), Log));
+                }
+
+                return data.GeneralInfo.DisplayName.Content.Equals("deltarune chapter 1&2", StringComparison.InvariantCultureIgnoreCase);
             }
             catch (Exception)
             {
-                // The script throwing means that it failed, we continue
+                // If we had issues reading the data file for whatever reason, just continue
             }
 
             // If we really have no idea, just ask the user:
