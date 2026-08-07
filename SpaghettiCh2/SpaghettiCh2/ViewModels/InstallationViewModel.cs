@@ -160,7 +160,7 @@ namespace USPInstaller.ViewModels
             string dataFilename = Path.GetFileName(dataPath);
             string dataFolder = Path.GetDirectoryName(dataPath) ?? throw new InvalidOperationException("Il percorso dell'eseguibile non è valido.");
 
-            bool isDeltaruneDemo = await IsDeltaruneDemo(dataPath);
+            bool isDeltaruneDemo = await IsDeltaruneDemo(scriptsPath, dataPath);
             if (isDeltaruneDemo)
             {
                 // Install the patch on DELTARUNEDemo
@@ -231,13 +231,15 @@ namespace USPInstaller.ViewModels
             ScriptProgressMessage = null;
         }
 
-        private async Task<bool> IsDeltaruneDemo(string dataPath)
+        private async Task<bool> IsDeltaruneDemo(string scriptsPath, string dataPath)
         {
             // Let's try to find out whether we are on the DELTARUNE demo or not
             string dataFolder = Path.GetDirectoryName(dataPath)!;
             bool hasLangFolder = Directory.Exists(Path.Join(dataFolder, "lang"));
             if (!hasLangFolder)
                 return false;
+
+            OverallProgressMessage = "Controllo se stai usando la versione DEMO di DELTARUNE...";
 
             // Check data.win file
             try
@@ -248,7 +250,11 @@ namespace USPInstaller.ViewModels
                     data = await Task.Run(() => UndertaleIO.Read(dataStream, (s, imp) => Log(s), Log));
                 }
 
-                if (data.GeneralInfo.DisplayName.Content.Equals("deltarune chapter 1&2", StringComparison.InvariantCultureIgnoreCase))
+                string scriptPath = Path.Join(scriptsPath, "util", "DemoCheck.csx");
+                InstallScript installScript = new(scriptPath);
+                ScriptContext context = new(data, dataPath, scriptPath, this);
+                bool checkSucceeded = await installScript.RunAsyncWithResult<bool>(context);
+                if (checkSucceeded)
                     return true;
             }
             catch (Exception)

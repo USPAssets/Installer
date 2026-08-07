@@ -18,7 +18,7 @@ namespace USPInstaller.Models
                 .AddImports("UndertaleModLib", "UndertaleModLib.Models", "UndertaleModLib.Decompiler",
                             "UndertaleModLib.Scripting", "UndertaleModLib.Compiler",
                             "System", "System.IO", "System.Collections.Generic", "System.Linq",
-                            "System.Text.RegularExpressions")
+                            "System.Text.RegularExpressions", "System.Threading", "System.Threading.Tasks")
                 .AddReferences(typeof(UndertaleObject).GetTypeInfo().Assembly,
                                 Assembly.GetExecutingAssembly(),
                                 typeof(System.Text.RegularExpressions.Regex).GetTypeInfo().Assembly
@@ -31,6 +31,28 @@ namespace USPInstaller.Models
             using var stream = File.OpenRead(scriptPath);
             Script script = CSharpScript.Create(stream, scriptOptions,  typeof(IScriptInterface));
             await script.RunAsync(scriptInterface);
+        }
+
+        public async Task<T> RunAsyncWithResult<T>(IScriptInterface scriptInterface)
+        {
+            var scriptOptions = ScriptOptions.Default
+                .AddImports("UndertaleModLib", "UndertaleModLib.Models", "UndertaleModLib.Decompiler",
+                            "UndertaleModLib.Scripting", "UndertaleModLib.Compiler",
+                            "System", "System.IO", "System.Collections.Generic", "System.Linq",
+                            "System.Text.RegularExpressions", "System.Threading", "System.Threading.Tasks")
+                .AddReferences(typeof(UndertaleObject).GetTypeInfo().Assembly,
+                                Assembly.GetExecutingAssembly(),
+                                typeof(System.Text.RegularExpressions.Regex).GetTypeInfo().Assembly
+                                )
+                .WithEmitDebugInformation(true)
+                .WithLanguageVersion(Microsoft.CodeAnalysis.CSharp.LanguageVersion.Latest)
+                .WithSourceResolver(new SourceFileResolver(ImmutableArray<string>.Empty, Path.GetDirectoryName(scriptPath)))
+                .WithAllowUnsafe(true); //when script throws an exception, add a exception location (line number)
+
+            using var stream = File.OpenRead(scriptPath);
+            Script<T> script = CSharpScript.Create<T>(stream, scriptOptions, typeof(IScriptInterface));
+            var state = await script.RunAsync(scriptInterface);
+            return state.ReturnValue;
         }
     }
 }
