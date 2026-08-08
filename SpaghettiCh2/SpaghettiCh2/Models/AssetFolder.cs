@@ -19,7 +19,7 @@ namespace USPInstaller.Models
         public static async Task<string> DownloadLatestAsync(string owner, string repo, string? targetPath, bool privateRepo = false)
         {
             using HttpClient httpClient = new();
-            httpClient.Timeout = TimeSpan.FromSeconds(10);
+            httpClient.Timeout = TimeSpan.FromSeconds(20);
             httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("USPInstaller", "2.0"));
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/vnd.github.raw+json"));
 

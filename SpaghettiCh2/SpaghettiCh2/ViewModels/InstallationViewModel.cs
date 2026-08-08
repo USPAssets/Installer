@@ -160,9 +160,10 @@ namespace USPInstaller.ViewModels
             string dataFilename = Path.GetFileName(dataPath);
             string dataFolder = Path.GetDirectoryName(dataPath) ?? throw new InvalidOperationException("Il percorso dell'eseguibile non è valido.");
 
-            if (Directory.Exists(Path.Join(dataFolder, "lang")))
+            bool isDeltaruneDemo = await IsDeltaruneDemo(scriptsPath, dataPath);
+            if (isDeltaruneDemo)
             {
-                // Assume this is the Deltarune Steam demo, run the demo installation script
+                // Install the patch on DELTARUNEDemo
                 OverallProgressMessage = "Installazione in corso...";
                 await RunScriptOn(Path.Join(assetPath, "Deltarune", "InstallScripts", "demo.csx"), dataPath);
                 return;
@@ -228,6 +229,45 @@ namespace USPInstaller.ViewModels
             }
 
             ScriptProgressMessage = null;
+        }
+
+        private async Task<bool> IsDeltaruneDemo(string scriptsPath, string dataPath)
+        {
+            // Let's try to find out whether we are on the DELTARUNE demo or not
+            string dataFolder = Path.GetDirectoryName(dataPath)!;
+            bool hasLangFolder = Directory.Exists(Path.Join(dataFolder, "lang"));
+            if (!hasLangFolder)
+                return false;
+
+            OverallProgressMessage = "Controllo se stai usando la versione DEMO di DELTARUNE...";
+
+            // Check data.win file
+            try
+            {
+                UndertaleData data;
+                using (Stream dataStream = File.OpenRead(dataPath))
+                {
+                    data = await Task.Run(() => UndertaleIO.Read(dataStream, (s, imp) => Log(s), Log));
+                }
+
+                string scriptPath = Path.Join(scriptsPath, "util", "DemoCheck.csx");
+                InstallScript installScript = new(scriptPath);
+                ScriptContext context = new(data, dataPath, scriptPath, this);
+                bool checkSucceeded = await installScript.RunAsyncWithResult<bool>(context);
+                if (checkSucceeded)
+                    return true;
+            }
+            catch (Exception)
+            {
+                // If we had issues reading the data file for whatever reason, just continue
+            }
+
+            // If we really have no idea, just ask the user:
+            string message = 
+@"Vuoi installare la patch sulla versione DEMO di DELTARUNE? 
+Se stai usando la versione completa del gioco, seleziona 'No'.";
+
+            return await MessageBoxViewModel.Show(message, "Domanda", true);
         }
     }
 }

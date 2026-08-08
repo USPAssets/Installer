@@ -55,6 +55,12 @@ A questo punto Steam provvederà a riscaricare il gioco e la patch sarà rimossa
 - Se quando provate ad eseguire l'exe su Windows vi si apre un pop-up di *Windows SmartScreen*, cliccate su *Ulteriori Informazioni*, e poi su *Esegui comunque*.
 - Se avete un computer con Apple Silicon (come M1, M3, etc.) potreste ricevere un avviso che vi dice che dovete installare Rosetta per aprire l'installer. Questo step è necessario, più informazioni [qui](https://support.apple.com/it-it/102527).
 - Se su macOS ricevete un avviso che non vi permette di aprire l'installer, seguite le [istruzioni di Apple](https://support.apple.com/it-it/102445) per aprire l'app, con particolare attenzione alla sezione *Se vuoi aprire un'app non autenticata o proveniente da uno sviluppatore non identificato*.
+- Se l'installer vi avvisa che state installando la patch sulla versione demo di DELTARUNE, ma in realtà siete sulla versione completa, potrebbero esserci conflitti a causa di altre mod installate in precedenza. Potete seguite i seguenti step per provare a risolvere:
+	- Reinstallate il gioco seguendo gli [step sopra](#reinstallare-il-gioco-rimuovere-la-patch).
+	- Andate nella cartella dove avete installato la versione completa di DELTARUNE.
+	- Se avete una cartella chiamata _lang_, cancellatela. Cancellate l'intera cartella _lang_, non solo i file dentro.
+	- Riprovate ad installare la patch seguendo gli step in [*Installazione*](#installazione).
+	- Se doveste avere ancora problemi, contattateci sul nostro [server Discord](https://discord.gg/YrEkAJ5MrG).
 
 ## Domande frequenti
 
