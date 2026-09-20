@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.14.36221.1
+# Visual Studio Version 18
+VisualStudioVersion = 18.10.12210.168 stable
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "USPInstaller", "SpaghettiCh2\USPInstaller.csproj", "{90B85818-1A1B-4692-B198-77FA153A123F}"
 	ProjectSection(ProjectDependencies) = postProject
