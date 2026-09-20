@@ -21,7 +21,7 @@ namespace USPInstaller
             }
             if (app?.ApplicationLifetime is ISingleViewApplicationLifetime viewApp)
             {
-                var visualRoot = viewApp.MainView?.GetVisualRoot();
+                var visualRoot = viewApp.MainView?.GetPresentationSource()?.RootVisual;
                 return visualRoot as TopLevel;
             }
             return null;

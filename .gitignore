@@ -348,3 +348,12 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+
+# Remove JetBrains files
+.idea/
+
+# Remove macOS files
+*.DS_Store
+
+# Remove VSCode files
+.vscode/
