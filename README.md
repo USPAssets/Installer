@@ -25,17 +25,37 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). È i
 - *(Solo per Windows)* - Installate il **runtime di .NET 8.0**:
 	- **Windows**: Andate sulla [pagina ufficiale](https://dotnet.microsoft.com/download/dotnet/8.0/runtime) e selezionate *Download x64* o *Download x86* sotto *Run desktop apps*, a seconda se avete un sistema a 64 o 32 bit rispettivamente, e installate il runtime seguendo le istruzioni.
 
-## Installazione
+## Installazione su Windows e Linux
 
 - Scaricate [l'ultima release dell'installer](https://github.com/USPAssets/Installer/releases/latest).
 - Decomprimete il contenuto del file in una cartella
-- Eseguite **USPInstaller.exe** su *Windows*, eseguite **USPInstaller** su *Linux* e **USPInstaller.app** su *macOS*.
-	- Potreste essere bloccati da dei pop-up di sicurezza su Windows e macOS. Potete leggere la sezione [*Risoluzione problemi*](#risoluzione-problemi) per come aprire l'installer in questi casi.
+- Eseguite **USPInstaller.exe** su *Windows*, eseguite **USPInstaller** su *Linux*.
+	- Potreste essere bloccati da dei pop-up di sicurezza su Windows. Potete leggere la sezione [*Risoluzione problemi*](#risoluzione-problemi) per come aprire l'installer in questi casi.
 - Scegliete il gioco per cui volete installare la patch.
 - L'installer ora proverà a cercare il gioco nella libreria di default di Steam e se presente metterà già il percorso, altrimenti potete inserire voi il percorso all'eseguibile del gioco:
 	- **(Windows/Linux)**: Cliccate su **Sfoglia** e selezionate, dalla cartella dove avete installato il gioco, il file **DELTARUNE.exe** o **UNDERTALE.exe**.
 		- **NOTA PER UNDERTALE E LINUX**: UNDERTALE ha una versione nativa su Linux. Se la state utilizzando, potete selezionare in quel caso *runner* o *run.sh* nella directory del gioco. 
-	- **(macOS)**: Copiate e incollate il percorso di **UNDERTALE.app** o **DELTARUNE.app** nel box. Potete cliccare col tasto destro sull'app, tenere premuto il pusalnte *Opzione* sulla tastiera e cliccare su *Copia nome_del_file come percorso*. Se il percorso contiene virgolette all'inizio e alla fine, toglietele.
+- Cliccate **Avvia installazione!**, e attendete che la patch venga applicata.
+- Appena sarà tutto concluso, il vostro gioco sarà tradotto! Potete ora avviarlo e giocare.
+
+## Installazione su macOS
+
+- Aprite l'applicazione **Terminale** (potete trovarla prenendo `command+spazio` e scrivendo _Terminale_).
+- Copiate e incollate il comando seguente nella finestra del Terminale.
+	- Se siete su un Mac con processore Silicon (M1, M2, M3, etc.), copiate e incollate il seguente comando:
+	```
+	curl -fsSL "https://github.com/USPAssets/Installer/releases/download/latest/USPInstaller.macOS_arm64_tar" | tar -xzf - -C /Applications
+	```
+	- Altrimenti, copiate e incollate il seguente comando:
+	```
+	curl -fsSL "https://github.com/USPAssets/Installer/releases/download/latest/USPInstaller.macOS_x64_tar" | tar -xzf - -C /Applications
+	```
+- Premete **Invio**, il comando dovrebbe metterci pochi secondi e non emettere nessun messaggio.
+- Eseguite **USPInstaller**, che troverete ora in _Applicazioni_.
+	- Potreste essere bloccati da dei pop-up di sicurezza. Potete leggere la sezione [*Risoluzione problemi*](#risoluzione-problemi) per come aprire l'installer in questi casi.
+- Scegliete il gioco per cui volete installare la patch.
+- L'installer ora proverà a cercare il gioco nella libreria di default di Steam e se presente metterà già il percorso, altrimenti potete inserire voi il percorso all'eseguibile del gioco.
+- Copiate e incollate il percorso di **UNDERTALE.app** o **DELTARUNE.app** nel box. Potete cliccare col tasto destro sull'app, tenere premuto il pusalnte *Opzione* sulla tastiera e cliccare su *Copia nome_del_file come percorso*. Se il percorso contiene virgolette all'inizio e alla fine, toglietele.
 - Cliccate **Avvia installazione!**, e attendete che la patch venga applicata.
 - Appena sarà tutto concluso, il vostro gioco sarà tradotto! Potete ora avviarlo e giocare.
 
@@ -53,14 +73,8 @@ A questo punto Steam provvederà a riscaricare il gioco e la patch sarà rimossa
 
 - Se su Windows ricevete un avviso durante l'installazione che vi dice che il file va prima estratto, seguite la guida apposita [qui](https://github.com/USPAssets/Installer/blob/main/GUIDA_ESTRAZIONE_UT.md).
 - Se quando provate ad eseguire l'exe su Windows vi si apre un pop-up di *Windows SmartScreen*, cliccate su *Ulteriori Informazioni*, e poi su *Esegui comunque*.
-- Se avete un computer con Apple Silicon (come M1, M3, etc.) potreste ricevere un avviso che vi dice che dovete installare Rosetta per aprire l'installer. Questo step è necessario, più informazioni [qui](https://support.apple.com/it-it/102527).
 - Se su macOS ricevete un avviso che non vi permette di aprire l'installer, seguite le [istruzioni di Apple](https://support.apple.com/it-it/102445) per aprire l'app, con particolare attenzione alla sezione *Se vuoi aprire un'app non autenticata o proveniente da uno sviluppatore non identificato*.
-- Se l'installer vi avvisa che state installando la patch sulla versione demo di DELTARUNE, ma in realtà siete sulla versione completa, potrebbero esserci conflitti a causa di altre mod installate in precedenza. Potete seguite i seguenti step per provare a risolvere:
-	- Reinstallate il gioco seguendo gli [step sopra](#reinstallare-il-gioco-rimuovere-la-patch).
-	- Andate nella cartella dove avete installato la versione completa di DELTARUNE.
-	- Se avete una cartella chiamata _lang_, cancellatela. Cancellate l'intera cartella _lang_, non solo i file dentro.
-	- Riprovate ad installare la patch seguendo gli step in [*Installazione*](#installazione).
-	- Se doveste avere ancora problemi, contattateci sul nostro [server Discord](https://discord.gg/YrEkAJ5MrG).
+- Se l'installer vi avvisa che state installando la patch sulla versione demo di DELTARUNE, ma in realtà siete sulla versione completa, potrebbero esserci conflitti a causa di altre mod installate in precedenza. Vi basta rispondere 'No' e l'installazione procederà normalmente.
 
 ## Domande frequenti
 
