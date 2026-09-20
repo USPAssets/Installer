@@ -2,7 +2,7 @@
 # USPInstaller - Patcher universale per DELTARUNE e UNDERTALE in italiano by USP
 
 Ciao! 
-Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTALE* e *DELTARUNE* su **Windows**, **macOS** e **Linux**! Potete riutilizzare lo stesso installer per aggiornare la patch nel caso dovessimo rilasciare aggiornamenti. Insomma, conveniente! Per DELTARUNE, al momento sono tradotti in italiano i capitolo 1, 2, 3 e 4.
+Finalmente abbiamo un installer universale! Con questo potrete patchare *UNDERTALE* e *DELTARUNE* su **Windows**, **macOS** e **Linux**! Potete riutilizzare lo stesso installer per aggiornare la patch nel caso dovessimo rilasciare aggiornamenti. Insomma, conveniente! Per DELTARUNE, al momento sono tradotti in italiano i capitoli 1, 2, 3 e 4.
 
 ## Compatibilità
 
@@ -29,7 +29,7 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). È i
 
 - Scaricate [l'ultima release dell'installer](https://github.com/USPAssets/Installer/releases/latest).
 - Decomprimete il contenuto del file in una cartella
-- Eseguite **USPInstaller.exe** su *Windows*, eseguite **USPInstaller** su *Linux*.
+- Eseguite **USPInstaller.exe** su *Windows*, eseguite **USPInstaller_Linux_x86_64.AppImage** su *Linux*.
 	- Potreste essere bloccati da dei pop-up di sicurezza su Windows. Potete leggere la sezione [*Risoluzione problemi*](#risoluzione-problemi) per come aprire l'installer in questi casi.
 - Scegliete il gioco per cui volete installare la patch.
 - L'installer ora proverà a cercare il gioco nella libreria di default di Steam e se presente metterà già il percorso, altrimenti potete inserire voi il percorso all'eseguibile del gioco:
