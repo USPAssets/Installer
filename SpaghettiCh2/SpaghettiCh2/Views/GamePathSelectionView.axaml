@@ -20,11 +20,11 @@
             (L'installer è compatibile sia con il gioco intero che con la demo.)
         </TextBlock>
 		<TextBlock IsVisible="{Binding IsMacOs}" >
-			<Bold>NOTA</Bold>: Su macOS puoi copiare e incollare il percorso del gioco.<LineBreak />
+			<Bold>NOTA</Bold>: Su macOS, seleziona l'applicazione, non il suo contenuto.<LineBreak />
 		</TextBlock>
         <TextBox Text="{Binding ExePath}" Watermark="{Binding PathWatermark}">
             <TextBox.InnerRightContent>
-                <Button IsVisible="{Binding !IsMacOs}"  Command="{Binding ChooseFileCommand}" Content="Sfoglia"/>
+                <Button Command="{Binding ChooseFileCommand}" Content="Sfoglia"/>
             </TextBox.InnerRightContent>
         </TextBox>
         <Button FontSize="30" FontFamily="{StaticResource DeterminationFont}" HorizontalAlignment="Center" Margin="50" Command="{Binding ContinueCommand}">

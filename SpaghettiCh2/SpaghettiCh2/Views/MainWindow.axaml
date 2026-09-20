@@ -9,6 +9,7 @@
 		MinWidth="800" MinHeight="450"
 		MaxWidth="800" MaxHeight="450"
         x:Class="USPInstaller.Views.MainWindow"
+		x:DataType="vm:MainWindowViewModel"
 		TransparencyLevelHint="AcrylicBlur"
 		Background="Transparent"
 		Icon="/Assets/avalonia-logo.ico"

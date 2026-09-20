@@ -227,7 +227,7 @@ namespace USPInstaller.ViewModels
             {
                 var files = await provider.OpenFolderPickerAsync(new FolderPickerOpenOptions
                 {
-                    Title = "Seleziona l'applicazione del gioco",
+                    Title = "Seleziona l'applicazione del gioco (non selezionare il contenuto dell'applicazione)",
                     SuggestedFileName = GameName + ".app",
                     AllowMultiple = false,
                 });
