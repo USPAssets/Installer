@@ -356,4 +356,4 @@ MigrationBackup/
 *.DS_Store
 
 # Remove VSCode files
-*settings.json
+.vscode/
