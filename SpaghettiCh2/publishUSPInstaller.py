@@ -31,7 +31,7 @@ def publish_win_macos(arch: str, is_mac: bool):
         shutil.copy2(plist_path, contents)
         shutil.copy2(icon_path, resources)
 
-        output_path = str(macOSFolder)
+        output_path = macOSFolder
         self_contained_mode = "--self-contained"
 
     BUILD_COMMAND = [
@@ -50,10 +50,16 @@ def publish_win_macos(arch: str, is_mac: bool):
         '-p:DebugSymbols=false',
         self_contained_mode, 
         '-o',
-        output_path
+        str(output_path)
     ]
 
     subprocess.run(BUILD_COMMAND)
+
+    # For some reason, windows will still have the pdbs for some libs,
+    # we do a cleanup pass to make sure we dont include them in any bundle
+    pdbs = output_path.rglob("*.pdb")
+    for pdb in pdbs:
+        pdb.unlink()
 
 def publish_linux_AppImage(arch: str):
     ENSURE_PUPNET_CMD = [
