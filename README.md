@@ -1,3 +1,7 @@
+<div align="center">
+	<img width="800" height="479" alt="Screenshot USPInstaller" src="Screenshots/USPInstaller.jpg" />
+	<figcaption>Installer su macOS</figcaption>
+</div>
 
 # USPInstaller - Patcher universale per DELTARUNE e UNDERTALE in italiano by USP
 
