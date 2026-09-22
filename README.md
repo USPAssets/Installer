@@ -44,7 +44,7 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). È i
 
 ## Installazione su macOS
 
-- Aprite l'applicazione **Terminale** (potete trovarla prenendo `command+spazio` e scrivendo _Terminale_).
+- Aprite l'applicazione **Terminale** (potete trovarla premendo `command+spazio` e scrivendo _Terminale_).
 - Copiate e incollate il comando seguente nella finestra del Terminale.
 	- Se siete su un Mac con processore Silicon (M1, M2, M3, etc.), copiate e incollate il seguente comando:
 	```
