@@ -26,7 +26,7 @@ namespace USPInstaller.Models
 
         public void ScriptError(string error, string title = "Error", bool SetConsoleText = true)
         {
-            model.Log(title + ": " + error);
+            model.LogError(title + ": " + error);
         }
 
         public void UpdateProgressBar(string message, string status, double progressValue, double maxValue)
@@ -45,7 +45,7 @@ namespace USPInstaller.Models
 
         public bool ScriptQuestion(string message)
         {
-            return MessageBoxViewModel.Show(message, "Avviso", true).Result;
+            return model.AskUserQuestion(message);
         }
 
         public void UpdateProgressValue(double progressValue)
