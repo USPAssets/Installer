@@ -48,11 +48,11 @@ L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). È i
 - Copiate e incollate il comando seguente nella finestra del Terminale.
 	- Se siete su un Mac con processore Silicon (M1, M2, M3, etc.), copiate e incollate il seguente comando:
 	```
-	curl -fsSL "https://github.com/USPAssets/Installer/releases/download/latest/USPInstaller.macOS_arm64_tar" | tar -xzf - -C /Applications
-	```
+	curl -fsSL "https://github.com/USPAssets/Installer/releases/latest/download/USPInstaller_macOS_arm64.tar" | tar -xzf - -C /Applications
+ 	```
 	- Altrimenti, copiate e incollate il seguente comando:
 	```
-	curl -fsSL "https://github.com/USPAssets/Installer/releases/download/latest/USPInstaller.macOS_x64_tar" | tar -xzf - -C /Applications
+	curl -fsSL "https://github.com/USPAssets/Installer/releases/latest/download/USPInstaller_macOS_x64.tar"  | tar -xzf - -C /Applications
 	```
 - Premete **Invio**, il comando dovrebbe metterci pochi secondi e non emettere nessun messaggio.
 - Eseguite **USPInstaller**, che troverete ora in _Applicazioni_.
