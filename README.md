@@ -20,7 +20,7 @@ L'installer è compatibile con le seguenti versioni dei giochi:
 	- Capitolo 4 v0.0.110
 - **UNDERTALE**, v1.08
 
-L'installer è compatibile con Windows, macOS e Linux (Steam Deck incluso). È inoltre compatibile con Apple Silicon tramite Rosetta (più dettagli sotto).
+L'installer è compatibile con Windows, macOS e Linux (SteamOS incluso).
 
 ## Prerequisiti
 
