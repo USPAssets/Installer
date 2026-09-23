@@ -32,13 +32,14 @@
         <PackageReference Include="Avalonia" Version="12.1.2" />
         <PackageReference Include="Avalonia.Desktop" Version="12.1.2" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.2" />
-		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
-		<!--This package is ABOVE Avalonia.Diagnostics to prevent a funny conflict, do not modify.-->
+		    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+		    <!--This package is ABOVE Avalonia.Diagnostics to prevent a funny conflict, do not modify.-->
         <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.14.0" />
-        <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
-        <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.3.22" />
         <PackageReference Include="Avalonia.ReactiveUI" Version="11.3.9" />
         <PackageReference Include="Dotnet.Bundle" Version="0.9.13" />
+    </ItemGroup>
+    <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+      <PackageReference Include="Avalonia.Diagnostics" Version="11.3.22" />
     </ItemGroup>
     <ItemGroup Condition="'$(Configuration)' == 'QA'">
       <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.14.0" />
@@ -49,7 +50,7 @@
     </ItemGroup>
     <ItemGroup>
       <ProjectReference Include="..\UndertaleModTool\Underanalyzer\Underanalyzer\Underanalyzer.csproj" />
-		<ProjectReference Include="..\UndertaleModTool\UndertaleModLib\UndertaleModLib.csproj" />
+		  <ProjectReference Include="..\UndertaleModTool\UndertaleModLib\UndertaleModLib.csproj" />
     </ItemGroup>
 	<ItemGroup>
 		<AvaloniaResource Update="Assets\Resources.resx">
@@ -85,5 +86,6 @@
   </ItemGroup>
   <PropertyGroup>
 	  <SatelliteResourceLanguages>en-US;it-IT</SatelliteResourceLanguages>
+    <RuntimeIdentifiers>win-x86;win-x64;linux-x64;osx-arm64;osx-x64</RuntimeIdentifiers>
   </PropertyGroup>
 </Project>
