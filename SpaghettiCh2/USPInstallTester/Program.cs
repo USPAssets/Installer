@@ -1,6 +1,8 @@
 ﻿
+using System;
 using System.ComponentModel;
-using USPInstaller.Models;
+using System.IO;
+using System.Threading.Tasks;
 using USPInstaller.ViewModels;
 
 class TestInstallViewModel : InstallationViewModel
